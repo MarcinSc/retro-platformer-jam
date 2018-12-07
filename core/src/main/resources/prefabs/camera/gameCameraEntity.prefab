@@ -1,4 +1,9 @@
 {
   "Camera2D": {},
-  "ScreenShakeCamera": {}
+  "ScreenShakeCamera": {},
+  "TrackingCamera": {},
+  "GenesisCamera": {
+    "objectPixelHeight": 16,
+    "objectUnitHeight": 0.2
+  }
 }

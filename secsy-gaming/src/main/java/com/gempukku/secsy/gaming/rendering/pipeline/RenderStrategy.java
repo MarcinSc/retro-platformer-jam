@@ -2,6 +2,7 @@ package com.gempukku.secsy.gaming.rendering.pipeline;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
 public interface RenderStrategy {
@@ -14,4 +15,8 @@ public interface RenderStrategy {
     Color getScreenFillColor();
 
     Rectangle getScreenRenderRectangle(int screenWidth, int screenHeight, int bufferWidth, int bufferHeight, Rectangle toUse);
+
+    Texture.TextureFilter getRenderMinFilter(int screenWidth, int screenHeight, int bufferWidth, int bufferHeight);
+
+    Texture.TextureFilter getRenderMagFilter(int screenWidth, int screenHeight, int bufferWidth, int bufferHeight);
 }

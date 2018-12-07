@@ -1,10 +1,7 @@
 package com.gempukku.secsy.gaming.rendering.pipeline;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -70,7 +67,7 @@ public class RenderPipelineRenderer extends AbstractLifeCycleSystem implements R
 
                 float deltaTime = timeManager.getTimeSinceLastUpdate() / 1000f;
 
-                GetCamera getCamera = new GetCamera(deltaTime, width, height);
+                GetCamera getCamera = new GetCamera(deltaTime, renderBufferWidth, renderBufferHeight);
                 cameraEntity.send(getCamera);
 
                 cameraEntity.send(new RenderToPipeline(renderPipeline, getCamera.getCamera(), deltaTime, renderBufferWidth, renderBufferHeight));
@@ -103,6 +100,8 @@ public class RenderPipelineRenderer extends AbstractLifeCycleSystem implements R
 
         cleanBuffer(renderStrategy.getScreenFillColor());
 
+        Texture.TextureFilter renderMinFilter = renderStrategy.getRenderMinFilter(screenWidth, screenHeight, renderWidth, renderHeight);
+        Texture.TextureFilter renderMagFilter = renderStrategy.getRenderMagFilter(screenWidth, screenHeight, renderWidth, renderHeight);
         Rectangle renderRectangle = renderStrategy.getScreenRenderRectangle(screenWidth, screenHeight, renderWidth, renderHeight, tempRectangle);
         float x = renderRectangle.x / screenWidth;
         float y = renderRectangle.y / screenHeight;
@@ -122,7 +121,10 @@ public class RenderPipelineRenderer extends AbstractLifeCycleSystem implements R
         indexBufferObject.bind();
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle());
+        int textureObjectHandle = renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle();
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureObjectHandle);
+        Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, renderMinFilter.getGLEnum());
+        Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, renderMagFilter.getGLEnum());
 
         shaderProgram.setUniformf("u_sourceTexture", 0);
         shaderProgram.setUniformf("u_textureStart", x, y);

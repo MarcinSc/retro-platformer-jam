@@ -2,6 +2,7 @@ package com.gempukku.secsy.gaming.rendering.pipeline.presets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderStrategy;
@@ -41,4 +42,16 @@ public class GenesisRenderStrategy implements RenderStrategy {
         }
         return toUse;
     }
+
+
+    @Override
+    public Texture.TextureFilter getRenderMinFilter(int screenWidth, int screenHeight, int bufferWidth, int bufferHeight) {
+        return Texture.TextureFilter.Nearest;
+    }
+
+    @Override
+    public Texture.TextureFilter getRenderMagFilter(int screenWidth, int screenHeight, int bufferWidth, int bufferHeight) {
+        return Texture.TextureFilter.Nearest;
+    }
+
 }
