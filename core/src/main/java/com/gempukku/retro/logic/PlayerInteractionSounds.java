@@ -2,6 +2,7 @@ package com.gempukku.retro.logic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.gempukku.retro.logic.combat.EntityMeleeAttacked;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -18,16 +19,17 @@ public class PlayerInteractionSounds extends AbstractLifeCycleSystem {
 
     private Sound powerupPickupSound;
     private Sound jumpSound;
+    private Sound hitSound;
 
     @Override
     public void initialize() {
         powerupPickupSound = Gdx.audio.newSound(Gdx.files.internal("sounds/powerup.wav"));
         jumpSound = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
+        hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.wav"));
     }
 
-
     @ReceiveEvent
-    public void powerupPickup(PickedupItem pickedupItem) {
+    public void powerupPickup(PickedupItem pickedupItem, EntityRef entity, PlayerComponent player) {
         audioManager.playSound(powerupPickupSound);
     }
 
@@ -36,9 +38,15 @@ public class PlayerInteractionSounds extends AbstractLifeCycleSystem {
         audioManager.playSound(jumpSound);
     }
 
+    @ReceiveEvent
+    public void meleeAttack(EntityMeleeAttacked attacked, EntityRef entity, PlayerComponent player) {
+        audioManager.playSound(hitSound);
+    }
+
     @Override
     public void destroy() {
         powerupPickupSound.dispose();
         jumpSound.dispose();
+        hitSound.dispose();
     }
 }

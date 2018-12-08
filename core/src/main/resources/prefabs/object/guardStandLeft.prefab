@@ -1,9 +1,4 @@
 {
-  "Player": {},
-  "ControlledByInput": {
-    "moveSpeed": 2,
-    "jumpSpeed": 3.5
-  },
   "Position2D": {},
   "Moving": {},
   "CollidingBody": {
@@ -13,7 +8,7 @@
   },
   "Grounded": {},
   "HorizontalOrientation": {
-    "facingRight": true
+    "facingRight": false
   },
   "Sensor": {
     "sensors": [
@@ -47,20 +42,21 @@
       }
     ]
   },
+  "SensorTrigger": {
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.3
+  },
   "Sprite": {
-    "fileName": "images/player.png",
+    "fileName": "images/guard.png",
     "left": -0.1,
     "right": 0.1,
     "up": 0.3,
-    "priority": -1
+    "priority": 0
   },
-  "CameraTracked": {
-    "y": 0.2
-  },
-  "AffectedByGravity": {},
   "Combat": {
     "meleeCoolDown": 200,
-    "meleeDamage": 2
+    "meleeDamage": 5
   },
   "MeleeTarget": {}
 }
