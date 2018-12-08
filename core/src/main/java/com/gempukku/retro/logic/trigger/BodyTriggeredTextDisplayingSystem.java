@@ -32,9 +32,9 @@ public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
     public void initialize() {
         spriteBatch = new SpriteBatch();
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/8-BIT_WONDER.TTF"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/5px2bus.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 6;
+        parameter.size = 5;
         parameter.color = Color.WHITE;
         textFont = generator.generateFont(parameter);
         generator.dispose();
