@@ -1,0 +1,49 @@
+{
+  "Position2D": {},
+  "Moving": {},
+  "CollidingBody": {
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.3
+  },
+  "Grounded": {},
+  "HorizontalOrientation": {
+    "facingRight": false
+  },
+  "Sensor": {
+    "sensors": [
+      {
+        "type": "groundSensor",
+        "left": -0.1,
+        "right": 0.1,
+        "up": 0.01,
+        "down": -0.01
+      },
+      {
+        "type": "body",
+        "left": -0.08,
+        "right": 0.08,
+        "up": 0.28,
+        "down": 0.02
+      }
+    ]
+  },
+  "SensorTrigger": {
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.3
+  },
+  "Sprite": {
+    "fileName": "images/cleaner.png",
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.3,
+    "priority": 0
+  },
+  "MeleeTarget": {},
+  "Health": {
+    "maxHealth": 1,
+    "currentHealth": 1
+  },
+  "DestroyOnDeath": {}
+}

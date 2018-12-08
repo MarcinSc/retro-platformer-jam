@@ -1,6 +1,6 @@
 {
   "entry": {
-    "x": -0.6,
+    "x": 0.9,
     "y": 0
   },
   "pickups": [],
@@ -36,12 +36,12 @@
   ],
   "objects": [
     {
-      "prefab": "entranceBackground",
+      "prefab": "secondFloorBackground",
       "x": 0,
       "y": 0
     },
     {
-      "prefab": "closedElevator",
+      "prefab": "openedElevator",
       "x": 0.2,
       "y": 0
     },
@@ -51,13 +51,8 @@
       "y": 0
     },
     {
-      "prefab": "guardStandRight",
-      "x": -0.05,
-      "y": 0
-    },
-    {
-      "prefab": "guardStandLeft",
-      "x": 0.45,
+      "prefab": "cleaner",
+      "x": 0.25,
       "y": 0
     }
   ]
