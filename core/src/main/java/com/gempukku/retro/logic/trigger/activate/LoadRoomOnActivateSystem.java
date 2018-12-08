@@ -9,13 +9,13 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
 
 @RegisterSystem
-public class LoadLevelOnActivateSystem {
+public class LoadRoomOnActivateSystem {
     @Inject
     private GameEntityProvider gameEntityProvider;
 
     @ReceiveEvent
-    public void loadLevelOnActivate(EntityActivated entityActivated, EntityRef entity, LoadRoomOnActivateComponent loadLevel) {
-        String roomPath = loadLevel.getRoomPath();
-        gameEntityProvider.getGameEntity().send(new LoadRoom(roomPath));
+    public void loadRoomOnActivate(EntityActivated entityActivated, EntityRef entity, LoadRoomOnActivateComponent loadRoom) {
+        String roomPath = loadRoom.getRoomPath();
+        gameEntityProvider.getGameEntity().send(new LoadRoom(roomPath, loadRoom.getX(), loadRoom.getY()));
     }
 }

@@ -1,7 +1,7 @@
 {
   "Position2D": {},
   "BodyTriggeredTextDisplaying": {
-    "displayText": "GO UP",
+    "displayText": "GO DOWN",
     "y": 0.7
   },
   "Sprite": {
@@ -18,7 +18,7 @@
   },
   "ActivateWithBodyContact": {},
   "LoadRoomOnActivate": {
-    "roomPath": "rooms/second-floor.json",
+    "roomPath": "rooms/entrance.json",
     "x": 0.9,
     "y": 0
   }

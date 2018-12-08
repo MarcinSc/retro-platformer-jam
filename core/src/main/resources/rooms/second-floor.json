@@ -1,8 +1,4 @@
 {
-  "entry": {
-    "x": 0.9,
-    "y": 0
-  },
   "pickups": [],
   "platforms": [
     {
@@ -46,7 +42,7 @@
       "y": 0
     },
     {
-      "prefab": "stairsUp",
+      "prefab": "stairsDown",
       "x": 0.9,
       "y": 0
     },

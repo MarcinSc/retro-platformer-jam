@@ -36,19 +36,18 @@ import java.io.UnsupportedEncodingException;
 public class RoomSystem extends AbstractLifeCycleSystem {
     @Inject
     private GameEntityProvider gameEntityProvider;
+    @Inject
+    private EntityManager entityManager;
 
     public static final int RELOAD_KEY = Input.Keys.R;
     public static final int SAVE_KEY = Input.Keys.T;
-
-    @Inject
-    private EntityManager entityManager;
 
     private boolean roomLoaded = false;
 
     @ReceiveEvent
     public void update(GameLoopUpdate update) {
         if (!roomLoaded) {
-            loadRoom();
+            loadRoom(-0.6f, 0);
             roomLoaded = true;
         }
     }
@@ -56,15 +55,15 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent
     public void processLoadRoom(LoadRoom loadRoom) {
         unloadRoomEntities();
-        loadRoom(loadRoom.getRoomPath());
+        loadRoom(loadRoom.getRoomPath(), loadRoom.getX(), loadRoom.getY());
     }
 
-    private void loadRoom() {
+    private void loadRoom(float x, float y) {
         entityManager.createEntityFromPrefab("playerEntity");
 
         // Room size in units is 4 units / 3 units
 
-        loadRoom("rooms/entrance.json");
+        loadRoom("rooms/entrance.json", x, y);
     }
 
     private boolean reloadPressed;
@@ -77,7 +76,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         if (Gdx.input.isKeyPressed(RELOAD_KEY) && !reloadPressed) {
             unloadRoomEntities();
 
-            loadRoom("rooms/room.json");
+            loadRoom("rooms/room.json", -0.6f, 0);
 
             reloadPressed = true;
         } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
@@ -89,7 +88,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     public void playerDied(EntityDied entityDied, EntityRef entity, PlayerComponent player) {
         RoomComponent room = gameEntityProvider.getGameEntity().getComponent(RoomComponent.class);
         unloadRoomEntities();
-        loadRoom(room.getRoom());
+        loadRoom(room.getRoom(), room.getX(), room.getY());
     }
 
     private void unloadRoomEntities() {
@@ -197,21 +196,22 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         }
     }
 
-    private void loadRoom(String roomFile) {
+    private void loadRoom(String roomFile, float x, float y) {
         EntityRef gameEntity = gameEntityProvider.getGameEntity();
         RoomComponent roomComp = gameEntity.getComponent(RoomComponent.class);
         roomComp.setRoom(roomFile);
+        roomComp.setX(x);
+        roomComp.setY(y);
         gameEntity.saveChanges();
 
-        JSONObject room = loadJSON(roomFile);
-        JSONObject entry = (JSONObject) room.get("entry");
         for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
             Position2DComponent position = player.getComponent(Position2DComponent.class);
-            position.setX(getFloat(entry, "x"));
-            position.setY(getFloat(entry, "y"));
+            position.setX(x);
+            position.setY(y);
             player.saveChanges();
         }
 
+        JSONObject room = loadJSON(roomFile);
         JSONArray platformArray = (JSONArray) room.get("platforms");
         JSONArray pickupsArray = (JSONArray) room.get("pickups");
         JSONArray objectsArray = (JSONArray) room.get("objects");
