@@ -1,7 +1,14 @@
 {
+  "GlobalEntity": {},
   "Camera2D": {},
   "ScreenShakeCamera": {},
   "TrackingCamera": {},
+  "ClampCamera": {
+    "minX": -2,
+    "maxX": 2,
+    "minY": -0.5,
+    "maxY": 2.5
+  },
   "GenesisCamera": {
     "objectPixelHeight": 16,
     "objectUnitHeight": 0.2

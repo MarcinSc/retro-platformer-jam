@@ -1,0 +1,15 @@
+{
+  "Pickup": {},
+  "Position2D": {},
+  "Sprite": {
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.2,
+    "priority": 0
+  },
+  "SensorTrigger": {
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.2
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "pickups": [],
+  "platforms": [
+    {
+      "prefab": "wallLeft",
+      "x": -2,
+      "y": 2,
+      "width": 0.1,
+      "height": 2
+    },
+    {
+      "prefab": "wallRight",
+      "x": 1.9,
+      "y": 2,
+      "width": 0.1,
+      "height": 2
+    },
+    {
+      "prefab": "platformNoEdges",
+      "x": -1.9,
+      "width": 3.8,
+      "y": 0.0,
+      "height": 0.1
+    },
+    {
+      "prefab": "ceiling",
+      "x": -1.9,
+      "width": 3.8,
+      "y": 2.1,
+      "height": 0.1
+    }
+  ]
+}

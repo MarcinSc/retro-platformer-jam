@@ -7,7 +7,7 @@ import com.gempukku.secsy.gaming.camera2d.Adjust2dCamera;
 
 @RegisterSystem
 public class GenesisCamera {
-    @ReceiveEvent
+    @ReceiveEvent(priority = 100)
     public void adjustCamera(Adjust2dCamera camera, EntityRef cameraEntity, GenesisCameraComponent genesisCamera) {
         float objectPixelHeight = genesisCamera.getObjectPixelHeight();
         float objectUnitHeight = genesisCamera.getObjectUnitHeight();

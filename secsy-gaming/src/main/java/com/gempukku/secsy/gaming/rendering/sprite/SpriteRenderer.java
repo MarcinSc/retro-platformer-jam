@@ -2,7 +2,6 @@ package com.gempukku.secsy.gaming.rendering.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -58,8 +57,6 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
         if (!sprites.isEmpty()) {
             renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
-            Gdx.gl.glClearColor(1, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
             Camera camera = renderToPipeline.getCamera();
 

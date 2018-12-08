@@ -1,0 +1,12 @@
+{
+  "platforms": [
+    {
+      "prefab": "platform",
+      "x": -0.5,
+      "y": 0,
+      "width": 1,
+      "height": 0.1
+    }
+  ],
+  "pickups": []
+}
