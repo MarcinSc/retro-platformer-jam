@@ -7,19 +7,21 @@ import com.gempukku.retro.logic.combat.EntityMeleeAttacked;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.entity.EntityManager;
+import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
+import com.gempukku.secsy.entity.index.EntityIndex;
+import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.input2d.InputScheme2dProvider;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
 @RegisterSystem(shared = InputScheme2dProvider.class)
-public class PlayerControls implements InputScheme2dProvider {
+public class PlayerControls extends AbstractLifeCycleSystem implements InputScheme2dProvider {
     @Inject
     private TimeManager timeManager;
     @Inject
-    private EntityManager entityManager;
+    private EntityIndexManager entityIndexManager;
 
     private int[] jumpKeys = new int[]{Input.Keys.W, Input.Keys.UP};
     private int[] leftKeys = new int[]{Input.Keys.A, Input.Keys.LEFT};
@@ -27,6 +29,13 @@ public class PlayerControls implements InputScheme2dProvider {
     private int attackKey = Input.Keys.SPACE;
 
     private boolean attackPressed;
+
+    private EntityIndex players;
+
+    @Override
+    public void initialize() {
+        players = entityIndexManager.addIndexOnComponents(PlayerComponent.class);
+    }
 
     @Override
     public boolean isJumpActivated() {
@@ -48,7 +57,7 @@ public class PlayerControls implements InputScheme2dProvider {
         long time = timeManager.getTime();
         boolean attack = Gdx.input.isKeyPressed(attackKey);
         if (attack && !attackPressed) {
-            for (EntityRef playerEntity : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
+            for (EntityRef playerEntity : players) {
                 CombatComponent combat = playerEntity.getComponent(CombatComponent.class);
                 long lastMeleeAttacked = combat.getLastMeleeAttacked();
                 long meleeCoolDown = combat.getMeleeCoolDown();

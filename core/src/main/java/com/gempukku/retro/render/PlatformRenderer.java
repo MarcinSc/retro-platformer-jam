@@ -1,5 +1,6 @@
 package com.gempukku.retro.render;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gempukku.retro.model.PlatformComponent;
 import com.gempukku.retro.model.SpritePriorities;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -46,29 +47,29 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
             if (platform.isHorizontal()) {
                 float middleX = x;
                 if (beginningImage != null) {
-                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, platformBasicSize, height);
+                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, platformBasicSize, height, Color.WHITE);
                     width -= platformBasicSize;
                     middleX += platformBasicSize;
                 }
                 if (endingImage != null) {
-                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x + width, y, platformBasicSize, height);
+                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x + width, y, platformBasicSize, height, Color.WHITE);
                     width -= platformBasicSize;
                 }
                 spriteSink.addTiledSprite(SpritePriorities.PLATFORM, platform.getCenterImage(),
-                        middleX, y, width, height, width / platformBasicSize, -1f);
+                        middleX, y, width, height, width / platformBasicSize, -1f, Color.WHITE);
             } else {
                 float middleY = y;
                 if (beginningImage != null) {
-                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, width, platformBasicSize);
+                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, width, platformBasicSize, Color.WHITE);
                     height -= platformBasicSize;
                     middleY += platformBasicSize;
                 }
                 if (endingImage != null) {
-                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x, y + height, width, platformBasicSize);
+                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x, y + height, width, platformBasicSize, Color.WHITE);
                     width -= platformBasicSize;
                 }
                 spriteSink.addTiledSprite(SpritePriorities.PLATFORM, platform.getCenterImage(),
-                        x, middleY, width, height, 1f, height / platformBasicSize);
+                        x, middleY, width, height, 1f, height / platformBasicSize, Color.WHITE);
             }
         }
     }

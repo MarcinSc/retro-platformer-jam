@@ -2,12 +2,14 @@ package com.gempukku.retro.logic.combat;
 
 import com.badlogic.gdx.graphics.Color;
 import com.gempukku.retro.model.PlayerComponent;
+import com.gempukku.retro.render.FadingSpriteComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
+import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
@@ -30,7 +32,7 @@ public class CombatSystem {
 
     @ReceiveEvent
     public void entityMeleeAttacked(EntityMeleeAttacked attacked, EntityRef entity, HorizontalOrientationComponent orientation,
-                                    CombatComponent combat) {
+                                    CombatComponent combat, Position2DComponent attackerPosition) {
         boolean facingRight = orientation.isFacingRight();
 
         String sensor = facingRight ? "attackRight" : "attackLeft";
@@ -41,7 +43,24 @@ public class CombatSystem {
             }
         })) {
             attackedEntity.send(new DamageDealt(entity, combat.getMeleeDamage()));
+
+            float x = attackerPosition.getX() + combat.getMeleeX() * (facingRight ? 1 : -1);
+            float y = attackerPosition.getY() + combat.getMeleeY();
+            spawnDamageSplash(x, y);
         }
+    }
+
+    private void spawnDamageSplash(float x, float y) {
+        EntityRef damageSplash = entityManager.createEntityFromPrefab("damageSplash");
+
+        FadingSpriteComponent fading = damageSplash.getComponent(FadingSpriteComponent.class);
+        fading.setEffectStart(timeManager.getTime());
+
+        Position2DComponent position = damageSplash.getComponent(Position2DComponent.class);
+        position.setX(x);
+        position.setY(y);
+
+        damageSplash.saveChanges();
     }
 
     @ReceiveEvent
@@ -62,7 +81,7 @@ public class CombatSystem {
     }
 
     @ReceiveEvent
-    public void playerDealtDamage(DamageDealt damageDealt, EntityRef entity, PlayerComponent player) {
+    public void playerIsDealtDamage(DamageDealt damageDealt, EntityRef entity, PlayerComponent player) {
         applyCameraEffect();
     }
 

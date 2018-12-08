@@ -2,8 +2,9 @@ package com.gempukku.secsy.gaming.rendering.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
@@ -43,7 +44,6 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
     private NormalRenderableSpritePool normalPool = new NormalRenderableSpritePool();
     private TiledRenderableSpritePool tiledPool = new TiledRenderableSpritePool();
-    private TextRenderableSpritePool textPool = new TextRenderableSpritePool();
 
     @Override
     public void initialize() {
@@ -62,10 +62,12 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
             Camera camera = renderToPipeline.getCamera();
 
+            Gdx.gl.glEnable(GL20.GL_BLEND);
             spriteBatch.setProjectionMatrix(camera.combined);
             spriteBatch.begin();
             renderSprites();
             spriteBatch.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
 
             renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
 
@@ -83,10 +85,10 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
             if (horizontal != null && !horizontal.isFacingRight())
                 spriteSink.addSprite(sprite.getPriority(), "sprites", sprite.getFileName(), position.getX() + sprite.getRight(), position.getY() + sprite.getDown(),
-                        sprite.getLeft() - sprite.getRight(), sprite.getUp() - sprite.getDown());
+                        sprite.getLeft() - sprite.getRight(), sprite.getUp() - sprite.getDown(), Color.WHITE);
             else
                 spriteSink.addSprite(sprite.getPriority(), "sprites", sprite.getFileName(), position.getX() + sprite.getLeft(), position.getY() + sprite.getDown(),
-                        sprite.getRight() - sprite.getLeft(), sprite.getUp() - sprite.getDown());
+                        sprite.getRight() - sprite.getLeft(), sprite.getUp() - sprite.getDown(), Color.WHITE);
         }
         for (EntityRef tiledSpriteEntity : tiledSpriteEntities) {
             Position2DComponent position = tiledSpriteEntity.getComponent(Position2DComponent.class);
@@ -95,10 +97,10 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
             if (horizontal != null && !horizontal.isFacingRight())
                 spriteSink.addTiledSprite(sprite.getPriority(), sprite.getFileName(), position.getX() + sprite.getRight(), position.getY() + sprite.getDown(),
-                        sprite.getLeft() - sprite.getRight(), sprite.getUp() - sprite.getDown(), sprite.getTileXCount(), sprite.getTileYCount());
+                        sprite.getLeft() - sprite.getRight(), sprite.getUp() - sprite.getDown(), sprite.getTileXCount(), sprite.getTileYCount(), Color.WHITE);
             else
                 spriteSink.addTiledSprite(sprite.getPriority(), sprite.getFileName(), position.getX() + sprite.getLeft(), position.getY() + sprite.getDown(),
-                        sprite.getRight() - sprite.getLeft(), sprite.getUp() - sprite.getDown(), sprite.getTileXCount(), sprite.getTileYCount());
+                        sprite.getRight() - sprite.getLeft(), sprite.getUp() - sprite.getDown(), sprite.getTileXCount(), sprite.getTileYCount(), Color.WHITE);
         }
     }
 
@@ -131,6 +133,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         private float width;
         private float height;
         private float priority;
+        private Color color;
 
         @Override
         public float getPriority() {
@@ -140,6 +143,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         @Override
         public void render(SpriteBatch spriteBatch) {
             TextureRegion textureRegion = textureAtlasProvider.getTexture(textureAtlasId, texturePath);
+            spriteBatch.setColor(color);
             spriteBatch.draw(textureRegion, x, y, width, height);
         }
 
@@ -158,6 +162,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         private float tileCountX;
         private float tileCountY;
         private float priority;
+        private Color color;
 
         @Override
         public float getPriority() {
@@ -166,35 +171,13 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
         @Override
         public void render(SpriteBatch spriteBatch) {
+            spriteBatch.setColor(color);
             spriteBatch.draw(getTexture(texturePath), x, y, width, height, 0, 0, tileCountX, tileCountY);
         }
 
         @Override
         public void freeObject() {
             tiledPool.free(this);
-        }
-    }
-
-    private class TextRenderableSprite implements RenderableSprite, Prioritable {
-        private float priority;
-        private BitmapFont bitmapFont;
-        private String text;
-        private float x;
-        private float y;
-
-        @Override
-        public float getPriority() {
-            return priority;
-        }
-
-        @Override
-        public void render(SpriteBatch spriteBatch) {
-            bitmapFont.draw(spriteBatch, text, x, y);
-        }
-
-        @Override
-        public void freeObject() {
-            textPool.free(this);
         }
     }
 
@@ -211,18 +194,16 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
     public interface SpriteSink {
         void addSprite(float priority, String textureAtlasId, String texturePath,
-                       float x, float y, float width, float height);
+                       float x, float y, float width, float height, Color color);
 
         void addTiledSprite(float priority, String texturePath,
                             float x, float y, float width, float height,
-                            float tileCountX, float tileCountY);
-
-        void renderText(float priority, BitmapFont font, String text, float x, float y);
+                            float tileCountX, float tileCountY, Color color);
     }
 
     private class SpriteSinkImpl implements SpriteSink {
         @Override
-        public void addSprite(float priority, String textureAtlasId, String texturePath, float x, float y, float width, float height) {
+        public void addSprite(float priority, String textureAtlasId, String texturePath, float x, float y, float width, float height, Color color) {
             NormalRenderableSprite sprite = normalPool.obtain();
             sprite.priority = priority;
             sprite.textureAtlasId = textureAtlasId;
@@ -231,11 +212,12 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
             sprite.y = y;
             sprite.width = width;
             sprite.height = height;
+            sprite.color = color;
             sprites.add(sprite);
         }
 
         @Override
-        public void addTiledSprite(float priority, String texturePath, float x, float y, float width, float height, float tileCountX, float tileCountY) {
+        public void addTiledSprite(float priority, String texturePath, float x, float y, float width, float height, float tileCountX, float tileCountY, Color color) {
             TiledRenderableSprite sprite = tiledPool.obtain();
             sprite.priority = priority;
             sprite.texturePath = texturePath;
@@ -245,17 +227,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
             sprite.height = height;
             sprite.tileCountX = tileCountX;
             sprite.tileCountY = tileCountY;
-            sprites.add(sprite);
-        }
-
-        @Override
-        public void renderText(float priority, BitmapFont font, String text, float x, float y) {
-            TextRenderableSprite sprite = textPool.obtain();
-            sprite.priority = priority;
-            sprite.bitmapFont = font;
-            sprite.text = text;
-            sprite.x = x;
-            sprite.y = y;
+            sprite.color = color;
             sprites.add(sprite);
         }
     }
@@ -271,13 +243,6 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         @Override
         protected TiledRenderableSprite newObject() {
             return new TiledRenderableSprite();
-        }
-    }
-
-    private class TextRenderableSpritePool extends Pool<TextRenderableSprite> {
-        @Override
-        protected TextRenderableSprite newObject() {
-            return new TextRenderableSprite();
         }
     }
 }

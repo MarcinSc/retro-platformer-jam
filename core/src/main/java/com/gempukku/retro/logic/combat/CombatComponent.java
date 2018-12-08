@@ -14,4 +14,8 @@ public interface CombatComponent extends Component {
     int getMeleeDamage();
 
     void setMeleeDamage(int meleeDamage);
+
+    float getMeleeX();
+
+    float getMeleeY();
 }

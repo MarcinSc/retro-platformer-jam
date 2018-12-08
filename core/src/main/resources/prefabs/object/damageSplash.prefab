@@ -1,0 +1,12 @@
+{
+  "Position2D": {},
+  "FadingSprite": {
+    "fileName": "images/damageSplash.png",
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.2,
+    "down": -0.2,
+    "priority": -0.5,
+    "effectDuration": 300
+  }
+}

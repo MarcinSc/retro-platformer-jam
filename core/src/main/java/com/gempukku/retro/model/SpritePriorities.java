@@ -6,5 +6,6 @@ public class SpritePriorities {
     public static final float PLATFORM = 1;
 
     public static final float ENEMIES = 0;
+    public static final float DAMAGE = -0.5f;
     public static final float PLAYER = -1;
 }
