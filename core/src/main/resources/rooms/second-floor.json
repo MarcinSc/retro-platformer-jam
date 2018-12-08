@@ -36,7 +36,7 @@
   ],
   "objects": [
     {
-      "prefab": "level0Background",
+      "prefab": "entranceBackground",
       "x": 0,
       "y": 0
     },

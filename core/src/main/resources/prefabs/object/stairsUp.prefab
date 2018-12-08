@@ -17,7 +17,7 @@
     "up": 0.6
   },
   "ActivateWithBodyContact": {},
-  "LoadLevelOnActivate": {
-    "levelPath": "levels/second-floor.json"
+  "LoadRoomOnActivate": {
+    "roomPath": "rooms/second-floor.json"
   }
 }

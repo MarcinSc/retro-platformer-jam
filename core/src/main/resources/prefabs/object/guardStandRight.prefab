@@ -63,8 +63,8 @@
   },
   "MeleeTarget": {},
   "Health": {
-    "maxHealth": 5,
-    "currentHealth": 5
+    "maxHealth": 10,
+    "currentHealth": 10
   },
   "DestroyOnDeath": {},
   "AI": {

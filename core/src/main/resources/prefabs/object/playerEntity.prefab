@@ -59,7 +59,7 @@
   "AffectedByGravity": {},
   "Combat": {
     "meleeCoolDown": 200,
-    "meleeDamage": 2,
+    "meleeDamage": 1,
     "meleeX": 0.125,
     "meleeY": 0.175
   },
@@ -70,6 +70,7 @@
   },
   "Vulnerable": {},
   "TemporarilyInvulnerable": {
+    "effectStart": -1000,
     "effectDuration": 1000
   }
 }

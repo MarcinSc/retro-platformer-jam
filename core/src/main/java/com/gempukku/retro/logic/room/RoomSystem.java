@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.level;
+package com.gempukku.retro.logic.room;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,7 +33,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 @RegisterSystem
-public class LevelSystem extends AbstractLifeCycleSystem {
+public class RoomSystem extends AbstractLifeCycleSystem {
     @Inject
     private GameEntityProvider gameEntityProvider;
 
@@ -43,28 +43,28 @@ public class LevelSystem extends AbstractLifeCycleSystem {
     @Inject
     private EntityManager entityManager;
 
-    private boolean levelLoaded = false;
+    private boolean roomLoaded = false;
 
     @ReceiveEvent
     public void update(GameLoopUpdate update) {
-        if (!levelLoaded) {
-            loadLevel();
-            levelLoaded = true;
+        if (!roomLoaded) {
+            loadRoom();
+            roomLoaded = true;
         }
     }
 
     @ReceiveEvent
-    public void processLoadLevel(LoadLevel loadLevel) {
-        unloadLevelEntities();
-        loadLevel(loadLevel.getLevelPath());
+    public void processLoadRoom(LoadRoom loadRoom) {
+        unloadRoomEntities();
+        loadRoom(loadRoom.getRoomPath());
     }
 
-    private void loadLevel() {
+    private void loadRoom() {
         entityManager.createEntityFromPrefab("playerEntity");
 
-        // Level size in units is 4 units / 3 units
+        // Room size in units is 4 units / 3 units
 
-        loadLevel("levels/entrance.json");
+        loadRoom("rooms/entrance.json");
     }
 
     private boolean reloadPressed;
@@ -73,11 +73,11 @@ public class LevelSystem extends AbstractLifeCycleSystem {
     private boolean mouse2Pressed;
 
     @ReceiveEvent
-    public void reloadLevel(GameLoopUpdate update) {
+    public void reloadRoom(GameLoopUpdate update) {
         if (Gdx.input.isKeyPressed(RELOAD_KEY) && !reloadPressed) {
-            unloadLevelEntities();
+            unloadRoomEntities();
 
-            loadLevel("levels/level.json");
+            loadRoom("rooms/room.json");
 
             reloadPressed = true;
         } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
@@ -87,12 +87,12 @@ public class LevelSystem extends AbstractLifeCycleSystem {
 
     @ReceiveEvent
     public void playerDied(EntityDied entityDied, EntityRef entity, PlayerComponent player) {
-        LevelComponent level = gameEntityProvider.getGameEntity().getComponent(LevelComponent.class);
-        unloadLevelEntities();
-        loadLevel(level.getLevel());
+        RoomComponent room = gameEntityProvider.getGameEntity().getComponent(RoomComponent.class);
+        unloadRoomEntities();
+        loadRoom(room.getRoom());
     }
 
-    private void unloadLevelEntities() {
+    private void unloadRoomEntities() {
         for (EntityRef entityRef : entityManager.getAllEntities()) {
             if (!entityRef.hasComponent(GlobalEntityComponent.class)
                     && !entityRef.hasComponent(PlayerComponent.class))
@@ -157,7 +157,7 @@ public class LevelSystem extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void saveLevel(GameLoopUpdate update) throws UnsupportedEncodingException {
+    public void saveRoom(GameLoopUpdate update) throws UnsupportedEncodingException {
         if (Gdx.input.isKeyPressed(SAVE_KEY) && !serializePressed) {
             JSONObject result = new JSONObject();
             JSONArray platforms = new JSONArray();
@@ -188,7 +188,7 @@ public class LevelSystem extends AbstractLifeCycleSystem {
             }
             result.put("pickups", pickups);
 
-            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/levels/level.json").write(
+            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/rooms/room.json").write(
                     new ByteArrayInputStream(result.toJSONString().getBytes("UTF-8")), false);
 
             serializePressed = true;
@@ -197,14 +197,14 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         }
     }
 
-    private void loadLevel(String levelFile) {
+    private void loadRoom(String roomFile) {
         EntityRef gameEntity = gameEntityProvider.getGameEntity();
-        LevelComponent levelComp = gameEntity.getComponent(LevelComponent.class);
-        levelComp.setLevel(levelFile);
+        RoomComponent roomComp = gameEntity.getComponent(RoomComponent.class);
+        roomComp.setRoom(roomFile);
         gameEntity.saveChanges();
 
-        JSONObject level = loadJSON(levelFile);
-        JSONObject entry = (JSONObject) level.get("entry");
+        JSONObject room = loadJSON(roomFile);
+        JSONObject entry = (JSONObject) room.get("entry");
         for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
             Position2DComponent position = player.getComponent(Position2DComponent.class);
             position.setX(getFloat(entry, "x"));
@@ -212,9 +212,9 @@ public class LevelSystem extends AbstractLifeCycleSystem {
             player.saveChanges();
         }
 
-        JSONArray platformArray = (JSONArray) level.get("platforms");
-        JSONArray pickupsArray = (JSONArray) level.get("pickups");
-        JSONArray objectsArray = (JSONArray) level.get("objects");
+        JSONArray platformArray = (JSONArray) room.get("platforms");
+        JSONArray pickupsArray = (JSONArray) room.get("pickups");
+        JSONArray objectsArray = (JSONArray) room.get("objects");
 
         for (Object platform : platformArray) {
             JSONObject platformObj = (JSONObject) platform;
@@ -237,16 +237,16 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         return ((Number) object.get(key)).floatValue();
     }
 
-    private JSONObject loadJSON(String levelFile) {
-        FileHandle file = Gdx.files.internal(levelFile);
+    private JSONObject loadJSON(String roomFile) {
+        FileHandle file = Gdx.files.internal(roomFile);
         JSONParser jsonParser = new JSONParser();
         Reader reader = file.reader("UTF-8");
         try {
             return (JSONObject) jsonParser.parse(reader);
         } catch (IOException exp) {
-            throw new RuntimeException("Unable to load level", exp);
+            throw new RuntimeException("Unable to load room", exp);
         } catch (ParseException exp) {
-            throw new RuntimeException("Unable to load level", exp);
+            throw new RuntimeException("Unable to load room", exp);
         } finally {
             IOUtils.closeQuietly(reader);
         }

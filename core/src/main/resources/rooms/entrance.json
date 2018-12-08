@@ -36,13 +36,18 @@
   ],
   "objects": [
     {
-      "prefab": "level0Background",
+      "prefab": "entranceBackground",
       "x": 0,
       "y": 0
     },
     {
       "prefab": "closedElevator",
       "x": 0.2,
+      "y": 0
+    },
+    {
+      "prefab": "receptionist",
+      "x": -0.9,
       "y": 0
     },
     {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.gempukku.retro.logic.room.LoadRoom;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -38,6 +39,11 @@ public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
         parameter.color = Color.WHITE;
         textFont = generator.generateFont(parameter);
         generator.dispose();
+    }
+
+    @ReceiveEvent
+    public void loadRoom(LoadRoom loadRoom) {
+        text = null;
     }
 
     @ReceiveEvent

@@ -1,0 +1,12 @@
+{
+  "Position2D": {},
+  "BodyTriggeredTextDisplaying": {
+    "displayText": "YES?",
+    "y": 0.7
+  },
+  "SensorTrigger": {
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  }
+}

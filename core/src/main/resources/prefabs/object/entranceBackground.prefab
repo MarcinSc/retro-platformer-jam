@@ -1,7 +1,7 @@
 {
   "Position2D": {},
   "Sprite": {
-    "fileName": "images/level0Background.png",
+    "fileName": "images/entranceBackground.png",
     "priority": 3,
     "left": -1.2,
     "right": 1.2,
