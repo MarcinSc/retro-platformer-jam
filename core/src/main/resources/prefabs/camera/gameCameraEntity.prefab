@@ -12,5 +12,6 @@
   "GenesisCamera": {
     "objectPixelHeight": 16,
     "objectUnitHeight": 0.2
-  }
+  },
+  "ColorTint": {}
 }

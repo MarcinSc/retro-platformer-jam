@@ -62,5 +62,9 @@
     "meleeCoolDown": 200,
     "meleeDamage": 2
   },
-  "MeleeTarget": {}
+  "MeleeTarget": {},
+  "Health": {
+    "maxHealth": 5,
+    "currentHealth": 5
+  }
 }

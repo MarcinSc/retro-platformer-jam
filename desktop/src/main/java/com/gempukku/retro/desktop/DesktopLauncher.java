@@ -37,6 +37,7 @@ public class DesktopLauncher {
         activeProfiles.add("delayActions");
         activeProfiles.add("sprites");
         activeProfiles.add("genesisSimulation");
+        activeProfiles.add("colorTint");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.fullscreen = Boolean.parseBoolean(arg[0]);
