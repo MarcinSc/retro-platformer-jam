@@ -1,5 +1,11 @@
 {
-  "Player": {},
+  "Player": {
+    "fileName": "images/player.png",
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.3,
+    "priority": -1
+  },
   "ControlledByInput": {
     "moveSpeed": 2,
     "jumpSpeed": 3.5
@@ -33,7 +39,7 @@
       },
       {
         "type": "attackLeft",
-        "left": -0.15,
+        "left": -0.2,
         "right": -0.10,
         "up": 0.3,
         "down": 0.05
@@ -41,18 +47,11 @@
       {
         "type": "attackRight",
         "left": 0.10,
-        "right": 0.15,
+        "right": 0.2,
         "up": 0.3,
         "down": 0.05
       }
     ]
-  },
-  "Sprite": {
-    "fileName": "images/player.png",
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3,
-    "priority": -1
   },
   "CameraTracked": {
     "y": 0.2
@@ -68,5 +67,9 @@
   "Health": {
     "maxHealth": 5,
     "currentHealth": 5
+  },
+  "Vulnerable": {},
+  "TemporarilyInvulnerable": {
+    "effectDuration": 1000
   }
 }

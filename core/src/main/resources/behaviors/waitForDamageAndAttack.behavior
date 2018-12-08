@@ -1,0 +1,16 @@
+{
+  "type": "Sequence",
+  "tasks": [
+    {
+      "type": "WaitForAnyDamage"
+    },
+    {
+      "type": "Aggro",
+      "damageAmount": 5
+    },
+    {
+      "type": "Import",
+      "behavior": "patrolEndlessly"
+    }
+  ]
+}

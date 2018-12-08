@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.gempukku.retro.logic.combat.EntityDied;
 import com.gempukku.retro.model.*;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -12,6 +13,7 @@ import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.component.Bounds2DComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
@@ -25,11 +27,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 @RegisterSystem
 public class LevelSystem extends AbstractLifeCycleSystem {
+    @Inject
+    private GameEntityProvider gameEntityProvider;
+
     public static final int RELOAD_KEY = Input.Keys.R;
     public static final int SAVE_KEY = Input.Keys.T;
 
@@ -76,6 +83,13 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
             reloadPressed = false;
         }
+    }
+
+    @ReceiveEvent
+    public void playerDied(EntityDied entityDied, EntityRef entity, PlayerComponent player) {
+        LevelComponent level = gameEntityProvider.getGameEntity().getComponent(LevelComponent.class);
+        unloadLevelEntities();
+        loadLevel(level.getLevel());
     }
 
     private void unloadLevelEntities() {
@@ -142,48 +156,53 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         return result;
     }
 
-//    @ReceiveEvent
-//    public void saveLevel(GameLoopUpdate update) throws UnsupportedEncodingException {
-//        if (Gdx.input.isKeyPressed(SAVE_KEY) && !serializePressed) {
-//            JSONObject result = new JSONObject();
-//            JSONArray platforms = new JSONArray();
-//            for (EntityRef platformEntity : entityManager.getEntitiesWithComponents(PlatformComponent.class)) {
-//                Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
-//                PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
-//                PrefabComponent prefab = platformEntity.getComponent(PrefabComponent.class);
-//                JSONObject plObj = new JSONObject();
-//                plObj.put("prefab", prefab.getPrefab());
-//                plObj.put("x", position.getX());
-//                plObj.put("y", position.getY());
-//                plObj.put("width", platform.getRight());
-//                plObj.put("height", -platform.getDown());
-//
-//                platforms.add(plObj);
-//            }
-//            result.put("platforms", platforms);
-//            JSONArray pickups = new JSONArray();
-//            for (EntityRef pickupEntity : entityManager.getEntitiesWithComponents(PickupComponent.class)) {
-//                Position2DComponent position = pickupEntity.getComponent(Position2DComponent.class);
-//                PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
-//                JSONObject pickupObj = new JSONObject();
-//                pickupObj.put("type", pickup.getType());
-//                pickupObj.put("x", position.getX());
-//                pickupObj.put("y", position.getY());
-//
-//                pickups.add(pickupObj);
-//            }
-//            result.put("pickups", pickups);
-//
-//            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/levels/level.json").write(
-//                    new ByteArrayInputStream(result.toJSONString().getBytes("UTF-8")), false);
-//
-//            serializePressed = true;
-//        } else if (!Gdx.input.isKeyPressed(SAVE_KEY)) {
-//            serializePressed = false;
-//        }
-//    }
+    @ReceiveEvent
+    public void saveLevel(GameLoopUpdate update) throws UnsupportedEncodingException {
+        if (Gdx.input.isKeyPressed(SAVE_KEY) && !serializePressed) {
+            JSONObject result = new JSONObject();
+            JSONArray platforms = new JSONArray();
+            for (EntityRef platformEntity : entityManager.getEntitiesWithComponents(PlatformComponent.class)) {
+                Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
+                PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
+                PrefabComponent prefab = platformEntity.getComponent(PrefabComponent.class);
+                JSONObject plObj = new JSONObject();
+                plObj.put("prefab", prefab.getPrefab());
+                plObj.put("x", position.getX());
+                plObj.put("y", position.getY());
+                plObj.put("width", platform.getRight());
+                plObj.put("height", -platform.getDown());
+
+                platforms.add(plObj);
+            }
+            result.put("platforms", platforms);
+            JSONArray pickups = new JSONArray();
+            for (EntityRef pickupEntity : entityManager.getEntitiesWithComponents(PickupComponent.class)) {
+                Position2DComponent position = pickupEntity.getComponent(Position2DComponent.class);
+                PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
+                JSONObject pickupObj = new JSONObject();
+                pickupObj.put("type", pickup.getType());
+                pickupObj.put("x", position.getX());
+                pickupObj.put("y", position.getY());
+
+                pickups.add(pickupObj);
+            }
+            result.put("pickups", pickups);
+
+            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/levels/level.json").write(
+                    new ByteArrayInputStream(result.toJSONString().getBytes("UTF-8")), false);
+
+            serializePressed = true;
+        } else if (!Gdx.input.isKeyPressed(SAVE_KEY)) {
+            serializePressed = false;
+        }
+    }
 
     private void loadLevel(String levelFile) {
+        EntityRef gameEntity = gameEntityProvider.getGameEntity();
+        LevelComponent levelComp = gameEntity.getComponent(LevelComponent.class);
+        levelComp.setLevel(levelFile);
+        gameEntity.saveChanges();
+
         JSONObject level = loadJSON(levelFile);
         JSONObject entry = (JSONObject) level.get("entry");
         for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {

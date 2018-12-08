@@ -1,6 +1,6 @@
 package com.gempukku.retro.model;
 
-import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 
-public interface PlayerComponent extends Component {
+public interface PlayerComponent extends SpriteComponent {
 }

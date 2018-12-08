@@ -8,10 +8,12 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
+import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.postprocess.tint.color.ColorTintComponent;
 import com.gempukku.secsy.gaming.time.TimeManager;
@@ -27,6 +29,9 @@ public class CombatSystem {
     private Basic2dPhysics basic2dPhysics;
     @Inject
     private CameraEntityProvider cameraEntityProvider;
+    @Inject
+    private GameEntityProvider gameEntityProvider;
+
     @Inject
     private TimeManager timeManager;
     @Inject
@@ -46,11 +51,27 @@ public class CombatSystem {
                 return entityRef.hasComponent(MeleeTargetComponent.class);
             }
         })) {
-            attackedEntity.send(new DamageDealt(entity, combat.getMeleeDamage()));
+            attackedEntity.send(new EntityDamaged(entity, combat.getMeleeDamage()));
 
             float x = attackerPosition.getX() + combat.getMeleeX() * (facingRight ? 1 : -1);
             float y = attackerPosition.getY() + combat.getMeleeY();
             spawnDamageSplash(x, y);
+        }
+    }
+
+    @ReceiveEvent
+    public void vulnerableDamaged(SensorContactBegin contact, EntityRef entity, VulnerableComponent vulnerable, TemporarilyInvulnerableComponent temporarilyInvulnerable) {
+        if (contact.getSensorType().equals("body")) {
+            EntityRef sensorTrigger = contact.getSensorTrigger();
+            CausesVulnerabilityComponent cause = sensorTrigger.getComponent(CausesVulnerabilityComponent.class);
+            if (sensorTrigger.hasComponent(CausesVulnerabilityComponent.class)) {
+                long time = timeManager.getTime();
+                long effectStart = temporarilyInvulnerable.getEffectStart();
+                long effectDuration = temporarilyInvulnerable.getEffectDuration();
+                if (effectStart > time || time >= effectStart + effectDuration) {
+                    entity.send(new EntityDamaged(sensorTrigger, cause.getDamageAmount()));
+                }
+            }
         }
     }
 
@@ -78,9 +99,9 @@ public class CombatSystem {
     }
 
     @ReceiveEvent
-    public void entityDealtDamage(DamageDealt damageDealt, EntityRef entity, HealthComponent health) {
+    public void entityDealtDamage(EntityDamaged entityDamaged, EntityRef entity, HealthComponent health) {
         int currentHealth = health.getCurrentHealth();
-        int damage = damageDealt.getAmount();
+        int damage = entityDamaged.getAmount();
         if (damage >= currentHealth) {
             entity.send(new EntityDied());
         } else {
@@ -95,7 +116,12 @@ public class CombatSystem {
     }
 
     @ReceiveEvent
-    public void playerIsDealtDamage(DamageDealt damageDealt, EntityRef entity, PlayerComponent player) {
+    public void playerIsDealtDamage(EntityDamaged entityDamaged, EntityRef entity, PlayerComponent player, TemporarilyInvulnerableComponent invulnerable) {
+        long time = timeManager.getTime();
+        invulnerable.setEffectStart(time);
+
+        entity.saveChanges();
+
         applyCameraEffect();
     }
 
