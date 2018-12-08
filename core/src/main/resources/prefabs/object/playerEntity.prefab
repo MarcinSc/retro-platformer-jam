@@ -9,7 +9,7 @@
   "CollidingBody": {
     "left": -0.1,
     "right": 0.1,
-    "up": 0.4
+    "up": 0.3
   },
   "Grounded": {},
   "HorizontalOrientation": {
@@ -28,7 +28,7 @@
         "type": "body",
         "left": -0.08,
         "right": 0.08,
-        "up": 0.38,
+        "up": 0.28,
         "down": 0.02
       }
     ]
@@ -37,7 +37,7 @@
     "fileName": "images/player.png",
     "left": -0.1,
     "right": 0.1,
-    "up": 0.4,
+    "up": 0.3,
     "priority": 0
   },
   "CameraTracked": {
