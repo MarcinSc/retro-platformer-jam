@@ -15,6 +15,8 @@ import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.postprocess.tint.color.ColorTintComponent;
 import com.gempukku.secsy.gaming.time.TimeManager;
+import com.gempukku.secsy.gaming.time.delay.DelayManager;
+import com.gempukku.secsy.gaming.time.delay.DelayedActionTriggeredEvent;
 import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;
@@ -29,6 +31,8 @@ public class CombatSystem {
     private TimeManager timeManager;
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private DelayManager delayManager;
 
     @ReceiveEvent
     public void entityMeleeAttacked(EntityMeleeAttacked attacked, EntityRef entity, HorizontalOrientationComponent orientation,
@@ -55,12 +59,22 @@ public class CombatSystem {
 
         FadingSpriteComponent fading = damageSplash.getComponent(FadingSpriteComponent.class);
         fading.setEffectStart(timeManager.getTime());
+        long effectDuration = fading.getEffectDuration();
 
         Position2DComponent position = damageSplash.getComponent(Position2DComponent.class);
         position.setX(x);
         position.setY(y);
 
         damageSplash.saveChanges();
+
+        delayManager.addDelayedAction(damageSplash, "destroyEntity", effectDuration);
+    }
+
+    @ReceiveEvent
+    public void destroyEntity(DelayedActionTriggeredEvent trigger, EntityRef entity) {
+        if (trigger.getActionId().equals("destroyEntity")) {
+            entityManager.destroyEntity(entity);
+        }
     }
 
     @ReceiveEvent
