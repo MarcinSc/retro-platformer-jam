@@ -1,0 +1,23 @@
+{
+  "Position2D": {},
+  "BodyTriggeredTextDisplaying": {
+    "displayText": "Go up",
+    "y": 0.7
+  },
+  "Sprite": {
+    "fileName": "images/stairs-up.png",
+    "priority": 2,
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  },
+  "SensorTrigger": {
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  },
+  "ActivateWithBodyContact": {},
+  "LoadLevelOnActivate": {
+    "levelPath": "levels/second-floor.json"
+  }
+}

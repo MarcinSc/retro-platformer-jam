@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic;
+package com.gempukku.retro.logic.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -25,10 +25,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 
 @RegisterSystem
 public class LevelSystem extends AbstractLifeCycleSystem {
@@ -48,12 +46,18 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         }
     }
 
+    @ReceiveEvent
+    public void processLoadLevel(LoadLevel loadLevel) {
+        unloadLevelEntities();
+        loadLevel(loadLevel.getLevelPath());
+    }
+
     private void loadLevel() {
         entityManager.createEntityFromPrefab("playerEntity");
 
         // Level size in units is 4 units / 3 units
 
-        loadLevel("levels/level.json");
+        loadLevel("levels/entrance.json");
     }
 
     private boolean reloadPressed;
@@ -64,17 +68,21 @@ public class LevelSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent
     public void reloadLevel(GameLoopUpdate update) {
         if (Gdx.input.isKeyPressed(RELOAD_KEY) && !reloadPressed) {
-            for (EntityRef entityRef : entityManager.getAllEntities()) {
-                if (!entityRef.hasComponent(GlobalEntityComponent.class)
-                        && !entityRef.hasComponent(PlayerComponent.class))
-                    entityManager.destroyEntity(entityRef);
-            }
+            unloadLevelEntities();
 
             loadLevel("levels/level.json");
 
             reloadPressed = true;
         } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
             reloadPressed = false;
+        }
+    }
+
+    private void unloadLevelEntities() {
+        for (EntityRef entityRef : entityManager.getAllEntities()) {
+            if (!entityRef.hasComponent(GlobalEntityComponent.class)
+                    && !entityRef.hasComponent(PlayerComponent.class))
+                entityManager.destroyEntity(entityRef);
         }
     }
 
@@ -111,6 +119,14 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         }
     }
 
+    private void createEntityAtPosition(String prefab, float x, float y) {
+        EntityRef entity = entityManager.createEntityFromPrefab(prefab);
+        Position2DComponent position = entity.getComponent(Position2DComponent.class);
+        position.setX(x);
+        position.setY(y);
+        entity.saveChanges();
+    }
+
     private EntityRef findClosestPlatform(float x, float y) {
         float shortestDistance = Float.MAX_VALUE;
         EntityRef result = null;
@@ -126,51 +142,60 @@ public class LevelSystem extends AbstractLifeCycleSystem {
         return result;
     }
 
-    @ReceiveEvent
-    public void saveLevel(GameLoopUpdate update) throws UnsupportedEncodingException {
-        if (Gdx.input.isKeyPressed(SAVE_KEY) && !serializePressed) {
-            JSONObject result = new JSONObject();
-            JSONArray platforms = new JSONArray();
-            for (EntityRef platformEntity : entityManager.getEntitiesWithComponents(PlatformComponent.class)) {
-                Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
-                PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
-                PrefabComponent prefab = platformEntity.getComponent(PrefabComponent.class);
-                JSONObject plObj = new JSONObject();
-                plObj.put("prefab", prefab.getPrefab());
-                plObj.put("x", position.getX());
-                plObj.put("y", position.getY());
-                plObj.put("width", platform.getRight());
-                plObj.put("height", -platform.getDown());
-
-                platforms.add(plObj);
-            }
-            result.put("platforms", platforms);
-            JSONArray pickups = new JSONArray();
-            for (EntityRef pickupEntity : entityManager.getEntitiesWithComponents(PickupComponent.class)) {
-                Position2DComponent position = pickupEntity.getComponent(Position2DComponent.class);
-                PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
-                JSONObject pickupObj = new JSONObject();
-                pickupObj.put("type", pickup.getType());
-                pickupObj.put("x", position.getX());
-                pickupObj.put("y", position.getY());
-
-                pickups.add(pickupObj);
-            }
-            result.put("pickups", pickups);
-
-            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/levels/level.json").write(
-                    new ByteArrayInputStream(result.toJSONString().getBytes("UTF-8")), false);
-
-            serializePressed = true;
-        } else if (!Gdx.input.isKeyPressed(SAVE_KEY)) {
-            serializePressed = false;
-        }
-    }
+//    @ReceiveEvent
+//    public void saveLevel(GameLoopUpdate update) throws UnsupportedEncodingException {
+//        if (Gdx.input.isKeyPressed(SAVE_KEY) && !serializePressed) {
+//            JSONObject result = new JSONObject();
+//            JSONArray platforms = new JSONArray();
+//            for (EntityRef platformEntity : entityManager.getEntitiesWithComponents(PlatformComponent.class)) {
+//                Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
+//                PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
+//                PrefabComponent prefab = platformEntity.getComponent(PrefabComponent.class);
+//                JSONObject plObj = new JSONObject();
+//                plObj.put("prefab", prefab.getPrefab());
+//                plObj.put("x", position.getX());
+//                plObj.put("y", position.getY());
+//                plObj.put("width", platform.getRight());
+//                plObj.put("height", -platform.getDown());
+//
+//                platforms.add(plObj);
+//            }
+//            result.put("platforms", platforms);
+//            JSONArray pickups = new JSONArray();
+//            for (EntityRef pickupEntity : entityManager.getEntitiesWithComponents(PickupComponent.class)) {
+//                Position2DComponent position = pickupEntity.getComponent(Position2DComponent.class);
+//                PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
+//                JSONObject pickupObj = new JSONObject();
+//                pickupObj.put("type", pickup.getType());
+//                pickupObj.put("x", position.getX());
+//                pickupObj.put("y", position.getY());
+//
+//                pickups.add(pickupObj);
+//            }
+//            result.put("pickups", pickups);
+//
+//            Gdx.files.absolute("/Users/marcin.sciesinski/private/retro-platformer-jam/core/src/main/resources/levels/level.json").write(
+//                    new ByteArrayInputStream(result.toJSONString().getBytes("UTF-8")), false);
+//
+//            serializePressed = true;
+//        } else if (!Gdx.input.isKeyPressed(SAVE_KEY)) {
+//            serializePressed = false;
+//        }
+//    }
 
     private void loadLevel(String levelFile) {
         JSONObject level = loadJSON(levelFile);
+        JSONObject entry = (JSONObject) level.get("entry");
+        for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
+            Position2DComponent position = player.getComponent(Position2DComponent.class);
+            position.setX(getFloat(entry, "x"));
+            position.setY(getFloat(entry, "y"));
+            player.saveChanges();
+        }
+
         JSONArray platformArray = (JSONArray) level.get("platforms");
         JSONArray pickupsArray = (JSONArray) level.get("pickups");
+        JSONArray objectsArray = (JSONArray) level.get("objects");
 
         for (Object platform : platformArray) {
             JSONObject platformObj = (JSONObject) platform;
@@ -181,6 +206,11 @@ public class LevelSystem extends AbstractLifeCycleSystem {
             JSONObject pickupObj = (JSONObject) pickup;
             createPickup((String) pickupObj.get("type"), (String) pickupObj.get("image"),
                     getFloat(pickupObj, "x"), getFloat(pickupObj, "y"));
+        }
+        for (Object object : objectsArray) {
+            JSONObject objectObj = (JSONObject) object;
+            createEntityAtPosition((String) objectObj.get("prefab"),
+                    getFloat(objectObj, "x"), getFloat(objectObj, "y"));
         }
     }
 

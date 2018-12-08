@@ -1,0 +1,19 @@
+{
+  "Position2D": {},
+  "BodyTriggeredTextDisplaying": {
+    "displayText": "You need keycard",
+    "y": 0.7
+  },
+  "Sprite": {
+    "fileName": "images/elevator.png",
+    "priority": 2,
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  },
+  "SensorTrigger": {
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  }
+}

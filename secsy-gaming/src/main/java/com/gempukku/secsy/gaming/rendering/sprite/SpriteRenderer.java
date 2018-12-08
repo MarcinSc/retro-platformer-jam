@@ -3,6 +3,7 @@ package com.gempukku.secsy.gaming.rendering.sprite;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
@@ -42,6 +43,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
     private NormalRenderableSpritePool normalPool = new NormalRenderableSpritePool();
     private TiledRenderableSpritePool tiledPool = new TiledRenderableSpritePool();
+    private TextRenderableSpritePool textPool = new TextRenderableSpritePool();
 
     @Override
     public void initialize() {
@@ -173,6 +175,29 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         }
     }
 
+    private class TextRenderableSprite implements RenderableSprite, Prioritable {
+        private float priority;
+        private BitmapFont bitmapFont;
+        private String text;
+        private float x;
+        private float y;
+
+        @Override
+        public float getPriority() {
+            return priority;
+        }
+
+        @Override
+        public void render(SpriteBatch spriteBatch) {
+            bitmapFont.draw(spriteBatch, text, x, y);
+        }
+
+        @Override
+        public void freeObject() {
+            textPool.free(this);
+        }
+    }
+
     private Texture getTexture(String texturePath) {
         Texture texture = tiledTextures.get(texturePath);
         if (texture == null) {
@@ -191,6 +216,8 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         void addTiledSprite(float priority, String texturePath,
                             float x, float y, float width, float height,
                             float tileCountX, float tileCountY);
+
+        void renderText(float priority, BitmapFont font, String text, float x, float y);
     }
 
     private class SpriteSinkImpl implements SpriteSink {
@@ -220,6 +247,17 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
             sprite.tileCountY = tileCountY;
             sprites.add(sprite);
         }
+
+        @Override
+        public void renderText(float priority, BitmapFont font, String text, float x, float y) {
+            TextRenderableSprite sprite = textPool.obtain();
+            sprite.priority = priority;
+            sprite.bitmapFont = font;
+            sprite.text = text;
+            sprite.x = x;
+            sprite.y = y;
+            sprites.add(sprite);
+        }
     }
 
     private class NormalRenderableSpritePool extends Pool<NormalRenderableSprite> {
@@ -233,6 +271,13 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         @Override
         protected TiledRenderableSprite newObject() {
             return new TiledRenderableSprite();
+        }
+    }
+
+    private class TextRenderableSpritePool extends Pool<TextRenderableSprite> {
+        @Override
+        protected TextRenderableSprite newObject() {
+            return new TextRenderableSprite();
         }
     }
 }

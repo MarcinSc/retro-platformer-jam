@@ -39,7 +39,7 @@ public class DesktopLauncher {
         activeProfiles.add("genesisSimulation");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.fullscreen = false;
+        config.fullscreen = Boolean.parseBoolean(arg[0]);
         config.resizable = false;
         config.width = 640;
         config.height = 480;
