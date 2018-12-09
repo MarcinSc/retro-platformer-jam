@@ -3,7 +3,7 @@ package com.gempukku.retro.logic.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.gempukku.retro.logic.combat.CombatComponent;
-import com.gempukku.retro.logic.combat.EntityMeleeAttacked;
+import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -59,12 +59,10 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
         if (attack && !attackPressed) {
             for (EntityRef playerEntity : players) {
                 CombatComponent combat = playerEntity.getComponent(CombatComponent.class);
-                long lastMeleeAttacked = combat.getLastMeleeAttacked();
-                long meleeCoolDown = combat.getMeleeCoolDown();
-                if (time > lastMeleeAttacked + meleeCoolDown) {
-                    combat.setLastMeleeAttacked(time);
-                    playerEntity.saveChanges();
-                    playerEntity.send(new EntityMeleeAttacked());
+                long nextAttackTime = combat.getNextAttackTime();
+
+                if (time >= nextAttackTime) {
+                    playerEntity.send(new EntityAttacked());
                 }
             }
 

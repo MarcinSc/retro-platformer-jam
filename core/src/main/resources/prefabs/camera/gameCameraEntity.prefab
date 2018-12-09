@@ -3,12 +3,7 @@
   "Camera2D": {},
   "ScreenShakeCamera": {},
   "TrackingCamera": {},
-  "ClampCamera": {
-    "minX": -2,
-    "maxX": 2,
-    "minY": -1,
-    "maxY": 2
-  },
+  "ClampCamera": {},
   "GenesisCamera": {
     "objectPixelHeight": 16,
     "objectUnitHeight": 0.2

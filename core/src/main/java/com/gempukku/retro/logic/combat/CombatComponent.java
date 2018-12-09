@@ -3,19 +3,7 @@ package com.gempukku.retro.logic.combat;
 import com.gempukku.secsy.entity.Component;
 
 public interface CombatComponent extends Component {
-    long getLastMeleeAttacked();
+    long getNextAttackTime();
 
-    void setLastMeleeAttacked(long lastMeleeAttacked);
-
-    long getMeleeCoolDown();
-
-    void setMeleeCoolDown(long meleeCoolDown);
-
-    int getMeleeDamage();
-
-    void setMeleeDamage(int meleeDamage);
-
-    float getMeleeX();
-
-    float getMeleeY();
+    void setNextAttackTime(long nextAttackTime);
 }

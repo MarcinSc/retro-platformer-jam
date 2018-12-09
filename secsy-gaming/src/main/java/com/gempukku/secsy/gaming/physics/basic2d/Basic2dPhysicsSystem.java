@@ -56,6 +56,31 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     }
 
     @Override
+    public Iterable<EntityRef> getSensorTriggersFor(EntityRef sensorEntity, String sensorType,
+                                                    float minX, float maxX, float minY, float maxY,
+                                                    Predicate<EntityRef> sensorTriggerPredicate) {
+        List<EntityRef> result = new LinkedList<EntityRef>();
+        for (SensorTrigger sensorTrigger : sensorTriggers.values()) {
+            if (collisionFilter != null) {
+                EntityRef sensorTriggerEntity = internalEntityManager.getEntityById(sensorTrigger.entityId);
+                if (collisionFilter.canSensorContact(sensorType, sensorEntity, sensorTriggerEntity)
+                        && hasContact(minX, maxX, minY, maxY, sensorTrigger)
+                        && sensorTriggerPredicate.apply(sensorTriggerEntity)) {
+                    result.add(sensorTriggerEntity);
+                }
+            } else {
+                if (hasContact(minX, maxX, minY, maxY, sensorTrigger)) {
+                    EntityRef sensorTriggerEntity = internalEntityManager.getEntityById(sensorTrigger.entityId);
+                    if (sensorTriggerPredicate.apply(sensorTriggerEntity)) {
+                        result.add(sensorTriggerEntity);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public Iterable<EntityRef> getContactsForSensor(EntityRef sensorEntity, String type, Predicate<EntityRef> sensorTriggerPredicate) {
         Set<EntityRef> results = new HashSet<EntityRef>();
         int entityId = internalEntityManager.getEntityId(sensorEntity);
@@ -171,11 +196,10 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     }
 
     private boolean hasContact(Sensor sensor, float x, float y, SensorTrigger sensorTrigger) {
-        float x1Min = x + sensor.left;
-        float x1Max = x + sensor.right;
-        float y1Min = y + sensor.down;
-        float y1Max = y + sensor.up;
+        return hasContact(x + sensor.left, x + sensor.right, y + sensor.down, y + sensor.up, sensorTrigger);
+    }
 
+    private boolean hasContact(float x1Min, float x1Max, float y1Min, float y1Max, SensorTrigger sensorTrigger) {
         float x2Min = sensorTrigger.x + sensorTrigger.left;
         float x2Max = sensorTrigger.x + sensorTrigger.right;
         float y2Min = sensorTrigger.y + sensorTrigger.down;

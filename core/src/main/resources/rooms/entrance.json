@@ -1,4 +1,12 @@
 {
+  "cameraSettings": {
+    "clamp": {
+      "minX": -2,
+      "maxX": 2,
+      "minY": -1,
+      "maxY": 2
+    }
+  },
   "pickups": [],
   "platforms": [
     {

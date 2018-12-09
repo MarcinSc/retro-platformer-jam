@@ -1,6 +1,7 @@
 package com.gempukku.retro.logic.combat;
 
 import com.badlogic.gdx.graphics.Color;
+import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.retro.render.FadingSpriteComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -9,8 +10,6 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
-import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
-import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
@@ -19,9 +18,6 @@ import com.gempukku.secsy.gaming.rendering.postprocess.tint.color.ColorTintCompo
 import com.gempukku.secsy.gaming.time.TimeManager;
 import com.gempukku.secsy.gaming.time.delay.DelayManager;
 import com.gempukku.secsy.gaming.time.delay.DelayedActionTriggeredEvent;
-import com.google.common.base.Predicate;
-
-import javax.annotation.Nullable;
 
 @RegisterSystem
 public class CombatSystem {
@@ -38,26 +34,8 @@ public class CombatSystem {
     private EntityManager entityManager;
     @Inject
     private DelayManager delayManager;
-
-    @ReceiveEvent
-    public void entityMeleeAttacked(EntityMeleeAttacked attacked, EntityRef entity, HorizontalOrientationComponent orientation,
-                                    CombatComponent combat, Position2DComponent attackerPosition) {
-        boolean facingRight = orientation.isFacingRight();
-
-        String sensor = facingRight ? "attackRight" : "attackLeft";
-        for (EntityRef attackedEntity : basic2dPhysics.getContactsForSensor(entity, sensor, new Predicate<EntityRef>() {
-            @Override
-            public boolean apply(@Nullable EntityRef entityRef) {
-                return entityRef.hasComponent(MeleeTargetComponent.class);
-            }
-        })) {
-            attackedEntity.send(new EntityDamaged(entity, combat.getMeleeDamage()));
-
-            float x = attackerPosition.getX() + combat.getMeleeX() * (facingRight ? 1 : -1);
-            float y = attackerPosition.getY() + combat.getMeleeY();
-            spawnDamageSplash(x, y);
-        }
-    }
+    @Inject
+    private SpawnManager spawnManager;
 
     @ReceiveEvent
     public void vulnerableDamaged(SensorContactBegin contact, EntityRef entity, VulnerableComponent vulnerable, TemporarilyInvulnerableComponent temporarilyInvulnerable) {
@@ -69,22 +47,18 @@ public class CombatSystem {
                 long effectStart = temporarilyInvulnerable.getEffectStart();
                 long effectDuration = temporarilyInvulnerable.getEffectDuration();
                 if (effectStart > time || time >= effectStart + effectDuration) {
-                    entity.send(new EntityDamaged(sensorTrigger, cause.getDamageAmount()));
+                    entity.send(new EntityDamaged(sensorTrigger, null, cause.getDamageAmount()));
                 }
             }
         }
     }
 
     private void spawnDamageSplash(float x, float y) {
-        EntityRef damageSplash = entityManager.createEntityFromPrefab("damageSplash");
+        EntityRef damageSplash = spawnManager.spawnEntityAt("damageSplash", x, y);
 
         FadingSpriteComponent fading = damageSplash.getComponent(FadingSpriteComponent.class);
         fading.setEffectStart(timeManager.getTime());
         long effectDuration = fading.getEffectDuration();
-
-        Position2DComponent position = damageSplash.getComponent(Position2DComponent.class);
-        position.setX(x);
-        position.setY(y);
 
         damageSplash.saveChanges();
 

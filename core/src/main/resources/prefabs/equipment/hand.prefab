@@ -1,0 +1,17 @@
+{
+  "GlobalEntity": {},
+  "Item": {
+    "name": "hand"
+  },
+  "MeleeWeapon": {
+    "damageAmount": 1,
+    "coolDown": 200,
+    "minimumRange": 0.1,
+    "maximumRange": 0.2,
+    "minimumHeight": 0.05,
+    "maximumHeight": 0.3
+  },
+  "EquippedSpriteComponent": {
+    "filePath": "images/hand.png"
+  }
+}

@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.retro.logic.combat.EntityDied;
+import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.*;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -15,10 +16,12 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
+import com.gempukku.secsy.gaming.camera2d.component.ClampCameraComponent;
 import com.gempukku.secsy.gaming.component.Bounds2DComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
+import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 import org.apache.commons.io.IOUtils;
@@ -38,6 +41,10 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     private GameEntityProvider gameEntityProvider;
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private CameraEntityProvider cameraEntityProvider;
+    @Inject
+    private SpawnManager spawnManager;
 
     public static final int RELOAD_KEY = Input.Keys.R;
     public static final int SAVE_KEY = Input.Keys.T;
@@ -59,7 +66,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     }
 
     private void loadRoom(float x, float y) {
-        entityManager.createEntityFromPrefab("playerEntity");
+        spawnManager.spawnEntity("player");
 
         // Room size in units is 4 units / 3 units
 
@@ -132,18 +139,6 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         }
     }
 
-    private void createEntityAtPosition(String prefab, float x, float y) {
-        EntityRef entity = entityManager.createEntityFromPrefab(prefab);
-
-        PrefabComponent prefabComp = entity.createComponent(PrefabComponent.class);
-        prefabComp.setPrefab(prefab);
-
-        Position2DComponent position = entity.getComponent(Position2DComponent.class);
-        position.setX(x);
-        position.setY(y);
-        entity.saveChanges();
-    }
-
     private EntityRef findClosestPlatform(float x, float y) {
         float shortestDistance = Float.MAX_VALUE;
         EntityRef result = null;
@@ -201,21 +196,12 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     }
 
     private void loadRoom(String roomFile, float x, float y) {
-        EntityRef gameEntity = gameEntityProvider.getGameEntity();
-        RoomComponent roomComp = gameEntity.getComponent(RoomComponent.class);
-        roomComp.setRoom(roomFile);
-        roomComp.setX(x);
-        roomComp.setY(y);
-        gameEntity.saveChanges();
-
-        for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
-            Position2DComponent position = player.getComponent(Position2DComponent.class);
-            position.setX(x);
-            position.setY(y);
-            player.saveChanges();
-        }
-
         JSONObject room = loadJSON(roomFile);
+
+        updateGame(roomFile, x, y);
+        updateCamera((JSONObject) room.get("cameraSettings"));
+        updatePlayerPosition(x, y);
+
         JSONArray platformArray = (JSONArray) room.get("platforms");
         JSONArray pickupsArray = (JSONArray) room.get("pickups");
         JSONArray objectsArray = (JSONArray) room.get("objects");
@@ -232,9 +218,38 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         }
         for (Object object : objectsArray) {
             JSONObject objectObj = (JSONObject) object;
-            createEntityAtPosition((String) objectObj.get("prefab"),
-                    getFloat(objectObj, "x"), getFloat(objectObj, "y"));
+            spawnManager.spawnEntityAt((String) objectObj.get("prefab"), getFloat(objectObj, "x"), getFloat(objectObj, "y"));
         }
+    }
+
+    private void updatePlayerPosition(float x, float y) {
+        for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
+            Position2DComponent position = player.getComponent(Position2DComponent.class);
+            position.setX(x);
+            position.setY(y);
+            player.saveChanges();
+        }
+    }
+
+    private void updateGame(String roomFile, float x, float y) {
+        EntityRef gameEntity = gameEntityProvider.getGameEntity();
+        RoomComponent roomComp = gameEntity.getComponent(RoomComponent.class);
+        roomComp.setRoom(roomFile);
+        roomComp.setX(x);
+        roomComp.setY(y);
+        gameEntity.saveChanges();
+    }
+
+    private void updateCamera(JSONObject cameraSettings) {
+        JSONObject clampSettings = (JSONObject) cameraSettings.get("clamp");
+
+        EntityRef cameraEntity = cameraEntityProvider.getCameraEntity();
+        ClampCameraComponent clamp = cameraEntity.getComponent(ClampCameraComponent.class);
+        clamp.setMinX(getFloat(clampSettings, "minX"));
+        clamp.setMaxX(getFloat(clampSettings, "maxX"));
+        clamp.setMinY(getFloat(clampSettings, "minY"));
+        clamp.setMaxY(getFloat(clampSettings, "maxY"));
+        cameraEntity.saveChanges();
     }
 
     private float getFloat(JSONObject object, String key) {
@@ -257,10 +272,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     }
 
     private void createPickup(String type, String image, float x, float y) {
-        EntityRef pickupEntity = entityManager.createEntityFromPrefab("pickup");
-        Position2DComponent position = pickupEntity.getComponent(Position2DComponent.class);
-        position.setX(x);
-        position.setY(y);
+        EntityRef pickupEntity = spawnManager.spawnEntityAt("pickup", x, y);
 
         PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
         pickup.setType(type);
@@ -272,14 +284,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     }
 
     private void createPlatform(String prefab, float x, float y, float width, float height) {
-        EntityRef platformEntity = entityManager.createEntityFromPrefab(prefab);
-
-        PrefabComponent prefabComp = platformEntity.createComponent(PrefabComponent.class);
-        prefabComp.setPrefab(prefab);
-
-        Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
-        position.setX(x);
-        position.setY(y);
+        EntityRef platformEntity = spawnManager.spawnEntityAt(prefab, x, y);
 
         PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
         setBounds(platform, 0, width, -height, 0f);

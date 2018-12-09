@@ -4,16 +4,22 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.event.Event;
 
 public class EntityDamaged extends Event {
-    private EntityRef source;
+    private EntityRef attacker;
+    private EntityRef weapon;
     private int amount;
 
-    public EntityDamaged(EntityRef source, int amount) {
-        this.source = source;
+    public EntityDamaged(EntityRef attacker, EntityRef weapon, int amount) {
+        this.attacker = attacker;
+        this.weapon = weapon;
         this.amount = amount;
     }
 
-    public EntityRef getSource() {
-        return source;
+    public EntityRef getAttacker() {
+        return attacker;
+    }
+
+    public EntityRef getWeapon() {
+        return weapon;
     }
 
     public int getAmount() {

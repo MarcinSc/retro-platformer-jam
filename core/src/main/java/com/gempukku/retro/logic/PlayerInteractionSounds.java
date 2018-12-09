@@ -2,7 +2,7 @@ package com.gempukku.retro.logic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.gempukku.retro.logic.combat.EntityMeleeAttacked;
+import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -39,7 +39,7 @@ public class PlayerInteractionSounds extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void meleeAttack(EntityMeleeAttacked attacked, EntityRef entity, PlayerComponent player) {
+    public void meleeAttack(EntityAttacked attacked, EntityRef entity, PlayerComponent player) {
         audioManager.playSound(hitSound);
     }
 

@@ -36,20 +36,6 @@
         "right": 0.08,
         "up": 0.28,
         "down": 0.02
-      },
-      {
-        "type": "attackLeft",
-        "left": -0.2,
-        "right": -0.10,
-        "up": 0.3,
-        "down": 0.05
-      },
-      {
-        "type": "attackRight",
-        "left": 0.10,
-        "right": 0.2,
-        "up": 0.3,
-        "down": 0.05
       }
     ]
   },
@@ -57,12 +43,7 @@
     "y": 0.2
   },
   "AffectedByGravity": {},
-  "Combat": {
-    "meleeCoolDown": 200,
-    "meleeDamage": 1,
-    "meleeX": 0.125,
-    "meleeY": 0.175
-  },
+  "Combat": {},
   "MeleeTarget": {},
   "Health": {
     "maxHealth": 5,
@@ -72,5 +53,11 @@
   "TemporarilyInvulnerable": {
     "effectStart": -2000,
     "effectDuration": 1300
+  },
+  "Equipment": {
+    "equipment": [
+      "hand"
+    ],
+    "equippedItem": "hand"
   }
 }

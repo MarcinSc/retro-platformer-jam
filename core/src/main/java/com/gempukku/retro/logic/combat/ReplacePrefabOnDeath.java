@@ -1,5 +1,6 @@
 package com.gempukku.retro.logic.combat;
 
+import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.PrefabComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -15,6 +16,8 @@ import java.util.List;
 public class ReplacePrefabOnDeath {
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private SpawnManager spawnManager;
 
     @ReceiveEvent
     public void replacePrefab(EntityDied entityDied, EntityRef entity, ReplacePrefabOnDeathComponent replacePrefabOnDeath) {
@@ -36,11 +39,7 @@ public class ReplacePrefabOnDeath {
 
             entityManager.destroyEntity(entityToReplace);
 
-            EntityRef newEntity = entityManager.createEntityFromPrefab(newPrefab);
-            Position2DComponent newPosition = newEntity.getComponent(Position2DComponent.class);
-            newPosition.setX(x);
-            newPosition.setY(y);
-            newEntity.saveChanges();
+            spawnManager.spawnEntityAt(newPrefab, x, y);
         }
     }
 }
