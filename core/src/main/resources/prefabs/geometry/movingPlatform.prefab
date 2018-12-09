@@ -1,0 +1,18 @@
+{
+  "Position2D": {},
+  "Obstacle": {},
+  "Platform": {
+    "textureAtlasId": "sprites",
+    "beginningImage": "images/ground-left.png",
+    "centerImage": "images/ground-center.png",
+    "endingImage": "images/ground-right.png",
+    "horizontal": true
+  },
+  "Ground": {},
+  "SensorTrigger": {},
+  "Oscillating": {
+    "cycleLength": 4000,
+    "distanceTimeFunction": "1*0-1-0"
+  },
+  "Transporter": {}
+}

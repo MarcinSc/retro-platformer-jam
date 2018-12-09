@@ -1,0 +1,9 @@
+{
+  "Position2D": {},
+  "Obstacle": {},
+  "Sprite": {
+    "fileName": "images/stairs.png"
+  },
+  "Ground": {},
+  "SensorTrigger": {}
+}

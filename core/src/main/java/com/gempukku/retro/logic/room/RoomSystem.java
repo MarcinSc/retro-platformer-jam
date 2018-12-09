@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.retro.logic.combat.EntityDied;
+import com.gempukku.retro.logic.movement.OscillatingComponent;
 import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.*;
@@ -21,9 +22,11 @@ import com.gempukku.secsy.gaming.camera2d.component.ClampCameraComponent;
 import com.gempukku.secsy.gaming.component.Bounds2DComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
+import com.gempukku.secsy.gaming.physics.basic2d.ObstacleVertices;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
+import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -215,8 +218,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
         for (Object platform : platformArray) {
             JSONObject platformObj = (JSONObject) platform;
-            createPlatform((String) platformObj.get("prefab"), getFloat(platformObj, "x"), getFloat(platformObj, "y"),
-                    getFloat(platformObj, "width"), getFloat(platformObj, "height"));
+            createPlatform(platformObj);
         }
         List<String> items = playerProvider.getPlayer().getComponent(InventoryComponent.class).getItems();
         for (Object pickup : pickupsArray) {
@@ -296,11 +298,41 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         pickupEntity.saveChanges();
     }
 
-    private void createPlatform(String prefab, float x, float y, float width, float height) {
+    private void createPlatform(JSONObject platformObj) {
+        float x = getFloat(platformObj, "x");
+        float y = getFloat(platformObj, "y");
+        EntityRef platform = createPlatform((String) platformObj.get("prefab"), x, y,
+                getFloat(platformObj, "width"), getFloat(platformObj, "height"));
+        if (platformObj.get("distanceX") != null) {
+            float distanceX = getFloat(platformObj, "distanceX");
+            float distanceY = getFloat(platformObj, "distanceY");
+            OscillatingComponent oscillating = platform.getComponent(OscillatingComponent.class);
+            oscillating.setDistance(new Vector2(distanceX, distanceY));
+            oscillating.setStartingPosition(new Vector2(x, y));
+        }
+
+        if (platformObj.get("vertices") != null) {
+            ObstacleComponent obstacle = platform.getComponent(ObstacleComponent.class);
+            obstacle.setAABB(false);
+            JSONArray verticesArr = (JSONArray) platformObj.get("vertices");
+            float[] vertices = new float[verticesArr.size() * 2];
+            for (int i = 0; i < vertices.length; i += 2) {
+                String[] split = ((String) verticesArr.get(i / 2)).split(",", 2);
+                vertices[i] = Float.parseFloat(split[0]);
+                vertices[i + 1] = Float.parseFloat(split[1]);
+            }
+            obstacle.setNonAABBVertices(new ObstacleVertices(vertices));
+        }
+
+        platform.saveChanges();
+    }
+
+    private EntityRef createPlatform(String prefab, float x, float y, float width, float height) {
         EntityRef platformEntity = spawnManager.spawnEntityAt(prefab, x, y);
 
         PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
-        setBounds(platform, 0, width, -height, 0f);
+        if (platform != null)
+            setBounds(platform, 0, width, -height, 0f);
 
         ObstacleComponent obstacle = platformEntity.getComponent(ObstacleComponent.class);
         setBounds(obstacle, 0, width, -height, 0f);
@@ -308,7 +340,13 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         SensorTriggerComponent sensorTrigger = platformEntity.getComponent(SensorTriggerComponent.class);
         setBounds(sensorTrigger, 0, width, -height, 0f);
 
+        SpriteComponent sprite = platformEntity.getComponent(SpriteComponent.class);
+        if (sprite != null)
+            setBounds(sprite, 0, width, -height, 0);
+
         platformEntity.saveChanges();
+
+        return platformEntity;
     }
 
     private void setBounds(Bounds2DComponent bounds2D, float left, float right, float down, float up) {

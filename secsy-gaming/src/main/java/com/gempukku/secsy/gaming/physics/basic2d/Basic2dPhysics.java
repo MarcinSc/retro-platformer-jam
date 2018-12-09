@@ -8,4 +8,6 @@ public interface Basic2dPhysics {
                                              float minX, float maxX, float minY, float maxY,
                                              Predicate<EntityRef> sensorTriggerPredicate);
     Iterable<EntityRef> getContactsForSensor(EntityRef sensorEntity, String type, Predicate<EntityRef> sensorTriggerPredicate);
+
+    Iterable<EntityRef> getSensorEntitiesContactedBy(EntityRef sensorTriggerEntity, String sensorType);
 }

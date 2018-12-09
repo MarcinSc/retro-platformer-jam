@@ -82,13 +82,27 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
     @Override
     public Iterable<EntityRef> getContactsForSensor(EntityRef sensorEntity, String type, Predicate<EntityRef> sensorTriggerPredicate) {
-        Set<EntityRef> results = new HashSet<EntityRef>();
+        List<EntityRef> results = new LinkedList<EntityRef>();
         int entityId = internalEntityManager.getEntityId(sensorEntity);
         for (Map.Entry<Sensor, SensorTrigger> contact : existingSensorContacts.entries()) {
             if (contact.getKey().entityId == entityId && contact.getKey().type.equals(type)) {
                 EntityRef sensorTriggerEntity = internalEntityManager.getEntityById(contact.getValue().entityId);
                 if (sensorTriggerPredicate.apply(sensorTriggerEntity))
                     results.add(sensorTriggerEntity);
+            }
+        }
+
+        return results;
+    }
+
+    @Override
+    public Iterable<EntityRef> getSensorEntitiesContactedBy(EntityRef sensorTriggerEntity, String sensorType) {
+        List<EntityRef> results = new LinkedList<EntityRef>();
+        int entityId = internalEntityManager.getEntityId(sensorTriggerEntity);
+        for (Map.Entry<Sensor, SensorTrigger> contact : existingSensorContacts.entries()) {
+            if (contact.getValue().entityId == entityId && contact.getKey().type.equals(sensorType)) {
+                EntityRef sensorEntity = internalEntityManager.getEntityById(contact.getKey().entityId);
+                results.add(sensorEntity);
             }
         }
 
@@ -268,7 +282,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                         movingEntity.saveChanges();
                     }
 
-                    movingEntity.send(new EntityMoved(collidingBody.oldX, collidingBody.oldY));
+                    movingEntity.send(new EntityMoved(collidingBody.oldX, collidingBody.oldY, collidingBody.newX, collidingBody.newY));
                 }
             } else {
                 Obstacle obstacle = obstacles.get(entityId);
@@ -284,7 +298,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
                         if (obstacle.oldX != obstacle.newX
                                 || obstacle.oldY != obstacle.newY)
-                            movingEntity.send(new EntityMoved(obstacle.oldX, obstacle.oldY));
+                            movingEntity.send(new EntityMoved(collidingBody.oldX, collidingBody.oldY, collidingBody.newX, collidingBody.newY));
                     }
                 }
             }
@@ -356,19 +370,22 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                 float width = Math.min(x1Max, x2Max) - Math.max(x1Min, x2Min);
                 if (x1Max - x1Min == width || x2Max - x2Min == width)
                     // The overlap is the whole size of either bodies
-                    vectorToUse.x = Float.MAX_VALUE;
+                    vectorToUse.x = 0;
                 else
                     vectorToUse.x = Math.signum(x1Min - x2Min) * width;
                 float height = Math.min(y1Max, y2Max) - Math.max(y1Min, y2Min);
                 if (y1Max - y1Min == height || y2Max - y2Min == height)
-                    vectorToUse.y = Float.MAX_VALUE;
+                    // The overlap is the whole size of either bodies
+                    vectorToUse.y = 0;
                 else
                     vectorToUse.y = Math.signum(y1Min - y2Min) * height;
 
-                if (Math.abs(vectorToUse.x) < Math.abs(vectorToUse.y)) {
-                    vectorToUse.y = 0;
-                } else {
-                    vectorToUse.x = 0;
+                if (vectorToUse.x != 0 && vectorToUse.y != 0) {
+                    if (Math.abs(vectorToUse.x) < Math.abs(vectorToUse.y)) {
+                        vectorToUse.y = 0;
+                    } else {
+                        vectorToUse.x = 0;
+                    }
                 }
 
                 return vectorToUse;

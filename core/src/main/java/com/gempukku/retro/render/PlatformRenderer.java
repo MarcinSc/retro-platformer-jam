@@ -52,7 +52,7 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
                     middleX += platformBasicSize;
                 }
                 if (endingImage != null) {
-                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x + width, y, platformBasicSize, height, Color.WHITE);
+                    spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, middleX + width - platformBasicSize, y, platformBasicSize, height, Color.WHITE);
                     width -= platformBasicSize;
                 }
                 spriteSink.addTiledSprite(SpritePriorities.PLATFORM, platform.getCenterImage(),
