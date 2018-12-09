@@ -1,5 +1,8 @@
 {
   "GlobalEntity": {},
+  "DisplayName": {
+    "displayName": "HAND"
+  },
   "Item": {
     "name": "hand"
   },

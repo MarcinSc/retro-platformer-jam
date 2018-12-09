@@ -1,15 +1,15 @@
 package com.gempukku.retro.logic.trigger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.retro.logic.room.LoadRoom;
 import com.gempukku.retro.model.PlayerComponent;
+import com.gempukku.retro.render.FontProvider;
+import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
@@ -21,7 +21,9 @@ import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
 
 @RegisterSystem
 public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
-    private BitmapFont textFont;
+    @Inject
+    private FontProvider fontProvider;
+
     private SpriteBatch spriteBatch;
     private GlyphLayout glyphLayout = new GlyphLayout();
 
@@ -32,13 +34,6 @@ public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
     @Override
     public void initialize() {
         spriteBatch = new SpriteBatch();
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/5px2bus.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 5;
-        parameter.color = Color.WHITE;
-        textFont = generator.generateFont(parameter);
-        generator.dispose();
     }
 
     @ReceiveEvent
@@ -75,6 +70,7 @@ public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent(priority = -1000)
     public void render(RenderToPipeline renderToPipeline) {
         if (text != null) {
+            BitmapFont textFont = fontProvider.getFont();
             tmp.set(x, y, 0);
             Matrix4 cameraProjection = renderToPipeline.getCamera().combined;
             Vector3 textLocation = tmp.mul(cameraProjection);
@@ -98,7 +94,6 @@ public class BodyTriggeredTextDisplayingSystem extends AbstractLifeCycleSystem {
 
     @Override
     public void destroy() {
-        textFont.dispose();
         spriteBatch.dispose();
     }
 }

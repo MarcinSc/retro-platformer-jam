@@ -1,0 +1,60 @@
+{
+  "cameraSettings": {
+    "clamp": {
+      "minX": -10,
+      "maxX": 10,
+      "minY": -10,
+      "maxY": 10
+    }
+  },
+  "pickups": [
+    {
+      "type": "baton",
+      "image": "images/baton.png",
+      "x": -0.3,
+      "y": 0
+    }
+  ],
+  "platforms": [
+    {
+      "prefab": "wallLeft",
+      "x": -1.3,
+      "y": 1,
+      "width": 0.1,
+      "height": 1
+    },
+    {
+      "prefab": "wallRight",
+      "x": 1.2,
+      "y": 1,
+      "width": 0.1,
+      "height": 1
+    },
+    {
+      "prefab": "platformNoEdges",
+      "x": -1.2,
+      "width": 2.4,
+      "y": 0.0,
+      "height": 0.1
+    },
+    {
+      "prefab": "ceiling",
+      "x": -1.2,
+      "width": 2.4,
+      "y": 1.1,
+      "height": 0.1
+    }
+  ],
+  "objects": [
+    {
+      "prefab": "basementBackground",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "prefab": "avoidElevator",
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

@@ -24,7 +24,6 @@ import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
-import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RegisterSystem
 public class RoomSystem extends AbstractLifeCycleSystem {
@@ -214,14 +214,21 @@ public class RoomSystem extends AbstractLifeCycleSystem {
             createPlatform((String) platformObj.get("prefab"), getFloat(platformObj, "x"), getFloat(platformObj, "y"),
                     getFloat(platformObj, "width"), getFloat(platformObj, "height"));
         }
+        List<String> items = playerProvider.getPlayer().getComponent(InventoryComponent.class).getItems();
         for (Object pickup : pickupsArray) {
             JSONObject pickupObj = (JSONObject) pickup;
-            createPickup((String) pickupObj.get("type"), (String) pickupObj.get("image"),
-                    getFloat(pickupObj, "x"), getFloat(pickupObj, "y"));
+            String pickupType = (String) pickupObj.get("type");
+            // Only spawn pickups that have not been picked up yet
+            if (!items.contains(pickupType))
+                createPickup(pickupType, (String) pickupObj.get("image"),
+                        getFloat(pickupObj, "x"), getFloat(pickupObj, "y"));
         }
         for (Object object : objectsArray) {
             JSONObject objectObj = (JSONObject) object;
-            spawnManager.spawnEntityAt((String) objectObj.get("prefab"), getFloat(objectObj, "x"), getFloat(objectObj, "y"));
+            if (objectObj.get("x") != null)
+                spawnManager.spawnEntityAt((String) objectObj.get("prefab"), getFloat(objectObj, "x"), getFloat(objectObj, "y"));
+            else
+                spawnManager.spawnEntity((String) objectObj.get("prefab"));
         }
     }
 
@@ -279,7 +286,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
         pickup.setType(type);
 
-        SpriteComponent sprite = pickupEntity.getComponent(SpriteComponent.class);
+        BobbingSpriteComponent sprite = pickupEntity.getComponent(BobbingSpriteComponent.class);
         sprite.setFileName(image);
 
         pickupEntity.saveChanges();

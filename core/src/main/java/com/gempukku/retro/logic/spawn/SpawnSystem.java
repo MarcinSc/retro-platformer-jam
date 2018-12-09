@@ -1,10 +1,12 @@
 package com.gempukku.retro.logic.spawn;
 
+import com.gempukku.retro.logic.combat.EntityDied;
 import com.gempukku.retro.model.PrefabComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 
 @RegisterSystem(shared = SpawnManager.class)
@@ -33,5 +35,15 @@ public class SpawnSystem implements SpawnManager {
 
         entityRef.saveChanges();
         return entityRef;
+    }
+
+    @ReceiveEvent
+    public void spawnOnDeath(EntityDied entityDied, EntityRef entity, SpawnOnDeathComponent spawnOnDeath) {
+        Position2DComponent position = entity.getComponent(Position2DComponent.class);
+        if (position != null) {
+            spawnEntityAt(spawnOnDeath.getPrefab(), position.getX(), position.getY());
+        } else {
+            spawnEntity(spawnOnDeath.getPrefab());
+        }
     }
 }

@@ -6,9 +6,10 @@ import com.gempukku.retro.logic.combat.CombatComponent;
 import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.logic.combat.EntityDamaged;
 import com.gempukku.retro.logic.combat.MeleeTargetComponent;
+import com.gempukku.retro.logic.equipment.ItemAddedToInventory;
 import com.gempukku.retro.logic.equipment.ItemProvider;
 import com.gempukku.retro.logic.player.PlayerProvider;
-import com.gempukku.retro.model.EquipmentComponent;
+import com.gempukku.retro.model.InventoryComponent;
 import com.gempukku.retro.model.WeaponComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -62,9 +63,9 @@ public class WeaponSystem {
 
     private void switchToPreviousWeapon() {
         EntityRef player = playerProvider.getPlayer();
-        EquipmentComponent equipmentComp = player.getComponent(EquipmentComponent.class);
+        InventoryComponent equipmentComp = player.getComponent(InventoryComponent.class);
         String equipped = equipmentComp.getEquippedItem();
-        List<String> equipmentList = equipmentComp.getEquipment();
+        List<String> equipmentList = equipmentComp.getItems();
 
         String previousWeapon = null;
         for (String itemName : equipmentList) {
@@ -78,16 +79,15 @@ public class WeaponSystem {
             }
         }
 
-        System.out.println("Equipping: " + previousWeapon);
         equipmentComp.setEquippedItem(previousWeapon);
         player.saveChanges();
     }
 
     private void switchToNextWeapon() {
         EntityRef player = playerProvider.getPlayer();
-        EquipmentComponent equipmentComp = player.getComponent(EquipmentComponent.class);
+        InventoryComponent equipmentComp = player.getComponent(InventoryComponent.class);
         String equipped = equipmentComp.getEquippedItem();
-        List<String> equipmentList = equipmentComp.getEquipment();
+        List<String> equipmentList = equipmentComp.getItems();
 
         String equipWeapon = null;
         String lastWeapon = null;
@@ -104,14 +104,21 @@ public class WeaponSystem {
             }
         }
 
-        System.out.println("Equipping: " + equipWeapon);
         equipmentComp.setEquippedItem(equipWeapon);
         player.saveChanges();
     }
 
     @ReceiveEvent
-    public void entityAttacked(EntityAttacked entityAttacked, EntityRef attacker, EquipmentComponent equipmentComponent) {
-        String equippedItemName = equipmentComponent.getEquippedItem();
+    public void weaponPickedUp(ItemAddedToInventory itemAddedToInventory, EntityRef item, WeaponComponent weapon) {
+        EntityRef player = playerProvider.getPlayer();
+        InventoryComponent inventory = player.getComponent(InventoryComponent.class);
+        inventory.setEquippedItem(itemAddedToInventory.getType());
+        player.saveChanges();
+    }
+
+    @ReceiveEvent
+    public void entityAttacked(EntityAttacked entityAttacked, EntityRef attacker, InventoryComponent inventoryComponent) {
+        String equippedItemName = inventoryComponent.getEquippedItem();
         EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
         equippedItem.send(new EntityAttackedWith(attacker));
     }

@@ -4,10 +4,10 @@ import com.gempukku.secsy.entity.Component;
 
 import java.util.List;
 
-public interface EquipmentComponent extends Component {
-    List<String> getEquipment();
+public interface InventoryComponent extends Component {
+    List<String> getItems();
 
-    void setEquipment(List<String> equipment);
+    void setItems(List<String> items);
 
     String getEquippedItem();
 

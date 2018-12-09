@@ -54,8 +54,8 @@
     "effectStart": -2000,
     "effectDuration": 1300
   },
-  "Equipment": {
-    "equipment": [
+  "Inventory": {
+    "items": [
       "hand"
     ],
     "equippedItem": "hand"

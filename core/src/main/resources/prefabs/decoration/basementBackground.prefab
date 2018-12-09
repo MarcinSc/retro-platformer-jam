@@ -1,0 +1,13 @@
+{
+  "Position2D": {},
+  "TiledSprite": {
+    "fileName": "images/basement-tile.png",
+    "priority": 3,
+    "left": -10,
+    "right": 10,
+    "up": 10,
+    "down": -10,
+    "tileXCount": 100,
+    "tileYCount": 100
+  }
+}

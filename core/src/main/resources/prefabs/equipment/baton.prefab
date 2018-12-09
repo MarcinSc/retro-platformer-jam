@@ -1,5 +1,8 @@
 {
   "GlobalEntity": {},
+  "DisplayName": {
+    "displayName": "BATON"
+  },
   "Item": {
     "name": "baton"
   },
@@ -13,6 +16,6 @@
     "maximumHeight": 0.3
   },
   "EquippedSpriteComponent": {
-    "filePath": "images/guard.png"
+    "filePath": "images/baton.png"
   }
 }

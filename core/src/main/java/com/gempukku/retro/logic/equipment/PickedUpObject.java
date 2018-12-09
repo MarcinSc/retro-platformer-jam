@@ -1,11 +1,11 @@
-package com.gempukku.retro.logic;
+package com.gempukku.retro.logic.equipment;
 
 import com.gempukku.secsy.entity.event.Event;
 
-public class PickedupItem extends Event {
+public class PickedUpObject extends Event {
     private String pickupType;
 
-    public PickedupItem(String pickupType) {
+    public PickedUpObject(String pickupType) {
         this.pickupType = pickupType;
     }
 
