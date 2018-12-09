@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.ai;
+package com.gempukku.retro.logic.ai.task;
 
 import com.gempukku.secsy.gaming.ai.AITask;
 import com.gempukku.secsy.gaming.ai.AITaskResult;

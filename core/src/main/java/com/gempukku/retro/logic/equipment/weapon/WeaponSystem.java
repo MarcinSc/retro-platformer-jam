@@ -131,27 +131,23 @@ public class WeaponSystem {
         float y = position.getY();
         HorizontalOrientationComponent orientation = attacker.getComponent(HorizontalOrientationComponent.class);
         Iterable<EntityRef> attackedEntities;
+        float minX;
+        float maxX;
         if (orientation.isFacingRight()) {
-            attackedEntities = basic2dPhysics.getSensorTriggersFor(attacker, "meleeAttack",
-                    x + meleeWeapon.getMinimumRange(), x + meleeWeapon.getMaximumRange(),
-                    y + meleeWeapon.getMinimumHeight(), y + meleeWeapon.getMaximumHeight(),
-                    new Predicate<EntityRef>() {
-                        @Override
-                        public boolean apply(@Nullable EntityRef entityRef) {
-                            return entityRef.hasComponent(MeleeTargetComponent.class);
-                        }
-                    });
+            minX = x + meleeWeapon.getMinimumRange();
+            maxX = x + meleeWeapon.getMaximumRange();
         } else {
-            attackedEntities = basic2dPhysics.getSensorTriggersFor(attacker, "meleeAttack",
-                    x - meleeWeapon.getMaximumRange(), x - meleeWeapon.getMinimumRange(),
-                    y + meleeWeapon.getMinimumHeight(), y + meleeWeapon.getMaximumHeight(),
-                    new Predicate<EntityRef>() {
-                        @Override
-                        public boolean apply(@Nullable EntityRef entityRef) {
-                            return entityRef.hasComponent(MeleeTargetComponent.class);
-                        }
-                    });
+            minX = x - meleeWeapon.getMaximumRange();
+            maxX = x - meleeWeapon.getMinimumRange();
         }
+        attackedEntities = basic2dPhysics.getSensorTriggersFor(attacker, "meleeAttack",
+                minX, maxX, y + meleeWeapon.getMinimumHeight(), y + meleeWeapon.getMaximumHeight(),
+                new Predicate<EntityRef>() {
+                    @Override
+                    public boolean apply(@Nullable EntityRef entityRef) {
+                        return entityRef.hasComponent(MeleeTargetComponent.class);
+                    }
+                });
         for (EntityRef attackedEntity : attackedEntities)
             attackedEntity.send(new EntityDamaged(attacker, weapon, meleeWeapon.getDamageAmount()));
 

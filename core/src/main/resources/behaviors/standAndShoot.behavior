@@ -1,0 +1,19 @@
+{
+  "type": "Repeat",
+  "task": {
+    "type": "Sequence",
+    "tasks": [
+      {
+        "type": "WaitForOpponentInSight"
+      },
+      {
+        "type": "Spawn",
+        "prefab": "bullet"
+      },
+      {
+        "type": "Wait",
+        "time": 1000
+      }
+    ]
+  }
+}

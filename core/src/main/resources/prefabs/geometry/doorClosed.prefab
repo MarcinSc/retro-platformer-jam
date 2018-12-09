@@ -1,0 +1,14 @@
+{
+  "Position2D": {},
+  "Obstacle": {
+    "left": -0.0375,
+    "right": 0.0375,
+    "up": 0.5
+  },
+  "Sprite": {
+    "fileName": "images/door-closed.png",
+    "left": -0.1,
+    "right": 0.1,
+    "up": 0.5
+  }
+}

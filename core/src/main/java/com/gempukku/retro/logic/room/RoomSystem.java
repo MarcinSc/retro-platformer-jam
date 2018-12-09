@@ -87,10 +87,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent
     public void reloadRoom(GameLoopUpdate update) {
         if (Gdx.input.isKeyPressed(RELOAD_KEY) && !reloadPressed) {
-            unloadRoomEntities();
-
-            loadRoom("rooms/room.json", -0.6f, 0);
-
+            reloadRoomFromGame();
             reloadPressed = true;
         } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
             reloadPressed = false;

@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.ai;
+package com.gempukku.retro.logic.ai.task;
 
 import com.gempukku.retro.logic.combat.CausesVulnerabilityComponent;
 import com.gempukku.secsy.entity.EntityRef;

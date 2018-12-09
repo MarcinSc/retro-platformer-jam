@@ -25,10 +25,10 @@
     },
     {
       "prefab": "wallRight",
-      "x": 8.2,
-      "y": 1,
+      "x": 1.6,
+      "y": 1.4,
       "width": 0.1,
-      "height": 1
+      "height": 0.9
     },
     {
       "prefab": "platformNoEdges",
@@ -41,14 +41,28 @@
       "prefab": "ceiling",
       "x": -10,
       "width": 20,
-      "y": 3.0,
+      "y": 1.5,
+      "height": 0.1
+    },
+    {
+      "prefab": "platformEdgeLeft",
+      "x": -0.5,
+      "y": 0,
+      "width": 2.4,
       "height": 0.1
     },
     {
       "prefab": "platform",
-      "x": -0.5,
-      "y": 0,
-      "width": 1.0,
+      "x": -1.8,
+      "width": 0.8,
+      "y": -0.45,
+      "height": 0.1
+    },
+    {
+      "prefab": "platform",
+      "x": -0.7,
+      "width": 1.4,
+      "y": -1.02,
       "height": 0.1
     }
   ],
@@ -61,6 +75,16 @@
     {
       "prefab": "avoidElevator",
       "x": 0,
+      "y": 0
+    },
+    {
+      "prefab": "patrollingGuard",
+      "x": -0.5,
+      "y": -1.02
+    },
+    {
+      "prefab": "doorClosed",
+      "x": 1.65,
       "y": 0
     }
   ]

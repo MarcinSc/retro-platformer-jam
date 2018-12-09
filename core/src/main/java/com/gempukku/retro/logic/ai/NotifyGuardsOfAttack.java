@@ -1,5 +1,6 @@
 package com.gempukku.retro.logic.ai;
 
+import com.gempukku.retro.logic.ai.task.WaitForAnyDamageTask;
 import com.gempukku.retro.logic.combat.EntityDamaged;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;

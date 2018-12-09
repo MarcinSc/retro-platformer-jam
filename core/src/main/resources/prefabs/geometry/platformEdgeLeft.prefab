@@ -1,0 +1,12 @@
+{
+  "Position2D": {},
+  "Obstacle": {},
+  "Platform": {
+    "textureAtlasId": "sprites",
+    "beginningImage": "images/ground-left.png",
+    "centerImage": "images/ground-center.png",
+    "horizontal": true
+  },
+  "Ground": {},
+  "SensorTrigger": {}
+}
