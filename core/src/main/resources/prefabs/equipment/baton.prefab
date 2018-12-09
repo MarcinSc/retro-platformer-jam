@@ -17,5 +17,8 @@
   },
   "EquippedSpriteComponent": {
     "filePath": "images/baton.png"
+  },
+  "RecoilOnAttack": {
+    "recoilX": -0.05
   }
 }

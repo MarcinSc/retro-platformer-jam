@@ -18,30 +18,37 @@
   "platforms": [
     {
       "prefab": "wallLeft",
-      "x": -1.3,
+      "x": -8.3,
       "y": 1,
       "width": 0.1,
       "height": 1
     },
     {
       "prefab": "wallRight",
-      "x": 1.2,
+      "x": 8.2,
       "y": 1,
       "width": 0.1,
       "height": 1
     },
     {
       "prefab": "platformNoEdges",
-      "x": -1.2,
-      "width": 2.4,
-      "y": 0.0,
+      "x": -10,
+      "width": 20,
+      "y": -3,
       "height": 0.1
     },
     {
       "prefab": "ceiling",
-      "x": -1.2,
-      "width": 2.4,
-      "y": 1.1,
+      "x": -10,
+      "width": 20,
+      "y": 3.0,
+      "height": 0.1
+    },
+    {
+      "prefab": "platform",
+      "x": -0.5,
+      "y": 0,
+      "width": 1.0,
       "height": 0.1
     }
   ],

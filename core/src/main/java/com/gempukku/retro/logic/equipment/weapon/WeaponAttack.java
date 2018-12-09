@@ -3,10 +3,10 @@ package com.gempukku.retro.logic.equipment.weapon;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.event.Event;
 
-public class EntityAttackedWith extends Event {
+public class WeaponAttack extends Event {
     private EntityRef attacker;
 
-    public EntityAttackedWith(EntityRef attacker) {
+    public WeaponAttack(EntityRef attacker) {
         this.attacker = attacker;
     }
 

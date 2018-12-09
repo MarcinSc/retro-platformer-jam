@@ -57,7 +57,10 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent
     public void update(GameLoopUpdate update) {
         if (!roomLoaded) {
-            loadRoom(-0.6f, 0);
+//            loadRoom(-0.6f, 0);
+//            roomLoaded = true;
+            spawnManager.spawnEntity("player");
+            reloadRoomFromGame();
             roomLoaded = true;
         }
     }
@@ -96,6 +99,10 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
     @ReceiveEvent
     public void playerDied(EntityDied entityDied, EntityRef entity, PlayerComponent player) {
+        reloadRoomFromGame();
+    }
+
+    private void reloadRoomFromGame() {
         RoomComponent room = gameEntityProvider.getGameEntity().getComponent(RoomComponent.class);
         unloadRoomEntities();
         loadRoom(room.getRoom(), room.getX(), room.getY());

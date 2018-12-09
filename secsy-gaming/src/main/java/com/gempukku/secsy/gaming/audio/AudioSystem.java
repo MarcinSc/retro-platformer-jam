@@ -9,7 +9,7 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 
 @RegisterSystem(profiles = {"audioManager"}, shared = AudioManager.class)
 public class AudioSystem extends AbstractLifeCycleSystem implements AudioManager {
-    private float masterVolume = 0.3f;
+    private float masterVolume = 0.1f;
     private float musicVolume = 1f;
     private float fxVolume = 1f;
 

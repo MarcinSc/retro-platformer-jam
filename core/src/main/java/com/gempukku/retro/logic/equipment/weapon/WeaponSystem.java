@@ -120,11 +120,11 @@ public class WeaponSystem {
     public void entityAttacked(EntityAttacked entityAttacked, EntityRef attacker, InventoryComponent inventoryComponent) {
         String equippedItemName = inventoryComponent.getEquippedItem();
         EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
-        equippedItem.send(new EntityAttackedWith(attacker));
+        equippedItem.send(new WeaponAttack(attacker));
     }
 
     @ReceiveEvent
-    public void attackedWithMeleeWeapon(EntityAttackedWith attackedWith, EntityRef weapon, MeleeWeaponComponent meleeWeapon) {
+    public void attackedWithMeleeWeapon(WeaponAttack attackedWith, EntityRef weapon, MeleeWeaponComponent meleeWeapon) {
         EntityRef attacker = attackedWith.getAttacker();
         Position2DComponent position = attacker.getComponent(Position2DComponent.class);
         float x = position.getX();
