@@ -1,15 +1,20 @@
 package com.gempukku.retro.logic.equipment.weapon;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.gempukku.retro.logic.combat.CombatComponent;
 import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.logic.combat.EntityDamaged;
 import com.gempukku.retro.logic.combat.MeleeTargetComponent;
 import com.gempukku.retro.logic.equipment.ItemProvider;
+import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.model.EquipmentComponent;
+import com.gempukku.retro.model.WeaponComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
@@ -17,6 +22,7 @@ import com.gempukku.secsy.gaming.time.TimeManager;
 import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @RegisterSystem
 public class WeaponSystem {
@@ -26,6 +32,82 @@ public class WeaponSystem {
     private Basic2dPhysics basic2dPhysics;
     @Inject
     private TimeManager timeManager;
+    @Inject
+    private PlayerProvider playerProvider;
+
+    private boolean previousPressed;
+    private boolean nextPressed;
+
+    private static final int PREVIOUS_KEY = Input.Keys.LEFT_BRACKET;
+    private static final int NEXT_KEY = Input.Keys.RIGHT_BRACKET;
+
+    @ReceiveEvent
+    public void update(GameLoopUpdate update) {
+        boolean previous = Gdx.input.isKeyPressed(PREVIOUS_KEY);
+        if (previous && !previousPressed) {
+            switchToPreviousWeapon();
+            previousPressed = true;
+        } else if (!previous) {
+            previousPressed = false;
+        }
+
+        boolean next = Gdx.input.isKeyPressed(NEXT_KEY);
+        if (next && !nextPressed) {
+            switchToNextWeapon();
+            nextPressed = true;
+        } else if (!next) {
+            nextPressed = false;
+        }
+    }
+
+    private void switchToPreviousWeapon() {
+        EntityRef player = playerProvider.getPlayer();
+        EquipmentComponent equipmentComp = player.getComponent(EquipmentComponent.class);
+        String equipped = equipmentComp.getEquippedItem();
+        List<String> equipmentList = equipmentComp.getEquipment();
+
+        String previousWeapon = null;
+        for (String itemName : equipmentList) {
+            if (itemName.equals(equipped)
+                    && previousWeapon != null) {
+                break;
+            }
+            EntityRef item = itemProvider.getItemByName(itemName);
+            if (item.hasComponent(WeaponComponent.class)) {
+                previousWeapon = itemName;
+            }
+        }
+
+        System.out.println("Equipping: " + previousWeapon);
+        equipmentComp.setEquippedItem(previousWeapon);
+        player.saveChanges();
+    }
+
+    private void switchToNextWeapon() {
+        EntityRef player = playerProvider.getPlayer();
+        EquipmentComponent equipmentComp = player.getComponent(EquipmentComponent.class);
+        String equipped = equipmentComp.getEquippedItem();
+        List<String> equipmentList = equipmentComp.getEquipment();
+
+        String equipWeapon = null;
+        String lastWeapon = null;
+        for (String itemName : equipmentList) {
+            EntityRef item = itemProvider.getItemByName(itemName);
+            if (item.hasComponent(WeaponComponent.class)) {
+                if (equipWeapon == null)
+                    equipWeapon = itemName;
+                if (lastWeapon != null && lastWeapon.equals(equipped)) {
+                    equipWeapon = itemName;
+                    break;
+                }
+                lastWeapon = itemName;
+            }
+        }
+
+        System.out.println("Equipping: " + equipWeapon);
+        equipmentComp.setEquippedItem(equipWeapon);
+        player.saveChanges();
+    }
 
     @ReceiveEvent
     public void entityAttacked(EntityAttacked entityAttacked, EntityRef attacker, EquipmentComponent equipmentComponent) {

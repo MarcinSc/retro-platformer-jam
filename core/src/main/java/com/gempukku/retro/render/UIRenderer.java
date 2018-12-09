@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.gempukku.retro.logic.equipment.ItemProvider;
+import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.model.EquipmentComponent;
 import com.gempukku.retro.model.EquippedSpriteComponent;
-import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -25,6 +25,8 @@ public class UIRenderer extends AbstractLifeCycleSystem {
     private ItemProvider itemProvider;
     @Inject
     private TextureAtlasProvider textureAtlasProvider;
+    @Inject
+    private PlayerProvider playerProvider;
 
     private SpriteBatch spriteBatch;
 
@@ -44,13 +46,12 @@ public class UIRenderer extends AbstractLifeCycleSystem {
         spriteBatch.begin();
         spriteBatch.draw(uiTexture, 0, 0);
 
-        for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
-            String equippedItemName = player.getComponent(EquipmentComponent.class).getEquippedItem();
-            EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
-            String filePath = equippedItem.getComponent(EquippedSpriteComponent.class).getFilePath();
-            TextureRegion itemTexture = textureAtlasProvider.getTexture("ui", filePath);
-            spriteBatch.draw(itemTexture, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34);
-        }
+        EntityRef player = playerProvider.getPlayer();
+        String equippedItemName = player.getComponent(EquipmentComponent.class).getEquippedItem();
+        EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
+        String filePath = equippedItem.getComponent(EquippedSpriteComponent.class).getFilePath();
+        TextureRegion itemTexture = textureAtlasProvider.getTexture("ui", filePath);
+        spriteBatch.draw(itemTexture, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34, 32, 32);
 
         spriteBatch.end();
 

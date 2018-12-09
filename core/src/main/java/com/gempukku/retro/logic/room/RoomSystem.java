@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.retro.logic.combat.EntityDied;
+import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.*;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -45,6 +46,8 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     private CameraEntityProvider cameraEntityProvider;
     @Inject
     private SpawnManager spawnManager;
+    @Inject
+    private PlayerProvider playerProvider;
 
     public static final int RELOAD_KEY = Input.Keys.R;
     public static final int SAVE_KEY = Input.Keys.T;
@@ -223,12 +226,11 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     }
 
     private void updatePlayerPosition(float x, float y) {
-        for (EntityRef player : entityManager.getEntitiesWithComponents(PlayerComponent.class)) {
-            Position2DComponent position = player.getComponent(Position2DComponent.class);
-            position.setX(x);
-            position.setY(y);
-            player.saveChanges();
-        }
+        EntityRef player = playerProvider.getPlayer();
+        Position2DComponent position = player.getComponent(Position2DComponent.class);
+        position.setX(x);
+        position.setY(y);
+        player.saveChanges();
     }
 
     private void updateGame(String roomFile, float x, float y) {
