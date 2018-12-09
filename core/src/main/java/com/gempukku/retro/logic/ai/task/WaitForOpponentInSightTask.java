@@ -33,7 +33,7 @@ public class WaitForOpponentInSightTask extends AbstractAITask<EntityRefReferenc
 
     @Override
     public AITaskResult continueTask(EntityRefReference reference) {
-        if (reference.getValue(getId(), FOUND_ONE, Boolean.class)) {
+        if (reference.getValue(getId(), FOUND_ONE, Boolean.class) != null) {
             reference.removeValue(getId(), FOUND_ONE);
             reference.storeValues();
 

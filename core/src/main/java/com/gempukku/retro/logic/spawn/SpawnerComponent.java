@@ -14,4 +14,12 @@ public interface SpawnerComponent extends Component {
     String getPrefab();
 
     void setPrefab(String prefab);
+
+    float getX();
+
+    void setX(float x);
+
+    float getY();
+
+    void setY(float y);
 }

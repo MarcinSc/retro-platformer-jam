@@ -1,0 +1,30 @@
+{
+  "Position2D": {},
+  "Sprite": {
+    "fileName": "images/bullet.png",
+    "left": -0.05,
+    "right": 0.05,
+    "up": 0.05,
+    "down": -0.05,
+    "priority": -0.5
+  },
+  "Moving": {
+    "speedX": 3
+  },
+  "CollidingBody": {
+    "left": -0.05,
+    "right": 0.05,
+    "up": 0.05,
+    "down": -0.05
+  },
+  "SensorTrigger": {
+    "left": -0.05,
+    "right": 0.05,
+    "up": 0.05,
+    "down": -0.05
+  },
+  "CausesVulnerability": {
+    "damageAmount": 3
+  },
+  "DestroyOnCollision": {}
+}

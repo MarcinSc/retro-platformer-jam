@@ -4,11 +4,15 @@
     "type": "Sequence",
     "tasks": [
       {
-        "type": "WaitForOpponentInSight"
+        "type": "WaitForOpponentInSight",
+        "height": 0.3,
+        "range": 1.5
       },
       {
         "type": "Spawn",
-        "prefab": "bullet"
+        "prefab": "bullet",
+        "x": 0.1,
+        "y": 0.15
       },
       {
         "type": "Wait",

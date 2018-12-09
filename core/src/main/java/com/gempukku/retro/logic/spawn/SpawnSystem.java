@@ -39,18 +39,23 @@ public class SpawnSystem extends AbstractLifeCycleSystem implements SpawnManager
             SpawnerComponent spawning = spawnerEntity.getComponent(SpawnerComponent.class);
             if (time > spawning.getLastSpawnTime() + spawning.getFrequency()) {
                 String prefab = spawning.getPrefab();
+                float x = spawning.getX();
+                float y = spawning.getY();
                 spawning.setLastSpawnTime(time);
                 spawnerEntity.saveChanges();
 
                 EntityRef spawned = entityManager.createEntityFromPrefab(prefab);
                 Position2DComponent spawnedPosition = spawned.getComponent(Position2DComponent.class);
                 if (spawnedPosition != null) {
+                    HorizontalOrientationComponent orientation = spawnerEntity.getComponent(HorizontalOrientationComponent.class);
                     Position2DComponent spawningPosition = spawnerEntity.getComponent(Position2DComponent.class);
-                    spawnedPosition.setX(spawningPosition.getX());
-                    spawnedPosition.setY(spawningPosition.getY());
+                    if (orientation != null && !orientation.isFacingRight())
+                        x = -x;
+
+                    spawnedPosition.setX(spawningPosition.getX() + x);
+                    spawnedPosition.setY(spawningPosition.getY() + y);
 
                     MovingComponent moving = spawned.getComponent(MovingComponent.class);
-                    HorizontalOrientationComponent orientation = spawnerEntity.getComponent(HorizontalOrientationComponent.class);
                     if (moving != null && orientation != null) {
                         float speedX = moving.getSpeedX();
                         moving.setSpeedX(orientation.isFacingRight() ? speedX : -speedX);

@@ -10,8 +10,10 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
+import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
+import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.postprocess.tint.color.ColorTintComponent;
@@ -38,17 +40,23 @@ public class CombatSystem {
     private SpawnManager spawnManager;
 
     @ReceiveEvent
-    public void vulnerableDamaged(SensorContactBegin contact, EntityRef entity, VulnerableComponent vulnerable, TemporarilyInvulnerableComponent temporarilyInvulnerable) {
+    public void vulnerableDamaged(SensorContactBegin contact, EntityRef entity, VulnerableComponent vulnerable) {
         if (contact.getSensorType().equals("body")) {
             EntityRef sensorTrigger = contact.getSensorTrigger();
             CausesVulnerabilityComponent cause = sensorTrigger.getComponent(CausesVulnerabilityComponent.class);
             if (sensorTrigger.hasComponent(CausesVulnerabilityComponent.class)) {
-                long time = timeManager.getTime();
-                long effectStart = temporarilyInvulnerable.getEffectStart();
-                long effectDuration = temporarilyInvulnerable.getEffectDuration();
-                if (effectStart > time || time >= effectStart + effectDuration) {
-                    entity.send(new EntityDamaged(sensorTrigger, null, cause.getDamageAmount()));
+                boolean vulnerableNow = true;
+                TemporarilyInvulnerableComponent temporarilyInvulnerable = entity.getComponent(TemporarilyInvulnerableComponent.class);
+                if (temporarilyInvulnerable != null) {
+                    long time = timeManager.getTime();
+                    long effectStart = temporarilyInvulnerable.getEffectStart();
+                    long effectDuration = temporarilyInvulnerable.getEffectDuration();
+                    if (effectStart <= time && time < effectStart + effectDuration) {
+                        vulnerableNow = false;
+                    }
                 }
+                if (vulnerableNow)
+                    entity.send(new EntityDamaged(sensorTrigger, null, cause.getDamageAmount()));
             }
         }
     }
@@ -63,6 +71,20 @@ public class CombatSystem {
         damageSplash.saveChanges();
 
         delayManager.addDelayedAction(damageSplash, "destroyEntity", effectDuration);
+    }
+
+    @ReceiveEvent
+    public void destroyOnCollision(EntityMoved moved, EntityRef entity, DestroyOnCollisionComponent destroy, Position2DComponent position) {
+        if (moved.hadCollision()) {
+            float x = position.getX();
+            float y = position.getY();
+            String spawnPrefab = destroy.getSpawnPrefab();
+
+            entityManager.destroyEntity(entity);
+            if (spawnPrefab != null) {
+                spawnManager.spawnEntityAt(spawnPrefab, x, y);
+            }
+        }
     }
 
     @ReceiveEvent

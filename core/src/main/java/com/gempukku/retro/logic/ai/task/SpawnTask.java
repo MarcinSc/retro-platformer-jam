@@ -12,10 +12,14 @@ import java.util.Map;
 
 public class SpawnTask extends AbstractAITask<EntityRefReference> {
     private final String prefab;
+    private final float x;
+    private final float y;
 
     public SpawnTask(String id, AITask parent, TaskBuilder<EntityRefReference> taskBuilder, Map<String, Object> taskData) {
         super(id, parent, taskBuilder, taskData);
         prefab = (String) taskData.get("prefab");
+        x = ((Number) taskData.get("x")).floatValue();
+        y = ((Number) taskData.get("y")).floatValue();
     }
 
     @Override
@@ -23,6 +27,8 @@ public class SpawnTask extends AbstractAITask<EntityRefReference> {
         EntityRef entityRef = reference.getEntityRef();
         SpawnerComponent spawner = entityRef.createComponent(SpawnerComponent.class);
         spawner.setPrefab(prefab);
+        spawner.setX(x);
+        spawner.setY(y);
         entityRef.saveChanges();
         return AITaskResult.RUNNING;
     }

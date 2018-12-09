@@ -13,6 +13,12 @@
       "image": "images/baton.png",
       "x": -0.3,
       "y": 0
+    },
+    {
+      "type": "gun",
+      "image": "images/gun.png",
+      "x": -5.8,
+      "y": -4
     }
   ],
   "platforms": [
@@ -21,7 +27,7 @@
       "x": -6,
       "y": 1.4,
       "width": 0.1,
-      "height": 7.4
+      "height": 4.9
     },
     {
       "prefab": "wall",
@@ -35,19 +41,19 @@
       "x": 1.9,
       "y": -0.1,
       "width": 0.1,
-      "height": 5.9
+      "height": 3.9
     },
     {
       "prefab": "platformNoEdges",
       "x": -5.9,
       "width": 7.8,
-      "y": -6,
+      "y": -4,
       "height": 0.1
     },
     {
       "prefab": "platformEdgeLeft",
-      "x": -5,
-      "width": 6.9,
+      "x": -4.5,
+      "width": 6.4,
       "y": -1.6,
       "height": 0.1
     },
@@ -117,9 +123,30 @@
     {
       "prefab": "platformEdgeRight",
       "x": -5.9,
-      "width": 0.5,
-      "y": -0.4,
+      "width": 0.6,
+      "y": -0.8,
       "height": 0.1
+    },
+    {
+      "prefab": "platformEdgeRight",
+      "x": -5.9,
+      "width": 0.6,
+      "y": -2.8,
+      "height": 0.1
+    },
+    {
+      "prefab": "platform",
+      "x": -4.5,
+      "width": 0.6,
+      "y": -2.8,
+      "height": 0.1
+    },
+    {
+      "prefab": "wall",
+      "x": -3.0,
+      "y": -1.7,
+      "width": 0.1,
+      "height": 2.3
     }
   ],
   "objects": [
@@ -142,6 +169,16 @@
       "prefab": "doorClosed",
       "x": 1.65,
       "y": 0
+    },
+    {
+      "prefab": "doorClosed",
+      "x": -5.95,
+      "y": -4
+    },
+    {
+      "prefab": "guardWithGunRight",
+      "x": -5.6,
+      "y": -4
     }
   ]
 }

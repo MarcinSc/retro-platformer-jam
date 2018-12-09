@@ -1,0 +1,22 @@
+{
+  "GlobalEntity": {},
+  "DisplayName": {
+    "displayName": "GUN"
+  },
+  "Item": {
+    "name": "gun"
+  },
+  "Weapon": {},
+  "EquippedSpriteComponent": {
+    "filePath": "images/gun.png"
+  },
+  "RecoilOnAttack": {
+    "recoilX": -0.05
+  },
+  "SpawningWeapon": {
+    "coolDown": 200,
+    "prefab": "bullet",
+    "x": 0.1,
+    "y": 0.15
+  }
+}

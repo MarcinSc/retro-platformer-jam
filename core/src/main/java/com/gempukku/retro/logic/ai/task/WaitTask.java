@@ -31,7 +31,7 @@ public class WaitTask extends AbstractAITask<EntityRefReference> {
 
     @Override
     public AITaskResult continueTask(EntityRefReference reference) {
-        if (reference.getValue(getId(), TIME_IS_UP, Boolean.class)) {
+        if (reference.getValue(getId(), TIME_IS_UP, Boolean.class) != null) {
             reference.removeValue(getId(), TIME_IS_UP);
             reference.storeValues();
 

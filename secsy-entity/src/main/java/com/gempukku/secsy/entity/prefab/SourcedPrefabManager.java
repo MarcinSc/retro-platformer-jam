@@ -12,6 +12,8 @@ import com.gempukku.secsy.entity.serialization.JSONEntitySerializer;
 import com.gempukku.secsy.entity.serialization.NameComponentManager;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.annotation.Nullable;
@@ -48,18 +50,37 @@ public class SourcedPrefabManager extends AbstractLifeCycleSystem implements Pre
         prefabsByName = new HashMap<String, NamedEntityData>();
 
         try {
+            final Map<String, JSONObject> jsons = new HashMap<String, JSONObject>();
             prefabSource.processAllPrefabs(
                     new PrefabSource.PrefabSink() {
                         @Override
                         public void processPrefab(String prefabName, InputStream prefabData) throws IOException {
+                            JSONParser parser = new JSONParser();
                             try {
-                                NamedEntityData namedEntityData = readPrefabData(prefabName, prefabData);
-                                prefabsByName.put(prefabName, namedEntityData);
+                                JSONObject entity = (JSONObject) parser.parse(new InputStreamReader(prefabData, Charset.forName("UTF-8")));
+                                jsons.put(prefabName, entity);
                             } catch (ParseException exp) {
                                 throw new IOException("Unable to read prefab data", exp);
                             }
                         }
                     });
+
+            while (!jsons.isEmpty()) {
+                boolean read = false;
+                for (Map.Entry<String, JSONObject> stringJSONObjectEntry : jsons.entrySet()) {
+                    String prefabName = stringJSONObjectEntry.getKey();
+                    NamedEntityData namedEntityData = readPrefabData(prefabName, stringJSONObjectEntry.getValue());
+                    if (namedEntityData != null) {
+                        jsons.remove(prefabName);
+                        prefabsByName.put(prefabName, namedEntityData);
+                        read = true;
+                        break;
+                    }
+                }
+                if (!read) {
+                    throw new RuntimeException("Unable to read all prefabs");
+                }
+            }
         } catch (IOException exp) {
             throw new RuntimeException("Unable to read prefab data", exp);
         }
@@ -89,10 +110,11 @@ public class SourcedPrefabManager extends AbstractLifeCycleSystem implements Pre
         return result;
     }
 
-    private NamedEntityData readPrefabData(final String prefabName, InputStream prefabInputStream) throws IOException, ParseException {
+    private NamedEntityData readPrefabData(final String prefabName, JSONObject json) {
         final EntityData entityData = jsonEntitySerializer.readEntityData(
-                new InputStreamReader(prefabInputStream, Charset.forName("UTF-8")),
-                nameComponentManager, internalComponentManager, componentFieldConverter);
+                json, nameComponentManager, internalComponentManager, componentFieldConverter, prefabsByName);
+        if (entityData == null)
+            return null;
         return new NamedEntityData() {
             @Override
             public String getName() {

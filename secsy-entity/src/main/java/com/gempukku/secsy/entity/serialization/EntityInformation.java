@@ -5,12 +5,12 @@ import com.gempukku.secsy.entity.io.ComponentData;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.entity.io.StoredEntityData;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityInformation implements StoredEntityData {
     private int entityId = 0;
-    private List<ComponentInformation> components = new LinkedList<ComponentInformation>();
+    private Map<Class<? extends Component>, ComponentInformation> components = new HashMap<Class<? extends Component>, ComponentInformation>();
 
     public EntityInformation() {
     }
@@ -23,29 +23,21 @@ public class EntityInformation implements StoredEntityData {
 
 
     public Iterable<ComponentInformation> getComponentsData() {
-        return components;
+        return components.values();
     }
 
     @Override
     public ComponentData getComponentData(Class<? extends Component> componentClass) {
-        for (ComponentInformation component : components) {
-            if (component.getComponentClass() == componentClass)
-                return component;
-        }
-        return null;
+        return components.get(componentClass);
     }
 
     @Override
     public boolean hasComponent(Class<? extends Component> componentClass) {
-        for (ComponentInformation component : components) {
-            if (component.getComponentClass() == componentClass)
-                return true;
-        }
-        return false;
+        return components.containsKey(componentClass);
     }
 
     public void addComponent(ComponentInformation componentInformation) {
-        components.add(componentInformation);
+        components.put(componentInformation.getComponentClass(), componentInformation);
     }
 
     @Override

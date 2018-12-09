@@ -9,6 +9,7 @@ import com.gempukku.retro.logic.combat.MeleeTargetComponent;
 import com.gempukku.retro.logic.equipment.ItemAddedToInventory;
 import com.gempukku.retro.logic.equipment.ItemProvider;
 import com.gempukku.retro.logic.player.PlayerProvider;
+import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.InventoryComponent;
 import com.gempukku.retro.model.WeaponComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -19,6 +20,7 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
+import com.gempukku.secsy.gaming.physics.basic2d.MovingComponent;
 import com.gempukku.secsy.gaming.time.TimeManager;
 import com.google.common.base.Predicate;
 
@@ -35,6 +37,8 @@ public class WeaponSystem {
     private TimeManager timeManager;
     @Inject
     private PlayerProvider playerProvider;
+    @Inject
+    private SpawnManager spawnManager;
 
     private boolean previousPressed;
     private boolean nextPressed;
@@ -121,6 +125,27 @@ public class WeaponSystem {
         String equippedItemName = inventoryComponent.getEquippedItem();
         EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
         equippedItem.send(new WeaponAttack(attacker));
+    }
+
+    @ReceiveEvent
+    public void attackedWithSpawningWeapon(WeaponAttack attackedWith, EntityRef weapon, SpawningWeaponComponent spawningWeapon) {
+        EntityRef attacker = attackedWith.getAttacker();
+        HorizontalOrientationComponent orientation = attacker.getComponent(HorizontalOrientationComponent.class);
+        Position2DComponent position = attacker.getComponent(Position2DComponent.class);
+        float x = position.getX() + spawningWeapon.getX() * (orientation.isFacingRight() ? 1 : -1);
+        float y = position.getY() + spawningWeapon.getY();
+
+        String prefab = spawningWeapon.getPrefab();
+        EntityRef spawnedEntity = spawnManager.spawnEntityAt(prefab, x, y);
+        if (!orientation.isFacingRight()) {
+            MovingComponent moving = spawnedEntity.getComponent(MovingComponent.class);
+            moving.setSpeedX(-moving.getSpeedX());
+            spawnedEntity.saveChanges();
+        }
+
+        CombatComponent combat = attacker.getComponent(CombatComponent.class);
+        combat.setNextAttackTime(timeManager.getTime() + spawningWeapon.getCoolDown());
+        attacker.saveChanges();
     }
 
     @ReceiveEvent

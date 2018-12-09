@@ -9,7 +9,7 @@
   "Weapon": {},
   "MeleeWeapon": {
     "damageAmount": 10,
-    "coolDown": 200,
+    "coolDown": 300,
     "minimumRange": 0.1,
     "maximumRange": 0.3,
     "minimumHeight": 0.05,
