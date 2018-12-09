@@ -1,0 +1,6 @@
+{
+  "import": "abstractCharacter",
+  "FactionMember": {
+    "faction": "enemy"
+  }
+}

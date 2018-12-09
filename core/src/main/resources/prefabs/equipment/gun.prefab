@@ -15,7 +15,7 @@
   },
   "SpawningWeapon": {
     "coolDown": 200,
-    "prefab": "bullet",
+    "prefab": "playerBullet",
     "x": 0.1,
     "y": 0.15
   }

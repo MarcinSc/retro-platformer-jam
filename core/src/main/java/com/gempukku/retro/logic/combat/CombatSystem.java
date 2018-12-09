@@ -1,6 +1,7 @@
 package com.gempukku.retro.logic.combat;
 
 import com.badlogic.gdx.graphics.Color;
+import com.gempukku.retro.logic.faction.FactionManager;
 import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.retro.render.FadingSpriteComponent;
@@ -38,15 +39,17 @@ public class CombatSystem {
     private DelayManager delayManager;
     @Inject
     private SpawnManager spawnManager;
+    @Inject
+    private FactionManager factionManager;
 
     @ReceiveEvent
-    public void vulnerableDamaged(SensorContactBegin contact, EntityRef entity, VulnerableComponent vulnerable) {
+    public void vulnerableDamaged(SensorContactBegin contact, EntityRef vulnerableEntity, VulnerableComponent vulnerable) {
         if (contact.getSensorType().equals("body")) {
             EntityRef sensorTrigger = contact.getSensorTrigger();
             CausesVulnerabilityComponent cause = sensorTrigger.getComponent(CausesVulnerabilityComponent.class);
-            if (sensorTrigger.hasComponent(CausesVulnerabilityComponent.class)) {
+            if (cause != null) {
                 boolean vulnerableNow = true;
-                TemporarilyInvulnerableComponent temporarilyInvulnerable = entity.getComponent(TemporarilyInvulnerableComponent.class);
+                TemporarilyInvulnerableComponent temporarilyInvulnerable = vulnerableEntity.getComponent(TemporarilyInvulnerableComponent.class);
                 if (temporarilyInvulnerable != null) {
                     long time = timeManager.getTime();
                     long effectStart = temporarilyInvulnerable.getEffectStart();
@@ -55,8 +58,9 @@ public class CombatSystem {
                         vulnerableNow = false;
                     }
                 }
-                if (vulnerableNow)
-                    entity.send(new EntityDamaged(sensorTrigger, null, cause.getDamageAmount()));
+                if (vulnerableNow && factionManager.isEnemy(sensorTrigger, vulnerableEntity)) {
+                    vulnerableEntity.send(new EntityDamaged(sensorTrigger, null, cause.getDamageAmount()));
+                }
             }
         }
     }

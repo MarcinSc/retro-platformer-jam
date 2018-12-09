@@ -1,11 +1,8 @@
 {
-  "Position2D": {},
-  "Obstacle": {},
+  "import": "platform",
   "Platform": {
     "textureAtlasId": "sprites",
     "centerImage": "images/ceiling.png",
     "horizontal": true
-  },
-  "Ground": {},
-  "SensorTrigger": {}
+  }
 }

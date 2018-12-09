@@ -1,0 +1,6 @@
+{
+  "import": "abstractBullet",
+  "FactionMember": {
+    "faction": "enemy"
+  }
+}

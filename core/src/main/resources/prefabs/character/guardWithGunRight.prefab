@@ -1,37 +1,7 @@
 {
-  "Position2D": {},
-  "Moving": {},
-  "CollidingBody": {
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3
-  },
-  "Grounded": {},
+  "import": "abstractEnemy",
   "HorizontalOrientation": {
     "facingRight": true
-  },
-  "Sensor": {
-    "sensors": [
-      {
-        "type": "body",
-        "left": -0.08,
-        "right": 0.08,
-        "up": 0.28,
-        "down": 0.02
-      },
-      {
-        "type": "groundSensor",
-        "left": -0.1,
-        "right": 0.1,
-        "up": 0.01,
-        "down": -0.01
-      }
-    ]
-  },
-  "SensorTrigger": {
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3
   },
   "Sprite": {
     "fileName": "images/guard.png",
@@ -40,8 +10,6 @@
     "up": 0.3,
     "priority": 0
   },
-  "Vulnerable": {},
-  "MeleeTarget": {},
   "Health": {
     "maxHealth": 10,
     "currentHealth": 10

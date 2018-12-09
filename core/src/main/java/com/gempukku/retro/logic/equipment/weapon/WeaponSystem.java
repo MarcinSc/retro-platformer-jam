@@ -5,9 +5,10 @@ import com.badlogic.gdx.Input;
 import com.gempukku.retro.logic.combat.CombatComponent;
 import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.logic.combat.EntityDamaged;
-import com.gempukku.retro.logic.combat.MeleeTargetComponent;
+import com.gempukku.retro.logic.combat.VulnerableComponent;
 import com.gempukku.retro.logic.equipment.ItemAddedToInventory;
 import com.gempukku.retro.logic.equipment.ItemProvider;
+import com.gempukku.retro.logic.faction.FactionManager;
 import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.InventoryComponent;
@@ -39,6 +40,8 @@ public class WeaponSystem {
     private PlayerProvider playerProvider;
     @Inject
     private SpawnManager spawnManager;
+    @Inject
+    private FactionManager factionManager;
 
     private boolean previousPressed;
     private boolean nextPressed;
@@ -170,11 +173,13 @@ public class WeaponSystem {
                 new Predicate<EntityRef>() {
                     @Override
                     public boolean apply(@Nullable EntityRef entityRef) {
-                        return entityRef.hasComponent(MeleeTargetComponent.class);
+                        return entityRef.hasComponent(VulnerableComponent.class);
                     }
                 });
-        for (EntityRef attackedEntity : attackedEntities)
-            attackedEntity.send(new EntityDamaged(attacker, weapon, meleeWeapon.getDamageAmount()));
+        for (EntityRef attackedEntity : attackedEntities) {
+            if (factionManager.isEnemy(attacker, attackedEntity))
+                attackedEntity.send(new EntityDamaged(attacker, weapon, meleeWeapon.getDamageAmount()));
+        }
 
         CombatComponent combat = attacker.getComponent(CombatComponent.class);
         combat.setNextAttackTime(timeManager.getTime() + meleeWeapon.getCoolDown());

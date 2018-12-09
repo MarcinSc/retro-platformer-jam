@@ -1,4 +1,5 @@
 {
+  "import": "abstractCharacter",
   "Player": {
     "fileName": "images/player.png",
     "left": -0.1,
@@ -10,46 +11,10 @@
     "moveSpeed": 2,
     "jumpSpeed": 3.5
   },
-  "Position2D": {},
-  "Moving": {},
-  "CollidingBody": {
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3
-  },
-  "Grounded": {},
-  "HorizontalOrientation": {
-    "facingRight": true
-  },
-  "Sensor": {
-    "sensors": [
-      {
-        "type": "groundSensor",
-        "left": -0.1,
-        "right": 0.1,
-        "up": 0.01,
-        "down": -0.01
-      },
-      {
-        "type": "body",
-        "left": -0.08,
-        "right": 0.08,
-        "up": 0.28,
-        "down": 0.02
-      }
-    ]
-  },
-  "SensorTrigger": {
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3
-  },
   "CameraTracked": {
     "y": 0.2
   },
-  "AffectedByGravity": {},
   "Combat": {},
-  "MeleeTarget": {},
   "Health": {
     "maxHealth": 5,
     "currentHealth": 5
@@ -64,5 +29,8 @@
       "hand"
     ],
     "equippedItem": "hand"
+  },
+  "FactionMember": {
+    "faction": "player"
   }
 }

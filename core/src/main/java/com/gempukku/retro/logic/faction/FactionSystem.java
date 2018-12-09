@@ -1,9 +1,9 @@
 package com.gempukku.retro.logic.faction;
 
+import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
-import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
@@ -15,9 +15,10 @@ public class FactionSystem extends AbstractLifeCycleSystem implements FactionMan
     @Inject
     private PrefabManager prefabManager;
     @Inject
-    private EntityManager entityManager;
-    @Inject
     private EntityIndexManager entityIndexManager;
+    @Inject
+    private SpawnManager spawnManager;
+
     private EntityIndex factionEntities;
 
     @Override
@@ -28,7 +29,7 @@ public class FactionSystem extends AbstractLifeCycleSystem implements FactionMan
     @Override
     public void postInitialize() {
         for (NamedEntityData namedEntityData : prefabManager.findPrefabsWithComponents(FactionComponent.class)) {
-            entityManager.createEntityFromPrefab(namedEntityData.getName());
+            spawnManager.spawnEntity(namedEntityData.getName());
         }
     }
 
