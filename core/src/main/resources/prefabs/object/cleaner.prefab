@@ -45,5 +45,9 @@
     "maxHealth": 1,
     "currentHealth": 1
   },
-  "DestroyOnDeath": {}
+  "DestroyOnDeath": {},
+  "ReplacePrefabOnDeath": {
+    "oldPrefab": "blockedElevator",
+    "newPrefab": "openedElevator"
+  }
 }

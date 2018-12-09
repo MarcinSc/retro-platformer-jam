@@ -110,7 +110,7 @@ public class CombatSystem {
         }
     }
 
-    @ReceiveEvent
+    @ReceiveEvent(priority = -1000)
     public void destroyDead(EntityDied entityDied, EntityRef entity, DestroyOnDeathComponent destroyOnDeath) {
         entityManager.destroyEntity(entity);
     }

@@ -134,6 +134,10 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
     private void createEntityAtPosition(String prefab, float x, float y) {
         EntityRef entity = entityManager.createEntityFromPrefab(prefab);
+
+        PrefabComponent prefabComp = entity.createComponent(PrefabComponent.class);
+        prefabComp.setPrefab(prefab);
+
         Position2DComponent position = entity.getComponent(Position2DComponent.class);
         position.setX(x);
         position.setY(y);

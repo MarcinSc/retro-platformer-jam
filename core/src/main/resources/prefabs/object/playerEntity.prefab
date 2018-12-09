@@ -70,7 +70,7 @@
   },
   "Vulnerable": {},
   "TemporarilyInvulnerable": {
-    "effectStart": -1000,
-    "effectDuration": 1000
+    "effectStart": -2000,
+    "effectDuration": 1300
   }
 }

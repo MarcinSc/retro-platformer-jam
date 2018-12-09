@@ -1,0 +1,10 @@
+{
+  "Position2D": {},
+  "Sprite": {
+    "fileName": "images/openElevator.png",
+    "priority": 2,
+    "left": -0.2,
+    "right": 0.2,
+    "up": 0.6
+  }
+}
