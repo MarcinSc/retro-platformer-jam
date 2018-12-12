@@ -1,8 +1,7 @@
 {
   "import": "platform",
   "Oscillating": {
-    "cycleLength": 4000,
-    "distanceTimeFunction": "1*0-1-0"
+    "cycleLength": 4000
   },
   "Transporter": {}
 }

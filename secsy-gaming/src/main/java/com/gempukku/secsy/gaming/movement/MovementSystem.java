@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.movement;
+package com.gempukku.secsy.gaming.movement;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -68,7 +68,7 @@ public class MovementSystem extends AbstractLifeCycleSystem {
 
     @ReceiveEvent
     public void transporter(EntityMoved moved, EntityRef entity, TransporterComponent transporter) {
-        for (EntityRef entityRef : physics.getSensorEntitiesContactedBy(entity, "groundSensor")) {
+        for (EntityRef entityRef : physics.getSensorEntitiesContactedBy(entity, transporter.getSensorType())) {
             Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
             position.setX(position.getX() + moved.getNewX() - moved.getOldX());
             position.setY(position.getY() + moved.getNewY() - moved.getOldY());
