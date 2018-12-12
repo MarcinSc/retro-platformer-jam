@@ -75,7 +75,7 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
                 long jumpLength = controlled.getJumpLength();
                 if (timeSinceJump < jumpLength) {
                     float perc = 1f - 1f * timeSinceJump / jumpLength;
-                    float a = controlled.getJumpSpeed() * perc;
+                    float a = controlled.getJumpAcceleration() * perc;
                     acceleration.addAcceleration(0, a);
                 }
             }

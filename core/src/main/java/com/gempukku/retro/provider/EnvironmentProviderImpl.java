@@ -23,6 +23,6 @@ public class EnvironmentProviderImpl implements EnvironmentProvider {
         GroundedComponent grounded = entity.getComponent(GroundedComponent.class);
         if (grounded != null && grounded.isGrounded())
             return 0.5f;
-        return 0.1f;
+        return 0f;
     }
 }

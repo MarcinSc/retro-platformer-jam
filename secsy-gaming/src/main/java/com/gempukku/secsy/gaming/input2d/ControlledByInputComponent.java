@@ -5,10 +5,9 @@ import com.gempukku.secsy.entity.component.DefaultValue;
 
 public interface ControlledByInputComponent extends Component {
     float getJumpImpulse();
-
-    float getJumpSpeed();
-
     float getMoveSpeed();
+
+    float getJumpAcceleration();
 
     @DefaultValue("1")
     int getJumpMaxCount();

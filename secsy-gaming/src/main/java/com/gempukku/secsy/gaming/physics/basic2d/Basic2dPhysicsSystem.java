@@ -154,8 +154,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
             result.scl(seconds).add(movingComponent.getSpeedX(), movingComponent.getSpeedY());
 
-            result.x *= 1f - (friction * seconds);
-            result.y *= 1f - (friction * seconds);
+            result.x *= 1f - Math.min(1, friction * seconds);
+            result.y *= 1f - Math.min(1, friction * seconds);
 
             float totalSpeed = result.len();
             if (totalSpeed > terminalVelocity)
