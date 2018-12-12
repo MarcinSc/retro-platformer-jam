@@ -5,21 +5,14 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.faction.FactionManager;
-import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
 @RegisterSystem(profiles = "combat")
 public class CombatSystem {
-    @Inject
-    private Basic2dPhysics basic2dPhysics;
-    @Inject
-    private GameEntityProvider gameEntityProvider;
-
     @Inject
     private TimeManager timeManager;
     @Inject
