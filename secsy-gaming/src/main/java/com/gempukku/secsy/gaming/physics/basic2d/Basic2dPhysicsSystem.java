@@ -232,21 +232,25 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
     private void applyMovement(float seconds) {
         for (EntityRef movingEntity : movingEntities) {
+            MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
+            Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
+            float oldX = position.getX();
+            float oldY = position.getY();
+            float newX = oldX + moving.getSpeedX() * seconds;
+            float newY = oldY + moving.getSpeedY() * seconds;
+
             int entityId = internalEntityManager.getEntityId(movingEntity);
             if (collidingBodies.containsKey(entityId) || obstacles.containsKey(entityId)) {
-                MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
-                Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
-                float oldX = position.getX();
-                float oldY = position.getY();
-                float newX = oldX + moving.getSpeedX() * seconds;
-                float newY = oldY + moving.getSpeedY() * seconds;
-
                 CollidingBody collidingBody = collidingBodies.get(entityId);
                 if (collidingBody != null)
                     collidingBody.updatePositions(oldX, oldY, newX, newY);
                 Obstacle obstacle = obstacles.get(entityId);
                 if (obstacle != null)
                     obstacle.updatePositions(oldX, oldY, newX, newY);
+            } else {
+                position.setX(newX);
+                position.setY(newY);
+                movingEntity.saveChanges();
             }
         }
     }
