@@ -1,11 +1,10 @@
-package com.gempukku.retro.logic.trigger;
+package com.gempukku.secsy.gaming.movement;
 
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.gaming.combat.DestroyOnCollisionComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;

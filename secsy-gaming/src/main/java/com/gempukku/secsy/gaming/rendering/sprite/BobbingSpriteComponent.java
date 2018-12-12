@@ -1,6 +1,4 @@
-package com.gempukku.retro.model;
-
-import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
+package com.gempukku.secsy.gaming.rendering.sprite;
 
 public interface BobbingSpriteComponent extends SpriteComponent {
     float getBobbingAmplitude();

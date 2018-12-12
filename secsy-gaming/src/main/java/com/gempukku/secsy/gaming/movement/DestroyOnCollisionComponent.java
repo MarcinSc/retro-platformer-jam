@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.combat;
+package com.gempukku.secsy.gaming.movement;
 
 import com.gempukku.secsy.entity.Component;
 

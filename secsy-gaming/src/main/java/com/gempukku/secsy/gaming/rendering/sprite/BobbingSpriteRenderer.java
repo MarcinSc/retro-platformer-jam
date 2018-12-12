@@ -1,8 +1,7 @@
-package com.gempukku.retro.render;
+package com.gempukku.secsy.gaming.rendering.sprite;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
-import com.gempukku.retro.model.BobbingSpriteComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -14,11 +13,9 @@ import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.easing.EasingResolver;
-import com.gempukku.secsy.gaming.rendering.sprite.GatherSprites;
-import com.gempukku.secsy.gaming.rendering.sprite.SpriteRenderer;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem
+@RegisterSystem(profiles = "bobbingSprites")
 public class BobbingSpriteRenderer extends AbstractLifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;

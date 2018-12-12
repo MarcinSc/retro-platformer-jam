@@ -25,6 +25,7 @@ import com.gempukku.secsy.gaming.physics.basic2d.ObstacleVertices;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
+import com.gempukku.secsy.gaming.rendering.sprite.BobbingSpriteComponent;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;

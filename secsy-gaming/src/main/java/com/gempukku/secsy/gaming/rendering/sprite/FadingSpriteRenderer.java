@@ -1,4 +1,4 @@
-package com.gempukku.retro.render;
+package com.gempukku.secsy.gaming.rendering.sprite;
 
 import com.badlogic.gdx.graphics.Color;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -9,11 +9,9 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
-import com.gempukku.secsy.gaming.rendering.sprite.GatherSprites;
-import com.gempukku.secsy.gaming.rendering.sprite.SpriteRenderer;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem
+@RegisterSystem(profiles = "fadingSprites")
 public class FadingSpriteRenderer extends AbstractLifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;

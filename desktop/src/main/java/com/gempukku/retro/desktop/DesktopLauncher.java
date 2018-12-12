@@ -38,6 +38,8 @@ public class DesktopLauncher {
         activeProfiles.add("aiWait");
         activeProfiles.add("delayActions");
         activeProfiles.add("sprites");
+        activeProfiles.add("bobbingSprites");
+        activeProfiles.add("fadingSprites");
         activeProfiles.add("genesisSimulation");
         activeProfiles.add("colorTint");
         activeProfiles.add("actions");
