@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.equipment.weapon;
+package com.gempukku.secsy.gaming.inventory.weapon;
 
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.event.Event;

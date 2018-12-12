@@ -45,6 +45,7 @@ public class DesktopLauncher {
         activeProfiles.add("faction");
         activeProfiles.add("spawn");
         activeProfiles.add("combat");
+        activeProfiles.add("weapon");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.fullscreen = Boolean.parseBoolean(arg[0]);

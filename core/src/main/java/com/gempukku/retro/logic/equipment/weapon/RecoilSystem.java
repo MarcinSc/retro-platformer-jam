@@ -5,6 +5,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
+import com.gempukku.secsy.gaming.inventory.weapon.WeaponAttack;
 
 @RegisterSystem
 public class RecoilSystem {
