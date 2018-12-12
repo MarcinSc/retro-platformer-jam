@@ -24,7 +24,7 @@ import java.util.*;
 public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements PhysicsSystem, Basic2dPhysics, EntityListener {
     // Maximum at 60fps
     private static final float DEFAULT_MAX_TIME_STEP = 1 / 60f;
-    private static final int DEFAULT_GRAVITY = -10;
+    private static final Vector2 DEFAULT_GRAVITY = new Vector2(0, -10);
     // Terminal velocity of a human in air
     private static final float DEFAULT_TERMINAL_VELOCITY = 53;
 
@@ -37,9 +37,9 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     @Inject(optional = true)
     private CollisionFilter collisionFilter;
     @Inject(optional = true)
-    private GravityProvider gravityProvider;
+    private GravityProvider gravityProvider = new DefaultGravityProvider();
     @Inject(optional = true)
-    private TimeStepProvider timeStepProvider;
+    private TimeStepProvider timeStepProvider = new DefaultTimeStepProvider();
 
     private Map<Integer, CollidingBody> collidingBodies = new HashMap<Integer, CollidingBody>();
     private Map<Integer, Obstacle> obstacles = new HashMap<Integer, Obstacle>();
@@ -116,7 +116,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     public void processPhysics() {
         float seconds = timeManager.getTimeSinceLastUpdate() / 1000f;
 
-        float maxTimeStep = getMaxTimeStep();
+        float maxTimeStep = timeStepProvider.getMaxTimeStep();
         while (seconds > 0) {
             float iterationTime = Math.min(seconds, maxTimeStep);
             applyGravity(iterationTime);
@@ -128,35 +128,25 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         }
     }
 
-    private float getMaxTimeStep() {
-        if (timeStepProvider != null)
-            return timeStepProvider.getMaxTimeStep();
-        return DEFAULT_MAX_TIME_STEP;
-    }
+    private Vector2 tmpVector = new Vector2();
 
     private void applyGravity(float seconds) {
         for (EntityRef entity : affectedByGravity) {
-            float gravity = getGravity(entity);
-            float terminalVelocity = getTerminalVelocity(entity);
+            Vector2 result = gravityProvider.getGravityForEntity(entity, tmpVector);
+            float terminalVelocity = gravityProvider.getTerminalVelocityForEntity(entity);
 
             MovingComponent movingComponent = entity.getComponent(MovingComponent.class);
-            float desiredSpeed = movingComponent.getSpeedY() + gravity * seconds;
-            float speedY = Math.signum(desiredSpeed) * Math.min(terminalVelocity, Math.abs(desiredSpeed));
-            movingComponent.setSpeedY(speedY);
+
+            result.scl(seconds).add(movingComponent.getSpeedX(), movingComponent.getSpeedY());
+
+            float totalSpeed = result.len();
+            if (totalSpeed > terminalVelocity)
+                result.scl(terminalVelocity / totalSpeed);
+
+            movingComponent.setSpeedX(result.x);
+            movingComponent.setSpeedY(result.y);
             entity.saveChanges();
         }
-    }
-
-    private float getGravity(EntityRef entity) {
-        if (gravityProvider != null)
-            return gravityProvider.getGravityForEntity(entity);
-        return DEFAULT_GRAVITY;
-    }
-
-    private float getTerminalVelocity(EntityRef entity) {
-        if (gravityProvider != null)
-            return gravityProvider.getTerminalVelocityForEntity(entity);
-        return DEFAULT_TERMINAL_VELOCITY;
     }
 
     private void processSensors() {
@@ -679,5 +669,24 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
     private void removeCollidingBody(int entityId) {
         collidingBodies.remove(entityId);
+    }
+
+    private class DefaultGravityProvider implements GravityProvider {
+        @Override
+        public Vector2 getGravityForEntity(EntityRef entity, Vector2 toUse) {
+            return toUse.set(DEFAULT_GRAVITY);
+        }
+
+        @Override
+        public float getTerminalVelocityForEntity(EntityRef entity) {
+            return DEFAULT_TERMINAL_VELOCITY;
+        }
+    }
+
+    private class DefaultTimeStepProvider implements TimeStepProvider {
+        @Override
+        public float getMaxTimeStep() {
+            return DEFAULT_MAX_TIME_STEP;
+        }
     }
 }
