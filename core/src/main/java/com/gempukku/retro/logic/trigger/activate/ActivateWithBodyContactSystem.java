@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.activate;
+package com.gempukku.retro.logic.trigger.activate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +10,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
+import com.gempukku.secsy.gaming.physics.basic2d.activate.EntityActivated;
 import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;

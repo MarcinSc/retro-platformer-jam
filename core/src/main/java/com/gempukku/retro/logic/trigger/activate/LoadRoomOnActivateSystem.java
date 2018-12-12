@@ -1,12 +1,12 @@
 package com.gempukku.retro.logic.trigger.activate;
 
-import com.gempukku.retro.logic.activate.EntityActivated;
 import com.gempukku.retro.logic.room.LoadRoom;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
+import com.gempukku.secsy.gaming.physics.basic2d.activate.EntityActivated;
 
 @RegisterSystem
 public class LoadRoomOnActivateSystem {

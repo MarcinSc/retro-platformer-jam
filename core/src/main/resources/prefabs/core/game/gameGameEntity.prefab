@@ -1,7 +1,7 @@
 {
   "GlobalEntity": {},
   "Room": {
-    "room": "rooms/basement.json",
+    "room": "rooms/entrance.json",
     "x": 0,
     "y": 0
   }
