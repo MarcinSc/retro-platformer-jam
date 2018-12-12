@@ -9,9 +9,13 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.ai.AIEngine;
+import com.gempukku.secsy.gaming.component.GroundComponent;
 import com.gempukku.secsy.gaming.component.GroundedComponent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.MovingComponent;
+import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
+import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
+import com.gempukku.secsy.gaming.physics.basic2d.SensorContactEnd;
 
 @RegisterSystem(profiles = {"ai", "aiMovement"})
 public class AIMovementSystem extends AbstractLifeCycleSystem {
@@ -50,6 +54,34 @@ public class AIMovementSystem extends AbstractLifeCycleSystem {
                 moving.setSpeedX(facingRight ? speedX : -speedX);
                 movingEntity.saveChanges();
             }
+        }
+    }
+
+    @ReceiveEvent
+    public void sensorStart(SensorContactBegin contactBegin, EntityRef aiEntity, AIApplyMovementIfPossibleComponent aiMovement,
+                            HorizontalOrientationComponent horizontalOrientation) {
+        boolean right = horizontalOrientation.isFacingRight();
+        if (right && contactBegin.getSensorType().equals(aiMovement.getRightObstacleSensor())) {
+            if (contactBegin.getSensorTrigger().hasComponent(ObstacleComponent.class)) {
+                aiEntity.send(new AICantMove());
+            }
+        } else if (!right && contactBegin.getSensorType().equals(aiMovement.getLeftObstacleSensor())) {
+            if (contactBegin.getSensorTrigger().hasComponent(ObstacleComponent.class)) {
+                aiEntity.send(new AICantMove());
+            }
+        }
+    }
+
+    @ReceiveEvent
+    public void cantMove(SensorContactEnd sensorContactEnd, EntityRef entity, AIApplyMovementIfPossibleComponent aiApplyMovement,
+                         HorizontalOrientationComponent horizontalOrientation) {
+        boolean right = horizontalOrientation.isFacingRight();
+        if (right && sensorContactEnd.getSensorType().equals(aiApplyMovement.getRightGroundSensor())
+                && sensorContactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
+            entity.send(new AICantMove());
+        } else if (!right && sensorContactEnd.getSensorType().equals(aiApplyMovement.getLeftGroundSensor())
+                && sensorContactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
+            entity.send(new AICantMove());
         }
     }
 }
