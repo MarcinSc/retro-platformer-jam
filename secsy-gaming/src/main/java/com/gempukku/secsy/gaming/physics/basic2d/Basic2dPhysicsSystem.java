@@ -119,33 +119,11 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         float maxTimeStep = timeStepProvider.getMaxTimeStep();
         while (seconds > 0) {
             float iterationTime = Math.min(seconds, maxTimeStep);
-            applyGravity(iterationTime);
             applyMovement(iterationTime);
             processCollisions();
             updatePositions();
             processSensors();
             seconds -= iterationTime;
-        }
-    }
-
-    private Vector2 tmpVector = new Vector2();
-
-    private void applyGravity(float seconds) {
-        for (EntityRef entity : affectedByGravity) {
-            Vector2 result = environmentProvider.getGravityForEntity(entity, tmpVector);
-            float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(entity);
-
-            MovingComponent movingComponent = entity.getComponent(MovingComponent.class);
-
-            result.scl(seconds).add(movingComponent.getSpeedX(), movingComponent.getSpeedY());
-
-            float totalSpeed = result.len();
-            if (totalSpeed > terminalVelocity)
-                result.scl(terminalVelocity / totalSpeed);
-
-            movingComponent.setSpeedX(result.x);
-            movingComponent.setSpeedY(result.y);
-            entity.saveChanges();
         }
     }
 
@@ -230,9 +208,24 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         }
     }
 
+    private Vector2 tmpVector = new Vector2();
+
     private void applyMovement(float seconds) {
         for (EntityRef movingEntity : movingEntities) {
+            Vector2 result = environmentProvider.getGravityForEntity(movingEntity, tmpVector);
+            float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(movingEntity);
+
             MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
+
+            result.scl(seconds).add(moving.getSpeedX(), moving.getSpeedY());
+
+            float totalSpeed = result.len();
+            if (totalSpeed > terminalVelocity)
+                result.scl(terminalVelocity / totalSpeed);
+
+            moving.setSpeedX(result.x);
+            moving.setSpeedY(result.y);
+
             Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
             float oldX = position.getX();
             float oldY = position.getY();
@@ -250,8 +243,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
             } else {
                 position.setX(newX);
                 position.setY(newY);
-                movingEntity.saveChanges();
             }
+            movingEntity.saveChanges();
         }
     }
 
