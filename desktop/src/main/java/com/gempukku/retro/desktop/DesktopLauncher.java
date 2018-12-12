@@ -39,6 +39,8 @@ public class DesktopLauncher {
         activeProfiles.add("sprites");
         activeProfiles.add("genesisSimulation");
         activeProfiles.add("colorTint");
+        activeProfiles.add("actions");
+        activeProfiles.add("activateWithSensor");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.fullscreen = Boolean.parseBoolean(arg[0]);

@@ -16,7 +16,7 @@
     "right": 0.2,
     "up": 0.6
   },
-  "ActivateWithBodyContact": {},
+  "ActivatedByActionWithSensor": {},
   "LoadRoomOnActivate": {
     "roomPath": "rooms/basement.json",
     "x": 0,

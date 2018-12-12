@@ -10,11 +10,12 @@ import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
+import com.gempukku.secsy.gaming.input.ActionSchemeProvider;
 import com.gempukku.secsy.gaming.input2d.InputScheme2dProvider;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem(shared = InputScheme2dProvider.class)
-public class PlayerControls extends AbstractLifeCycleSystem implements InputScheme2dProvider {
+@RegisterSystem(shared = {InputScheme2dProvider.class, ActionSchemeProvider.class})
+public class PlayerControls extends AbstractLifeCycleSystem implements InputScheme2dProvider, ActionSchemeProvider {
     @Inject
     private TimeManager timeManager;
     @Inject
@@ -23,9 +24,15 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
     private int[] jumpKeys = new int[]{Input.Keys.W, Input.Keys.UP};
     private int[] leftKeys = new int[]{Input.Keys.A, Input.Keys.LEFT};
     private int[] rightKeys = new int[]{Input.Keys.D, Input.Keys.RIGHT};
+    private int[] actionKeys = new int[]{Input.Keys.X};
     private int attackKey = Input.Keys.SPACE;
 
     private boolean attackPressed;
+
+    @Override
+    public boolean isActionActivated() {
+        return isAnyPressed(actionKeys);
+    }
 
     @Override
     public boolean isJumpActivated() {

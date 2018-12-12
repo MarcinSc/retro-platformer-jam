@@ -11,6 +11,8 @@
     "moveSpeed": 2,
     "jumpSpeed": 3.5
   },
+  "PerformsActions": {},
+  "ActionActivatesSensor": {}
   "CameraTracked": {
     "y": 0.2
   },
