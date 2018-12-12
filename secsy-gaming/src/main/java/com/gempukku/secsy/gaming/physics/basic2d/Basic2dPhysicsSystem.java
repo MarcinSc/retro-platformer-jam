@@ -5,6 +5,7 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.*;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.Event;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
@@ -27,6 +28,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     private static final Vector2 DEFAULT_GRAVITY = new Vector2(0, -10);
     // Terminal velocity of a human in air
     private static final float DEFAULT_TERMINAL_VELOCITY = 53;
+    private static final float DEFAULT_FRICTION = 0;
 
     @Inject
     private InternalEntityManager internalEntityManager;
@@ -119,11 +121,46 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         float maxTimeStep = timeStepProvider.getMaxTimeStep();
         while (seconds > 0) {
             float iterationTime = Math.min(seconds, maxTimeStep);
+            calculateSpeed(iterationTime);
             applyMovement(iterationTime);
             processCollisions();
             updatePositions();
             processSensors();
             seconds -= iterationTime;
+        }
+    }
+
+    private Vector2 tmpVector = new Vector2();
+
+    @ReceiveEvent
+    public void gatherGravity(GatherAcceleration gatherAcceleration, EntityRef entity, AffectedByGravityComponent affectedByGravity) {
+        Vector2 gravity = environmentProvider.getGravityForEntity(entity, tmpVector);
+        gatherAcceleration.addAcceleration(gravity.x, gravity.y);
+    }
+
+    private void calculateSpeed(float seconds) {
+        for (EntityRef entity : affectedByGravity) {
+            GatherAcceleration acceleration = new GatherAcceleration();
+            entity.send(acceleration);
+
+            Vector2 result = tmpVector.set(acceleration.getAccelerationX(), acceleration.getAccelerationY());
+            float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(entity);
+            float friction = environmentProvider.getFrictionForEntity(entity);
+
+            MovingComponent movingComponent = entity.getComponent(MovingComponent.class);
+
+            result.scl(seconds).add(movingComponent.getSpeedX(), movingComponent.getSpeedY());
+
+            result.x *= 1f - (friction * seconds);
+            result.y *= 1f - (friction * seconds);
+
+            float totalSpeed = result.len();
+            if (totalSpeed > terminalVelocity)
+                result.scl(terminalVelocity / totalSpeed);
+
+            movingComponent.setSpeedX(result.x);
+            movingComponent.setSpeedY(result.y);
+            entity.saveChanges();
         }
     }
 
@@ -208,24 +245,9 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         }
     }
 
-    private Vector2 tmpVector = new Vector2();
-
     private void applyMovement(float seconds) {
         for (EntityRef movingEntity : movingEntities) {
-            Vector2 result = environmentProvider.getGravityForEntity(movingEntity, tmpVector);
-            float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(movingEntity);
-
             MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
-
-            result.scl(seconds).add(moving.getSpeedX(), moving.getSpeedY());
-
-            float totalSpeed = result.len();
-            if (totalSpeed > terminalVelocity)
-                result.scl(terminalVelocity / totalSpeed);
-
-            moving.setSpeedX(result.x);
-            moving.setSpeedY(result.y);
-
             Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
             float oldX = position.getX();
             float oldY = position.getY();
@@ -243,8 +265,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
             } else {
                 position.setX(newX);
                 position.setY(newY);
+                movingEntity.saveChanges();
             }
-            movingEntity.saveChanges();
         }
     }
 
@@ -677,6 +699,11 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         @Override
         public float getTerminalVelocityForEntity(EntityRef entity) {
             return DEFAULT_TERMINAL_VELOCITY;
+        }
+
+        @Override
+        public float getFrictionForEntity(EntityRef entity) {
+            return DEFAULT_FRICTION;
         }
     }
 

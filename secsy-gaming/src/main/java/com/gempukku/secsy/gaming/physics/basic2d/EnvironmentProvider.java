@@ -7,4 +7,6 @@ public interface EnvironmentProvider {
     Vector2 getGravityForEntity(EntityRef entity, Vector2 toUse);
 
     float getTerminalVelocityForEntity(EntityRef entity);
+
+    float getFrictionForEntity(EntityRef entity);
 }
