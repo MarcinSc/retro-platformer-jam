@@ -58,6 +58,16 @@
       "prefab": "stairsUp",
       "x": 0.9,
       "y": 0
+    },
+    {
+      "prefab": "guardStandRight",
+      "x": -0.05,
+      "y": 0
+    },
+    {
+      "prefab": "guardStandLeft",
+      "x": 0.45,
+      "y": 0
     }
   ]
 }
