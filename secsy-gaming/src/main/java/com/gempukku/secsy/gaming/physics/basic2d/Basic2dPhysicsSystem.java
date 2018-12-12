@@ -23,8 +23,7 @@ import java.util.*;
 
 @RegisterSystem(profiles = "basic2dPhysics", shared = {PhysicsSystem.class, Basic2dPhysics.class})
 public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements PhysicsSystem, Basic2dPhysics, EntityListener {
-    // Maximum at 60fps
-    private static final float DEFAULT_MAX_TIME_STEP = 1 / 60f;
+    private static final long DEFAULT_TIME_STEP = 16;
     private static final Vector2 DEFAULT_GRAVITY = new Vector2(0, -10);
     // Terminal velocity of a human in air
     private static final float DEFAULT_TERMINAL_VELOCITY = 53;
@@ -114,19 +113,23 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         return results;
     }
 
+    private long unprocessedTime;
+
     @Override
     public void processPhysics() {
-        float seconds = timeManager.getTimeSinceLastUpdate() / 1000f;
+        unprocessedTime += timeManager.getTimeSinceLastUpdate();
 
-        float maxTimeStep = timeStepProvider.getMaxTimeStep();
-        while (seconds > 0) {
-            float iterationTime = Math.min(seconds, maxTimeStep);
-            calculateSpeed(iterationTime);
-            applyMovement(iterationTime);
+        long physicsTime = timeManager.getTime() - unprocessedTime;
+
+        long timeStep = timeStepProvider.getTimeStep();
+        while (unprocessedTime >= timeStep) {
+            calculateSpeed(physicsTime, timeStep);
+            applyMovement(timeStep);
             processCollisions();
             updatePositions();
             processSensors();
-            seconds -= iterationTime;
+            unprocessedTime -= timeStep;
+            physicsTime += timeStep;
         }
     }
 
@@ -138,11 +141,11 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         gatherAcceleration.addAcceleration(gravity.x, gravity.y);
     }
 
-    private void calculateSpeed(float seconds) {
+    private void calculateSpeed(long physicsTime, long timeStep) {
         for (EntityRef entity : affectedByGravity) {
-            GatherAcceleration acceleration = new GatherAcceleration();
+            float seconds = timeStep / 1000f;
+            GatherAcceleration acceleration = new GatherAcceleration(physicsTime);
             entity.send(acceleration);
-
             Vector2 result = tmpVector.set(acceleration.getAccelerationX(), acceleration.getAccelerationY());
             float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(entity);
             float friction = environmentProvider.getFrictionForEntity(entity);
@@ -245,7 +248,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         }
     }
 
-    private void applyMovement(float seconds) {
+    private void applyMovement(long timeStep) {
+        float seconds = timeStep / 1000f;
         for (EntityRef movingEntity : movingEntities) {
             MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
             Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
@@ -280,23 +284,21 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                 boolean movedHorizontally = Math.abs(collidingBody.oldX - collidingBody.newX) > 0.0001;
                 boolean movedVertically = Math.abs(collidingBody.oldY - collidingBody.newY) > 0.0001;
 
+                Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
+                position.setX(collidingBody.newX);
+                position.setY(collidingBody.newY);
+
+                boolean hadCollision = collidingBody.hadCollisionX || collidingBody.hadCollisionY;
+                if (hadCollision) {
+                    MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
+                    if (collidingBody.hadCollisionX)
+                        moving.setSpeedX(0);
+                    else
+                        moving.setSpeedY(0);
+                }
+                movingEntity.saveChanges();
+
                 if (movedHorizontally || movedVertically) {
-                    Position2DComponent position = movingEntity.getComponent(Position2DComponent.class);
-                    position.setX(collidingBody.newX);
-                    position.setY(collidingBody.newY);
-
-                    boolean hadCollision = collidingBody.hadCollisionX || collidingBody.hadCollisionY;
-                    if (hadCollision) {
-                        MovingComponent moving = movingEntity.getComponent(MovingComponent.class);
-                        if (collidingBody.hadCollisionX)
-                            moving.setSpeedX(0);
-                        else
-                            moving.setSpeedY(0);
-                        movingEntity.saveChanges();
-                    } else {
-                        movingEntity.saveChanges();
-                    }
-
                     movingEntity.send(new EntityMoved(hadCollision, collidingBody.oldX, collidingBody.oldY, collidingBody.newX, collidingBody.newY));
                 }
             } else {
@@ -709,8 +711,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
     private class DefaultTimeStepProvider implements TimeStepProvider {
         @Override
-        public float getMaxTimeStep() {
-            return DEFAULT_MAX_TIME_STEP;
+        public long getTimeStep() {
+            return DEFAULT_TIME_STEP;
         }
     }
 }

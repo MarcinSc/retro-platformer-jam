@@ -18,4 +18,14 @@ public interface ControlledByInputComponent extends Component {
     int getJumpCount();
 
     void setJumpCount(int jumpCount);
+
+    boolean isJustJumped();
+
+    void setJustJumped(boolean justJumped);
+
+    long getPhysicsJumpTime();
+
+    void setPhysicsJumpTime(long jumpTime);
+
+    long getJumpLength();
 }

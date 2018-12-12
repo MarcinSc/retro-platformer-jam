@@ -6,7 +6,8 @@
   },
   "ControlledByInput": {
     "moveSpeed": 2,
-    "jumpSpeed": 3.5
+    "jumpSpeed": 30,
+    "jumpLength": 300
   },
   "PerformsActions": {},
   "ActionActivatesSensor": {},

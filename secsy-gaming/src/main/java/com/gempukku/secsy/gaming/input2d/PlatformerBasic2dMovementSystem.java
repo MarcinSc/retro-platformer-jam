@@ -12,9 +12,11 @@ import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.component.GroundComponent;
 import com.gempukku.secsy.gaming.component.GroundedComponent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
+import com.gempukku.secsy.gaming.physics.basic2d.GatherAcceleration;
 import com.gempukku.secsy.gaming.physics.basic2d.MovingComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactEnd;
+import com.gempukku.secsy.gaming.time.TimeManager;
 
 @RegisterSystem(profiles = {"platformer2dMovement", "basic2dPhysics"})
 public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
@@ -22,6 +24,8 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
     private EntityIndexManager entityIndexManager;
     @Inject
     private InputScheme2dProvider inputScheme2DProvider;
+    @Inject
+    private TimeManager timeManager;
 
     private EntityIndex controlledEntities;
     private boolean jumpPressedLastFrame;
@@ -58,21 +62,44 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
+    public void getJumpAcceleration(GatherAcceleration acceleration, EntityRef entity, ControlledByInputComponent controlled) {
+        if (inputScheme2DProvider.isJumpActivated()) {
+            // Correct for jump mid physics tick
+            if (controlled.isJustJumped()) {
+                controlled.setPhysicsJumpTime(acceleration.getPhysicsTime());
+                controlled.setJustJumped(false);
+            }
+
+            long timeSinceJump = acceleration.getPhysicsTime() - controlled.getPhysicsJumpTime();
+            if (timeSinceJump >= 0) {
+                long jumpLength = controlled.getJumpLength();
+                if (timeSinceJump < jumpLength) {
+                    float perc = 1f - 1f * timeSinceJump / jumpLength;
+                    float a = controlled.getJumpSpeed() * perc;
+                    acceleration.addAcceleration(0, a);
+                }
+            }
+            entity.saveChanges();
+        }
+    }
+
+    @ReceiveEvent
     public void processInput(GameLoopUpdate gameLoopUpdate) {
         boolean jumpActivated = inputScheme2DProvider.isJumpActivated();
         boolean rightActivated = inputScheme2DProvider.isRightActivated();
         boolean leftActivated = inputScheme2DProvider.isLeftActivated();
 
         if (!jumpPressedLastFrame && jumpActivated) {
+            long time = timeManager.getTime();
+
             for (EntityRef controlledEntity : controlledEntities.getEntities()) {
                 ControlledByInputComponent controlled = controlledEntity.getComponent(ControlledByInputComponent.class);
                 GroundedComponent grounded = controlledEntity.getComponent(GroundedComponent.class);
                 // Character can jump, if it's either grounded, or has already jumped and maxJumpCount allows that
                 int jumpCount = controlled.getJumpCount();
                 if (grounded.isGrounded() || (jumpCount > 0 && jumpCount < controlled.getJumpMaxCount())) {
-                    MovingComponent moving = controlledEntity.getComponent(MovingComponent.class);
-                    moving.setSpeedY(controlled.getJumpSpeed());
                     controlled.setJumpCount(jumpCount + 1);
+                    controlled.setJustJumped(true);
                     controlledEntity.saveChanges();
 
                     controlledEntity.send(new EntityJumped(jumpCount + 1));
