@@ -1,7 +1,6 @@
 package com.gempukku.retro.logic.combat;
 
 import com.badlogic.gdx.graphics.Color;
-import com.gempukku.retro.logic.faction.FactionManager;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.retro.render.FadingSpriteComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -12,6 +11,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
+import com.gempukku.secsy.gaming.faction.FactionManager;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;

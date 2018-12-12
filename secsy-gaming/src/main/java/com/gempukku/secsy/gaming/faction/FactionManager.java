@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.faction;
+package com.gempukku.secsy.gaming.faction;
 
 import com.gempukku.secsy.entity.EntityRef;
 
