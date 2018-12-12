@@ -6,9 +6,9 @@ import com.gempukku.secsy.entity.component.Container;
 import java.util.List;
 
 public interface SensorComponent extends Component {
-    @Container(Sensor.class)
-    List<Sensor> getSensors();
+    @Container(SensorDef.class)
+    List<SensorDef> getSensors();
 
-    @Container(Sensor.class)
-    void setSensors(List<Sensor> sensors);
+    @Container(SensorDef.class)
+    void setSensors(List<SensorDef> sensors);
 }

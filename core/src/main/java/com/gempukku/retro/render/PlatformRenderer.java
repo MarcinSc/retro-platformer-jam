@@ -11,6 +11,8 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
+import com.gempukku.secsy.gaming.component.PositionResolver;
+import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.rendering.sprite.GatherSprites;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteRenderer;
 
@@ -32,13 +34,14 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
         SpriteRenderer.SpriteSink spriteSink = sprites.getSpriteSink();
         for (EntityRef platformEntity : platforms) {
             PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
+            Size2DComponent size = platformEntity.getComponent(Size2DComponent.class);
             Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
 
-            float x = position.getX() + platform.getLeft();
-            float y = position.getY() + platform.getDown();
+            float x = position.getX() + PositionResolver.getLeft(size, platform);
+            float y = position.getY() + PositionResolver.getDown(size, platform);
 
-            float width = platform.getRight() - platform.getLeft();
-            float height = platform.getUp() - platform.getDown();
+            float width = PositionResolver.getWidth(size, platform);
+            float height = PositionResolver.getHeight(size, platform);
 
             String textureAtlasId = platform.getTextureAtlasId();
             String beginningImage = platform.getBeginningImage();

@@ -1,27 +1,21 @@
 {
   "Position2D": {},
+  "Size2D": {
+    "width": 0.1,
+    "height": 0.1,
+    "anchorX": 0.5,
+    "anchorY": 0.5
+  },
   "Sprite": {
     "fileName": "images/bullet.png",
-    "left": -0.05,
-    "right": 0.05,
-    "up": 0.05,
-    "down": -0.05,
     "priority": -0.5
   },
   "Moving": {
     "speedX": 3
   },
   "CollidingBody": {
-    "left": -0.05,
-    "right": 0.05,
-    "up": 0.05,
-    "down": -0.05
   },
   "SensorTrigger": {
-    "left": -0.05,
-    "right": 0.05,
-    "up": 0.05,
-    "down": -0.05
   },
   "CausesVulnerability": {
     "damageAmount": 3

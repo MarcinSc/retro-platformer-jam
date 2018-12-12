@@ -5,9 +5,6 @@
   },
   "Sprite": {
     "fileName": "images/guard.png",
-    "left": -0.1,
-    "right": 0.1,
-    "up": 0.3,
     "priority": 0
   },
   "Health": {

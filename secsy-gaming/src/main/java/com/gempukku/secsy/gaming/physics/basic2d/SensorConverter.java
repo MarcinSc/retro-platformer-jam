@@ -3,10 +3,10 @@ package com.gempukku.secsy.gaming.physics.basic2d;
 import com.gempukku.secsy.entity.component.ComponentFieldTypeConverter;
 import org.json.simple.JSONObject;
 
-public class SensorConverter implements ComponentFieldTypeConverter<Sensor, JSONObject> {
+public class SensorConverter implements ComponentFieldTypeConverter<SensorDef, JSONObject> {
     @Override
-    public Sensor convertTo(JSONObject value) {
-        return new Sensor((String) value.get("type"),
+    public SensorDef convertTo(JSONObject value) {
+        return new SensorDef((String) value.get("type"),
                 convertToFloat(value.get("left")), convertToFloat(value.get("right")),
                 convertToFloat(value.get("down")), convertToFloat(value.get("up")));
     }
@@ -18,17 +18,17 @@ public class SensorConverter implements ComponentFieldTypeConverter<Sensor, JSON
     }
 
     @Override
-    public Sensor convertTo(JSONObject value, Class<?> containedClass) {
+    public SensorDef convertTo(JSONObject value, Class<?> containedClass) {
         return convertTo(value);
     }
 
     @Override
-    public JSONObject convertFrom(Sensor value) {
+    public JSONObject convertFrom(SensorDef value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Sensor getDefaultValue() {
+    public SensorDef getDefaultValue() {
         return null;
     }
 }

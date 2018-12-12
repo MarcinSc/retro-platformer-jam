@@ -1,19 +1,19 @@
 {
   "Position2D": {},
+  "Size2D": {
+    "width": 0.4,
+    "height": 0.6,
+    "anchorX": 0.5,
+    "anchorY": 0
+  },
   "BodyTriggeredTextDisplaying": {
     "displayText": "NEEDS KEYCARD",
     "y": 0.7
   },
   "Sprite": {
     "fileName": "images/elevator.png",
-    "priority": 2,
-    "left": -0.2,
-    "right": 0.2,
-    "up": 0.6
+    "priority": 2
   },
   "SensorTrigger": {
-    "left": -0.2,
-    "right": 0.2,
-    "up": 0.6
   }
 }

@@ -17,15 +17,13 @@ import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.camera2d.component.ClampCameraComponent;
 import com.gempukku.secsy.gaming.combat.EntityDied;
-import com.gempukku.secsy.gaming.component.Bounds2DComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
+import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.movement.OscillatingComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.ObstacleVertices;
-import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
-import com.gempukku.secsy.gaming.rendering.sprite.BobbingSpriteComponent;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
@@ -174,13 +172,14 @@ public class RoomSystem extends AbstractLifeCycleSystem {
             for (EntityRef platformEntity : entityManager.getEntitiesWithComponents(PlatformComponent.class)) {
                 Position2DComponent position = platformEntity.getComponent(Position2DComponent.class);
                 PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
+                Size2DComponent size = platformEntity.getComponent(Size2DComponent.class);
                 PrefabComponent prefab = platformEntity.getComponent(PrefabComponent.class);
                 JSONObject plObj = new JSONObject();
                 plObj.put("prefab", prefab.getPrefab());
                 plObj.put("x", position.getX());
                 plObj.put("y", position.getY());
-                plObj.put("width", platform.getRight());
-                plObj.put("height", -platform.getDown());
+                plObj.put("width", size.getWidth());
+                plObj.put("height", size.getHeight());
 
                 platforms.add(plObj);
             }
@@ -294,7 +293,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         PickupComponent pickup = pickupEntity.getComponent(PickupComponent.class);
         pickup.setType(type);
 
-        BobbingSpriteComponent sprite = pickupEntity.getComponent(BobbingSpriteComponent.class);
+        SpriteComponent sprite = pickupEntity.getComponent(SpriteComponent.class);
         sprite.setFileName(image);
 
         pickupEntity.saveChanges();
@@ -332,29 +331,12 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     private EntityRef createPlatform(String prefab, float x, float y, float width, float height) {
         EntityRef platformEntity = spawnManager.spawnEntityAt(prefab, x, y);
 
-        PlatformComponent platform = platformEntity.getComponent(PlatformComponent.class);
-        if (platform != null)
-            setBounds(platform, 0, width, -height, 0f);
-
-        ObstacleComponent obstacle = platformEntity.getComponent(ObstacleComponent.class);
-        setBounds(obstacle, 0, width, -height, 0f);
-
-        SensorTriggerComponent sensorTrigger = platformEntity.getComponent(SensorTriggerComponent.class);
-        setBounds(sensorTrigger, 0, width, -height, 0f);
-
-        SpriteComponent sprite = platformEntity.getComponent(SpriteComponent.class);
-        if (sprite != null)
-            setBounds(sprite, 0, width, -height, 0);
+        Size2DComponent size = platformEntity.getComponent(Size2DComponent.class);
+        size.setWidth(width);
+        size.setHeight(height);
 
         platformEntity.saveChanges();
 
         return platformEntity;
-    }
-
-    private void setBounds(Bounds2DComponent bounds2D, float left, float right, float down, float up) {
-        bounds2D.setLeft(left);
-        bounds2D.setRight(right);
-        bounds2D.setDown(down);
-        bounds2D.setUp(up);
     }
 }

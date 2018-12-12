@@ -3,19 +3,19 @@ package com.gempukku.secsy.gaming.component;
 import com.gempukku.secsy.entity.Component;
 
 public interface Bounds2DComponent extends Component {
-    float getLeft();
+    float getLeftPerc();
 
-    void setLeft(float left);
+    void setLeftPerc(float leftPerc);
 
-    float getRight();
+    float getRightPerc();
 
-    void setRight(float right);
+    void setRightPerc(float rightPerc);
 
-    float getUp();
+    float getUpPerc();
 
-    void setUp(float up);
+    void setUpPerc(float upPerc);
 
-    float getDown();
+    float getDownPerc();
 
-    void setDown(float down);
+    void setDownPerc(float downPerc);
 }

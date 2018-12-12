@@ -111,7 +111,7 @@
     {
       "prefab": "stairs",
       "x": -4.8,
-      "y": 0.6,
+      "y": -0.2,
       "width": 0.8,
       "height": 0.8,
       "vertices": [

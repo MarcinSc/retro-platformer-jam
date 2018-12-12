@@ -1,10 +1,13 @@
 {
   "Position2D": {},
+  "Size2D": {
+    "width": 2.4,
+    "height": 1,
+    "anchorX": 0.5,
+    "anchorY": 0
+  },
   "Sprite": {
     "fileName": "images/entranceBackground.png",
-    "priority": 3,
-    "left": -1.2,
-    "right": 1.2,
-    "up": 1
+    "priority": 3
   }
 }

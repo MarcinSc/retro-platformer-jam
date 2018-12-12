@@ -10,11 +10,14 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.combat.TemporarilyInvulnerableComponent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
+import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.easing.EasingResolver;
 import com.gempukku.secsy.gaming.rendering.sprite.GatherSprites;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteRenderer;
 import com.gempukku.secsy.gaming.time.TimeManager;
+
+import static com.gempukku.secsy.gaming.component.PositionResolver.*;
 
 @RegisterSystem
 public class PlayerRenderer extends AbstractLifeCycleSystem {
@@ -35,6 +38,7 @@ public class PlayerRenderer extends AbstractLifeCycleSystem {
         EntityRef playerEntity = playerProvider.getPlayer();
         PlayerComponent player = playerEntity.getComponent(PlayerComponent.class);
         Position2DComponent position = playerEntity.getComponent(Position2DComponent.class);
+        Size2DComponent size = playerEntity.getComponent(Size2DComponent.class);
         TemporarilyInvulnerableComponent invulnerable = playerEntity.getComponent(TemporarilyInvulnerableComponent.class);
         float alpha = 1;
 
@@ -46,13 +50,13 @@ public class PlayerRenderer extends AbstractLifeCycleSystem {
         HorizontalOrientationComponent horizontal = playerEntity.getComponent(HorizontalOrientationComponent.class);
         if (!horizontal.isFacingRight())
             spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
-                    position.getX() + player.getRight(), position.getY() + player.getDown(),
-                    player.getLeft() - player.getRight(), player.getUp() - player.getDown(),
+                    position.getX() - getLeft(size, player), position.getY() + getDown(size, player),
+                    -getWidth(size, player), getHeight(size, player),
                     new Color(1, 1, 1, alpha));
         else
             spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
-                    position.getX() + player.getLeft(), position.getY() + player.getDown(),
-                    player.getRight() - player.getLeft(), player.getUp() - player.getDown(),
+                    position.getX() + getLeft(size, player), position.getY() + getDown(size, player),
+                    getWidth(size, player), getHeight(size, player),
                     new Color(1, 1, 1, alpha));
 
     }

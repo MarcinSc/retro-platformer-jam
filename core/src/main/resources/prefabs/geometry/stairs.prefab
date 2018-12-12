@@ -1,5 +1,6 @@
 {
   "Position2D": {},
+  "Size2D": {},
   "Obstacle": {},
   "Sprite": {
     "fileName": "images/stairs.png"

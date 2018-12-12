@@ -1,12 +1,14 @@
 {
   "Position2D": {},
+  "Size2D": {
+    "width": 20,
+    "height": 20,
+    "anchorX": 0.5,
+    "anchorY": 0.5
+  },
   "TiledSprite": {
     "fileName": "images/basement-tile.png",
     "priority": 3,
-    "left": -10,
-    "right": 10,
-    "up": 10,
-    "down": -10,
     "tileXCount": 50,
     "tileYCount": 50
   }

@@ -1,5 +1,8 @@
 {
   "Position2D": {},
+  "Size2D": {
+    "anchorY": 1
+  },
   "Obstacle": {},
   "Platform": {
     "textureAtlasId": "sprites",

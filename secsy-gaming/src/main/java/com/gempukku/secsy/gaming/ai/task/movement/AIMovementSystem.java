@@ -58,14 +58,8 @@ public class AIMovementSystem extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void sensorStart(SensorContactBegin contactBegin, EntityRef aiEntity, AIApplyMovementIfPossibleComponent aiMovement,
-                            HorizontalOrientationComponent horizontalOrientation) {
-        boolean right = horizontalOrientation.isFacingRight();
-        if (right && contactBegin.getSensorType().equals(aiMovement.getRightObstacleSensor())) {
-            if (contactBegin.getSensorTrigger().hasComponent(ObstacleComponent.class)) {
-                aiEntity.send(new AICantMove());
-            }
-        } else if (!right && contactBegin.getSensorType().equals(aiMovement.getLeftObstacleSensor())) {
+    public void sensorStart(SensorContactBegin contactBegin, EntityRef aiEntity, AIApplyMovementIfPossibleComponent aiMovement) {
+        if (contactBegin.getSensorType().equals(aiMovement.getObstacleSensor())) {
             if (contactBegin.getSensorTrigger().hasComponent(ObstacleComponent.class)) {
                 aiEntity.send(new AICantMove());
             }
@@ -73,13 +67,8 @@ public class AIMovementSystem extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void cantMove(SensorContactEnd sensorContactEnd, EntityRef entity, AIApplyMovementIfPossibleComponent aiApplyMovement,
-                         HorizontalOrientationComponent horizontalOrientation) {
-        boolean right = horizontalOrientation.isFacingRight();
-        if (right && sensorContactEnd.getSensorType().equals(aiApplyMovement.getRightGroundSensor())
-                && sensorContactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
-            entity.send(new AICantMove());
-        } else if (!right && sensorContactEnd.getSensorType().equals(aiApplyMovement.getLeftGroundSensor())
+    public void cantMove(SensorContactEnd sensorContactEnd, EntityRef entity, AIApplyMovementIfPossibleComponent aiApplyMovement) {
+        if (sensorContactEnd.getSensorType().equals(aiApplyMovement.getFallSensor())
                 && sensorContactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
             entity.send(new AICantMove());
         }

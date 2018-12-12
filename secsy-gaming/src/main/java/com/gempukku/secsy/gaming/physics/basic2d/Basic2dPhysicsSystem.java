@@ -8,7 +8,10 @@ import com.gempukku.secsy.entity.*;
 import com.gempukku.secsy.entity.event.Event;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
+import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
+import com.gempukku.secsy.gaming.component.PositionResolver;
+import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.physics.PhysicsSystem;
 import com.gempukku.secsy.gaming.time.TimeManager;
 import com.google.common.base.Predicate;
@@ -412,22 +415,29 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     public void entityModified(SimpleEntity entity, Collection<Class<? extends Component>> affectedComponent) {
         int entityId = entity.getEntityId();
 
-        if (affectedComponent.contains(CollidingBodyComponent.class))
+        if (isAffected(entity, affectedComponent, CollidingBodyComponent.class))
             updateCollidingBodies(entity, entityId);
-        if (affectedComponent.contains(ObstacleComponent.class))
+        if (isAffected(entity, affectedComponent, ObstacleComponent.class))
             updateObstacles(entity, entityId);
         else if (affectedComponent.contains(Position2DComponent.class)) {
             if (entity.hasComponent(ObstacleComponent.class))
                 updateObstacle(entityId);
         }
-        if (affectedComponent.contains(SensorComponent.class))
+        if (isAffected(entity, affectedComponent, SensorComponent.class))
             updateSensors(entity, entityId);
-        if (affectedComponent.contains(SensorTriggerComponent.class))
+        if (isAffected(entity, affectedComponent, SensorTriggerComponent.class))
             updateSensorTriggers(entity, entityId);
         else if (affectedComponent.contains(Position2DComponent.class)) {
             if (entity.hasComponent(SensorTriggerComponent.class))
                 updateSensorTrigger(entityId);
         }
+    }
+
+    private boolean isAffected(SimpleEntity entity, Collection<Class<? extends Component>> affectedComponent, Class<? extends Component> component) {
+        return affectedComponent.contains(component)
+                || (
+                (affectedComponent.contains(Size2DComponent.class) || affectedComponent.contains(HorizontalOrientationComponent.class))
+                        && entity.hasComponent(component));
     }
 
     private void updateSensorTriggers(SimpleEntity entity, int entityId) {
@@ -482,18 +492,42 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
             updateCollidingBody(entityId);
     }
 
+    private float getLeft(Size2DComponent size, HorizontalOrientationComponent horizontalOrientation, float leftPerc, float rightPerc) {
+        if (horizontalOrientation == null || horizontalOrientation.isFacingRight()) {
+            return PositionResolver.getLeft(size, leftPerc);
+        } else {
+            return -PositionResolver.getRight(size, rightPerc);
+        }
+    }
+
+    private float getRight(Size2DComponent size, HorizontalOrientationComponent horizontalOrientation, float leftPerc, float rightPerc) {
+        if (horizontalOrientation == null || horizontalOrientation.isFacingRight()) {
+            return PositionResolver.getRight(size, rightPerc);
+        } else {
+            return -PositionResolver.getLeft(size, leftPerc);
+        }
+    }
+
+    private float getDown(Size2DComponent size, float downPerc) {
+        return PositionResolver.getDown(size, downPerc);
+    }
+
+    private float getUp(Size2DComponent size, float upPerc) {
+        return PositionResolver.getUp(size, upPerc);
+    }
+
     private void addSensorTrigger(int entityId) {
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         SensorTriggerComponent st = entity.getComponent(SensorTriggerComponent.class);
         Position2DComponent position = entity.getComponent(Position2DComponent.class);
-        SensorTrigger sensorTrigger = new SensorTrigger(
-                entityId, st.getLeft(), st.getRight(), st.getDown(), st.getUp());
-        SensorTrigger obstacle;
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
+        SensorTrigger sensorTrigger;
         if (st.isAABB())
-            obstacle = new SensorTrigger(
-                    entityId, st.getLeft(), st.getRight(), st.getDown(), st.getUp());
+            sensorTrigger = new SensorTrigger(
+                    entityId, getLeft(size, orientation, st.getLeftPerc(), st.getRightPerc()), getRight(size, orientation, st.getLeftPerc(), st.getRightPerc()), getDown(size, st.getDownPerc()), getUp(size, st.getUpPerc()));
         else
-            obstacle = new SensorTrigger(
+            sensorTrigger = new SensorTrigger(
                     entityId, st.getNonAABBVertices().getVertices());
         sensorTrigger.updatePosition(position.getX(), position.getY());
 
@@ -504,12 +538,14 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         SensorTriggerComponent st = entity.getComponent(SensorTriggerComponent.class);
         Position2DComponent position = entity.getComponent(Position2DComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
 
         SensorTrigger sensorTrigger = sensorTriggers.get(entityId);
-        sensorTrigger.left = st.getLeft();
-        sensorTrigger.right = st.getRight();
-        sensorTrigger.down = st.getDown();
-        sensorTrigger.up = st.getUp();
+        sensorTrigger.left = getLeft(size, orientation, st.getLeftPerc(), st.getRightPerc());
+        sensorTrigger.right = getRight(size, orientation, st.getLeftPerc(), st.getRightPerc());
+        sensorTrigger.down = getDown(size, st.getDownPerc());
+        sensorTrigger.up = getUp(size, st.getUpPerc());
         sensorTrigger.isAABB = st.isAABB();
         if (!sensorTrigger.isAABB)
             sensorTrigger.nonAABBVertices = st.getNonAABBVertices().getVertices();
@@ -526,10 +562,16 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     private void addSensor(int entityId) {
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         SensorComponent sensorComp = entity.getComponent(SensorComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
+
         Map<String, Sensor> sensorMap = new HashMap<String, Sensor>();
-        for (Sensor sensor : sensorComp.getSensors()) {
-            sensor = new Sensor(sensor);
-            sensor.entityId = entityId;
+        for (SensorDef sensorDef : sensorComp.getSensors()) {
+            Sensor sensor = new Sensor(entityId, sensorDef.type,
+                    getLeft(size, orientation, sensorDef.left, sensorDef.right),
+                    getRight(size, orientation, sensorDef.left, sensorDef.right),
+                    getDown(size, sensorDef.down),
+                    getUp(size, sensorDef.up));
             sensorMap.put(sensor.type, sensor);
         }
 
@@ -537,14 +579,31 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     }
 
     private void updateSensor(int entityId) {
-        // Has to update existing/add new/remove old Sensor objects from the map
-        throw new UnsupportedOperationException("Too lazy to write at the moment");
-//        EntityRef entity = internalEntityManager.getEntityById(entityId);
-//        SensorComponent st = entity.getComponent(SensorComponent.class);
-//
-//        for (Sensor sensor : st.getSensors()) {
-//
-//        }
+        EntityRef entity = internalEntityManager.getEntityById(entityId);
+        SensorComponent sens = entity.getComponent(SensorComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
+
+        Map<String, Sensor> oldSensorMap = sensors.get(entityId);
+
+        Map<String, Sensor> newSensorMap = new HashMap<String, Sensor>();
+        for (SensorDef sensorDef : sens.getSensors()) {
+            Sensor sensor = oldSensorMap.get(sensorDef.type);
+            if (sensor != null) {
+                sensor.left = getLeft(size, orientation, sensorDef.left, sensorDef.right);
+                sensor.right = getRight(size, orientation, sensorDef.left, sensorDef.right);
+                sensor.down = getDown(size, sensorDef.down);
+                sensor.up = getUp(size, sensorDef.up);
+            } else {
+                sensor = new Sensor(entityId, sensorDef.type,
+                        getLeft(size, orientation, sensorDef.left, sensorDef.right),
+                        getRight(size, orientation, sensorDef.left, sensorDef.right),
+                        getDown(size, sensorDef.down),
+                        getUp(size, sensorDef.up));
+            }
+            newSensorMap.put(sensorDef.type, sensor);
+        }
+        sensors.put(entityId, newSensorMap);
     }
 
     private void removeSensor(int entityId) {
@@ -555,10 +614,12 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         ObstacleComponent obs = entity.getComponent(ObstacleComponent.class);
         Position2DComponent position = entity.getComponent(Position2DComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
         Obstacle obstacle;
         if (obs.isAABB())
             obstacle = new Obstacle(
-                    entityId, obs.getLeft(), obs.getRight(), obs.getDown(), obs.getUp());
+                    entityId, getLeft(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getRight(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getDown(size, obs.getDownPerc()), getUp(size, obs.getUpPerc()));
         else
             obstacle = new Obstacle(
                     entityId, obs.getNonAABBVertices().getVertices());
@@ -571,12 +632,14 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         ObstacleComponent obs = entity.getComponent(ObstacleComponent.class);
         Position2DComponent position = entity.getComponent(Position2DComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
 
         Obstacle obstacle = obstacles.get(entityId);
-        obstacle.left = obs.getLeft();
-        obstacle.right = obs.getRight();
-        obstacle.down = obs.getDown();
-        obstacle.up = obs.getUp();
+        obstacle.left = getLeft(size, orientation, obs.getLeftPerc(), obs.getRightPerc());
+        obstacle.right = getRight(size, orientation, obs.getLeftPerc(), obs.getRightPerc());
+        obstacle.down = getDown(size, obs.getDownPerc());
+        obstacle.up = getUp(size, obs.getUpPerc());
         obstacle.isAABB = obs.isAABB();
         if (!obstacle.isAABB)
             obstacle.nonAABBVertices = obs.getNonAABBVertices().getVertices();
@@ -593,8 +656,10 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     private void addCollidingBody(int entityId) {
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         CollidingBodyComponent colBody = entity.getComponent(CollidingBodyComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
         CollidingBody collidingBody = new CollidingBody(
-                entityId, colBody.getLeft(), colBody.getRight(), colBody.getDown(), colBody.getUp());
+                entityId, getLeft(size, orientation, colBody.getLeftPerc(), colBody.getRightPerc()), getRight(size, orientation, colBody.getLeftPerc(), colBody.getRightPerc()), getDown(size, colBody.getDownPerc()), getUp(size, colBody.getUpPerc()));
 
         collidingBodies.put(entityId, collidingBody);
     }
@@ -602,12 +667,14 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     private void updateCollidingBody(int entityId) {
         EntityRef entity = internalEntityManager.getEntityById(entityId);
         CollidingBodyComponent colBody = entity.getComponent(CollidingBodyComponent.class);
+        Size2DComponent size = entity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent orientation = entity.getComponent(HorizontalOrientationComponent.class);
 
         CollidingBody collidingBody = collidingBodies.get(entityId);
-        collidingBody.left = colBody.getLeft();
-        collidingBody.right = colBody.getRight();
-        collidingBody.down = colBody.getDown();
-        collidingBody.up = colBody.getUp();
+        collidingBody.left = getLeft(size, orientation, colBody.getLeftPerc(), colBody.getRightPerc());
+        collidingBody.right = getRight(size, orientation, colBody.getLeftPerc(), colBody.getRightPerc());
+        collidingBody.down = getDown(size, colBody.getDownPerc());
+        collidingBody.up = getUp(size, colBody.getUpPerc());
     }
 
     private void removeCollidingBody(int entityId) {

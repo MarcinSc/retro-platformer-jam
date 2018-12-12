@@ -5,14 +5,8 @@ import com.gempukku.secsy.entity.component.DefaultValue;
 
 public interface AIApplyMovementIfPossibleComponent extends Component {
     @DefaultValue("obstacleSensor")
-    String getLeftObstacleSensor();
+    String getObstacleSensor();
 
-    @DefaultValue("obstacleSensor")
-    String getRightObstacleSensor();
-
-    @DefaultValue("rightGroundSensor")
-    String getLeftGroundSensor();
-
-    @DefaultValue("leftGroundSensor")
-    String getRightGroundSensor();
+    @DefaultValue("fallSensor")
+    String getFallSensor();
 }
