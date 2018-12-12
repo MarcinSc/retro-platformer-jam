@@ -35,6 +35,7 @@ public class DesktopLauncher {
         activeProfiles.add("backgroundMusic");
         activeProfiles.add("ai");
         activeProfiles.add("aiMovement");
+        activeProfiles.add("aiWait");
         activeProfiles.add("delayActions");
         activeProfiles.add("sprites");
         activeProfiles.add("genesisSimulation");

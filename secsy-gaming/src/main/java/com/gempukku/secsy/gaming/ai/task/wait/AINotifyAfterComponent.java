@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.ai;
+package com.gempukku.secsy.gaming.ai.task.wait;
 
 import com.gempukku.secsy.entity.Component;
 

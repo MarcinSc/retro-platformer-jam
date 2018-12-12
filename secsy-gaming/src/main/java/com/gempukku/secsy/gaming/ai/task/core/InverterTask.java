@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.ai.task;
+package com.gempukku.secsy.gaming.ai.task.core;
 
 import com.gempukku.secsy.gaming.ai.AIReference;
 import com.gempukku.secsy.gaming.ai.AITask;
@@ -7,8 +7,8 @@ import com.gempukku.secsy.gaming.ai.builder.TaskBuilder;
 
 import java.util.Map;
 
-public class SucceederTask<Reference extends AIReference> extends AbstractWrapperAITask<Reference> {
-    public SucceederTask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
+public class InverterTask<Reference extends AIReference> extends AbstractWrapperAITask<Reference> {
+    public InverterTask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
         super(id, parent, taskBuilder, taskData);
     }
 
@@ -28,9 +28,11 @@ public class SucceederTask<Reference extends AIReference> extends AbstractWrappe
     }
 
     private AITaskResult invert(AITaskResult result) {
-        if (result == AITaskResult.RUNNING)
-            return result;
-        else
+        if (result == AITaskResult.FAILURE)
             return AITaskResult.SUCCESS;
+        else if (result == AITaskResult.SUCCESS)
+            return AITaskResult.FAILURE;
+        else
+            return AITaskResult.RUNNING;
     }
 }

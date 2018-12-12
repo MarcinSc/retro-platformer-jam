@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.ai.task;
+package com.gempukku.secsy.gaming.ai.task.core;
 
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.gaming.ai.AITask;

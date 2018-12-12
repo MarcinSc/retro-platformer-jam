@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.ai.movement;
+package com.gempukku.secsy.gaming.ai.task.movement;
 
 import com.gempukku.secsy.entity.event.Event;
 
