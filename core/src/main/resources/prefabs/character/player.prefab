@@ -16,6 +16,7 @@
   },
   "PerformsAttacks": {},
   "Combat": {},
+  "RecoilsFromWeapon": {},
   "Health": {
     "maxHealth": 5,
     "currentHealth": 5

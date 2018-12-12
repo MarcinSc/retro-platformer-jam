@@ -10,8 +10,9 @@
   "EquippedSpriteComponent": {
     "filePath": "images/gun.png"
   },
-  "RecoilOnAttack": {
-    "recoilX": -0.05
+  "WeaponRecoilsOnAttack": {
+    "recoilX": -150,
+    "recoilDuration": 300
   },
   "SpawningWeapon": {
     "coolDown": 200,

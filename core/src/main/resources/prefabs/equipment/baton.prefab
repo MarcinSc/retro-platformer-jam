@@ -18,7 +18,8 @@
   "EquippedSpriteComponent": {
     "filePath": "images/baton.png"
   },
-  "RecoilOnAttack": {
-    "recoilX": -0.05
+  "WeaponRecoilsOnAttack": {
+    "recoilX": -70,
+    "recoilDuration": 300
   }
 }

@@ -90,8 +90,6 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
         boolean leftActivated = inputScheme2DProvider.isLeftActivated();
 
         if (!jumpPressedLastFrame && jumpActivated) {
-            long time = timeManager.getTime();
-
             for (EntityRef controlledEntity : controlledEntities.getEntities()) {
                 ControlledByInputComponent controlled = controlledEntity.getComponent(ControlledByInputComponent.class);
                 GroundedComponent grounded = controlledEntity.getComponent(GroundedComponent.class);
