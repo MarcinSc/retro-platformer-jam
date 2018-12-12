@@ -2,7 +2,6 @@ package com.gempukku.retro.logic.combat;
 
 import com.badlogic.gdx.graphics.Color;
 import com.gempukku.retro.logic.faction.FactionManager;
-import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.retro.render.FadingSpriteComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -18,6 +17,7 @@ import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.postprocess.tint.color.ColorTintComponent;
+import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.time.TimeManager;
 import com.gempukku.secsy.gaming.time.delay.DelayManager;
 import com.gempukku.secsy.gaming.time.delay.DelayedActionTriggeredEvent;

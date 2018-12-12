@@ -1,6 +1,5 @@
 package com.gempukku.retro.logic.faction;
 
-import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -9,8 +8,9 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.entity.prefab.NamedEntityData;
 import com.gempukku.secsy.entity.prefab.PrefabManager;
+import com.gempukku.secsy.gaming.spawn.SpawnManager;
 
-@RegisterSystem(shared = FactionManager.class)
+@RegisterSystem(profiles = "faction", shared = FactionManager.class)
 public class FactionSystem extends AbstractLifeCycleSystem implements FactionManager {
     @Inject
     private PrefabManager prefabManager;

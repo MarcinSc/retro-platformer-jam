@@ -1,7 +1,5 @@
-package com.gempukku.retro.logic.spawn;
+package com.gempukku.secsy.gaming.spawn;
 
-import com.gempukku.retro.logic.combat.EntityDied;
-import com.gempukku.retro.model.PrefabComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -16,7 +14,7 @@ import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.MovingComponent;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem(shared = SpawnManager.class)
+@RegisterSystem(profiles = "spawn", shared = SpawnManager.class)
 public class SpawnSystem extends AbstractLifeCycleSystem implements SpawnManager {
     @Inject
     private EntityManager entityManager;
@@ -88,15 +86,5 @@ public class SpawnSystem extends AbstractLifeCycleSystem implements SpawnManager
 
         entityRef.saveChanges();
         return entityRef;
-    }
-
-    @ReceiveEvent
-    public void spawnOnDeath(EntityDied entityDied, EntityRef entity, SpawnOnDeathComponent spawnOnDeath) {
-        Position2DComponent position = entity.getComponent(Position2DComponent.class);
-        if (position != null) {
-            spawnEntityAt(spawnOnDeath.getPrefab(), position.getX(), position.getY());
-        } else {
-            spawnEntity(spawnOnDeath.getPrefab());
-        }
     }
 }

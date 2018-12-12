@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.spawn;
+package com.gempukku.retro.logic.combat;
 
 import com.gempukku.secsy.entity.Component;
 

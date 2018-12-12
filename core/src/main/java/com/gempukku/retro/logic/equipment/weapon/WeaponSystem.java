@@ -10,7 +10,6 @@ import com.gempukku.retro.logic.equipment.ItemAddedToInventory;
 import com.gempukku.retro.logic.equipment.ItemProvider;
 import com.gempukku.retro.logic.faction.FactionManager;
 import com.gempukku.retro.logic.player.PlayerProvider;
-import com.gempukku.retro.logic.spawn.SpawnManager;
 import com.gempukku.retro.model.InventoryComponent;
 import com.gempukku.retro.model.WeaponComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -22,6 +21,7 @@ import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.MovingComponent;
+import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.time.TimeManager;
 import com.google.common.base.Predicate;
 

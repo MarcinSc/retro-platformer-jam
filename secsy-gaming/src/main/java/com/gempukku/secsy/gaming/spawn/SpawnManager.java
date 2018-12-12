@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.spawn;
+package com.gempukku.secsy.gaming.spawn;
 
 import com.gempukku.secsy.entity.EntityRef;
 

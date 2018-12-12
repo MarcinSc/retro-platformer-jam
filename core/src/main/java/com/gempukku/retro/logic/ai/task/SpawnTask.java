@@ -1,12 +1,12 @@
 package com.gempukku.retro.logic.ai.task;
 
-import com.gempukku.retro.logic.spawn.SpawnerComponent;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.ai.AITask;
 import com.gempukku.secsy.gaming.ai.AITaskResult;
 import com.gempukku.secsy.gaming.ai.EntityRefReference;
 import com.gempukku.secsy.gaming.ai.builder.TaskBuilder;
 import com.gempukku.secsy.gaming.ai.task.AbstractAITask;
+import com.gempukku.secsy.gaming.spawn.SpawnerComponent;
 
 import java.util.Map;
 
