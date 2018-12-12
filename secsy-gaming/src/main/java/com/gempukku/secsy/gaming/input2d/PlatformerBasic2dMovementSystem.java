@@ -18,8 +18,6 @@ import com.gempukku.secsy.gaming.physics.basic2d.SensorContactEnd;
 
 @RegisterSystem(profiles = {"platformer2dMovement", "basic2dPhysics"})
 public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
-    public static final String GROUNDED_SENSOR_NAME = "groundSensor";
-
     @Inject
     private EntityIndexManager entityIndexManager;
     @Inject
@@ -35,17 +33,8 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void sensorContactBegin(SensorContactBegin contactBegin, EntityRef entity, ControlledByInputComponent controlled) {
-        if (contactBegin.getSensorType().equals(GROUNDED_SENSOR_NAME)
-                && contactBegin.getSensorTrigger().hasComponent(GroundComponent.class)) {
-            controlled.setJumpCount(0);
-            entity.saveChanges();
-        }
-    }
-
-    @ReceiveEvent
     public void sensorContactBegin(SensorContactBegin contactBegin, EntityRef entity, GroundedComponent controlled) {
-        if (contactBegin.getSensorType().equals(GROUNDED_SENSOR_NAME)
+        if (contactBegin.getSensorType().equals(controlled.getSensorType())
                 && contactBegin.getSensorTrigger().hasComponent(GroundComponent.class)) {
             controlled.setGrounded(true);
             entity.saveChanges();
@@ -55,11 +44,17 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
 
     @ReceiveEvent
     public void sensorContactEnd(SensorContactEnd contactEnd, EntityRef entity, GroundedComponent controlled) {
-        if (contactEnd.getSensorType().equals(GROUNDED_SENSOR_NAME)
+        if (contactEnd.getSensorType().equals(controlled.getSensorType())
                 && contactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
             controlled.setGrounded(false);
             entity.saveChanges();
         }
+    }
+
+    @ReceiveEvent
+    public void sensorContactBegin(EntityLanded entityLanded, EntityRef entity, ControlledByInputComponent controlled) {
+        controlled.setJumpCount(0);
+        entity.saveChanges();
     }
 
     @ReceiveEvent

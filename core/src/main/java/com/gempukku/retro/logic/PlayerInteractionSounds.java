@@ -2,7 +2,6 @@ package com.gempukku.retro.logic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.retro.logic.equipment.PickedUpObject;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -11,6 +10,7 @@ import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.audio.AudioManager;
+import com.gempukku.secsy.gaming.combat.EntityAttacked;
 import com.gempukku.secsy.gaming.input2d.EntityJumped;
 
 @RegisterSystem

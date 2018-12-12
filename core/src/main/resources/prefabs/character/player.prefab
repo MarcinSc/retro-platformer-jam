@@ -12,10 +12,11 @@
     "jumpSpeed": 3.5
   },
   "PerformsActions": {},
-  "ActionActivatesSensor": {}
+  "ActionActivatesSensor": {},
   "CameraTracked": {
     "y": 0.2
   },
+  "PerformsAttacks": {},
   "Combat": {},
   "Health": {
     "maxHealth": 5,

@@ -1,7 +1,6 @@
 package com.gempukku.retro.logic.ai;
 
 import com.gempukku.retro.logic.ai.task.WaitForAnyDamageTask;
-import com.gempukku.retro.logic.combat.EntityDamaged;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -11,6 +10,7 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.ai.AIComponent;
 import com.gempukku.secsy.gaming.ai.AIEngine;
+import com.gempukku.secsy.gaming.combat.EntityDamaged;
 
 @RegisterSystem
 public class NotifyGuardsOfAttack extends AbstractLifeCycleSystem {

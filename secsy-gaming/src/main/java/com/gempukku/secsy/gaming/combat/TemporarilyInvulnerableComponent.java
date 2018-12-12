@@ -1,4 +1,4 @@
-package com.gempukku.retro.logic.combat;
+package com.gempukku.secsy.gaming.combat;
 
 import com.gempukku.secsy.gaming.component.TimedEffectComponent;
 

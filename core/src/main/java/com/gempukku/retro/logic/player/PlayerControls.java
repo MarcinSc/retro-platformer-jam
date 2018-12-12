@@ -2,20 +2,16 @@ package com.gempukku.retro.logic.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.gempukku.retro.logic.combat.CombatComponent;
-import com.gempukku.retro.logic.combat.EntityAttacked;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
-import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.entity.game.GameLoopUpdate;
+import com.gempukku.secsy.gaming.combat.AttackSchemeProvider;
 import com.gempukku.secsy.gaming.input.ActionSchemeProvider;
 import com.gempukku.secsy.gaming.input2d.InputScheme2dProvider;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem(shared = {InputScheme2dProvider.class, ActionSchemeProvider.class})
-public class PlayerControls extends AbstractLifeCycleSystem implements InputScheme2dProvider, ActionSchemeProvider {
+@RegisterSystem(shared = {InputScheme2dProvider.class, ActionSchemeProvider.class, AttackSchemeProvider.class})
+public class PlayerControls extends AbstractLifeCycleSystem implements InputScheme2dProvider, ActionSchemeProvider, AttackSchemeProvider {
     @Inject
     private TimeManager timeManager;
     @Inject
@@ -25,6 +21,7 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
     private int[] leftKeys = new int[]{Input.Keys.A, Input.Keys.LEFT};
     private int[] rightKeys = new int[]{Input.Keys.D, Input.Keys.RIGHT};
     private int[] actionKeys = new int[]{Input.Keys.X};
+    private int[] attackKeys = new int[]{Input.Keys.SPACE};
     private int attackKey = Input.Keys.SPACE;
 
     private boolean attackPressed;
@@ -32,6 +29,11 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
     @Override
     public boolean isActionActivated() {
         return isAnyPressed(actionKeys);
+    }
+
+    @Override
+    public boolean isAttackActivated() {
+        return isAnyPressed(attackKeys);
     }
 
     @Override
@@ -47,25 +49,6 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
     @Override
     public boolean isRightActivated() {
         return isAnyPressed(rightKeys);
-    }
-
-    @ReceiveEvent
-    public void update(GameLoopUpdate update) {
-        long time = timeManager.getTime();
-        boolean attack = Gdx.input.isKeyPressed(attackKey);
-        if (attack && !attackPressed) {
-            EntityRef player = playerProvider.getPlayer();
-            CombatComponent combat = player.getComponent(CombatComponent.class);
-            long nextAttackTime = combat.getNextAttackTime();
-
-            if (time >= nextAttackTime) {
-                player.send(new EntityAttacked());
-            }
-
-            attackPressed = true;
-        } else if (!attack) {
-            attackPressed = false;
-        }
     }
 
     private boolean isAnyPressed(int[] keys) {

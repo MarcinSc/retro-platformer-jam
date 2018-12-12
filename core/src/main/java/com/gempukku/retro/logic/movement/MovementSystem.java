@@ -13,7 +13,6 @@ import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.easing.EasingResolver;
-import com.gempukku.secsy.gaming.input2d.PlatformerBasic2dMovementSystem;
 import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.time.TimeManager;
@@ -69,7 +68,7 @@ public class MovementSystem extends AbstractLifeCycleSystem {
 
     @ReceiveEvent
     public void transporter(EntityMoved moved, EntityRef entity, TransporterComponent transporter) {
-        for (EntityRef entityRef : physics.getSensorEntitiesContactedBy(entity, PlatformerBasic2dMovementSystem.GROUNDED_SENSOR_NAME)) {
+        for (EntityRef entityRef : physics.getSensorEntitiesContactedBy(entity, "groundSensor")) {
             Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
             position.setX(position.getX() + moved.getNewX() - moved.getOldX());
             position.setY(position.getY() + moved.getNewY() - moved.getOldY());

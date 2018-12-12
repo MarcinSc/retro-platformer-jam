@@ -1,13 +1,13 @@
 package com.gempukku.retro.logic.player;
 
 import com.badlogic.gdx.graphics.Color;
-import com.gempukku.retro.logic.combat.TemporarilyInvulnerableComponent;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.gaming.combat.TemporarilyInvulnerableComponent;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
