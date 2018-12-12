@@ -37,7 +37,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
     @Inject(optional = true)
     private CollisionFilter collisionFilter;
     @Inject(optional = true)
-    private GravityProvider gravityProvider = new DefaultGravityProvider();
+    private EnvironmentProvider environmentProvider = new DefaultEnvironmentProvider();
     @Inject(optional = true)
     private TimeStepProvider timeStepProvider = new DefaultTimeStepProvider();
 
@@ -132,8 +132,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
 
     private void applyGravity(float seconds) {
         for (EntityRef entity : affectedByGravity) {
-            Vector2 result = gravityProvider.getGravityForEntity(entity, tmpVector);
-            float terminalVelocity = gravityProvider.getTerminalVelocityForEntity(entity);
+            Vector2 result = environmentProvider.getGravityForEntity(entity, tmpVector);
+            float terminalVelocity = environmentProvider.getTerminalVelocityForEntity(entity);
 
             MovingComponent movingComponent = entity.getComponent(MovingComponent.class);
 
@@ -671,7 +671,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         collidingBodies.remove(entityId);
     }
 
-    private class DefaultGravityProvider implements GravityProvider {
+    private class DefaultEnvironmentProvider implements EnvironmentProvider {
         @Override
         public Vector2 getGravityForEntity(EntityRef entity, Vector2 toUse) {
             return toUse.set(DEFAULT_GRAVITY);
