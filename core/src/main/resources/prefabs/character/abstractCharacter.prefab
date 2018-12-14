@@ -24,7 +24,7 @@
       },
       {
         "type": "obstacleSensor",
-        "left": 1,
+        "left": -1,
         "right": 0.1
       },
       {
