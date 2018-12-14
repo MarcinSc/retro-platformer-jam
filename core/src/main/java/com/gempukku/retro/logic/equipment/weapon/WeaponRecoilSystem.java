@@ -40,7 +40,5 @@ public class WeaponRecoilSystem {
             float perc = 1f - 1f * timeSinceRecoil / duration;
             acceleration.addAcceleration(recoilsFromWeapon.getRecoilStrengthX() * perc, recoilsFromWeapon.getRecoilStrengthY() * perc);
         }
-        entity.saveChanges();
-
     }
 }
