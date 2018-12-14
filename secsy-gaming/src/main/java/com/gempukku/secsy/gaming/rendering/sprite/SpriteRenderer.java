@@ -42,11 +42,14 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
     private TimeManager timeManager;
     @Inject
     private EasingResolver easingResolver;
+    @Inject(optional = true)
+    private AnimatedSpriteProvider animatedSpriteProvider;
 
     private SpriteBatch spriteBatch;
 
     private EntityIndex spriteEntities;
     private EntityIndex tiledSpriteEntities;
+    private EntityIndex animatedSpriteEntities;
 
     private PriorityCollection<RenderableSprite> sprites = new PriorityCollection<RenderableSprite>();
     private SpriteSinkImpl spriteSink = new SpriteSinkImpl();
@@ -64,6 +67,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
         spriteEntities = entityIndexManager.addIndexOnComponents(SpriteComponent.class);
         tiledSpriteEntities = entityIndexManager.addIndexOnComponents(TiledSpriteComponent.class);
+        animatedSpriteEntities = entityIndexManager.addIndexOnComponents(AnimatedSpriteComponent.class);
     }
 
     @ReceiveEvent(priorityName = "gaming.renderer.sprites")
@@ -97,29 +101,16 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
         SpriteSink spriteSink = gatherSprites.getSpriteSink();
         for (EntityRef spriteEntity : spriteEntities) {
-            Position2DComponent position = spriteEntity.getComponent(Position2DComponent.class);
-            Size2DComponent size = spriteEntity.getComponent(Size2DComponent.class);
             SpriteComponent sprite = spriteEntity.getComponent(SpriteComponent.class);
-            HorizontalOrientationComponent horizontal = spriteEntity.getComponent(HorizontalOrientationComponent.class);
+            String fileName = sprite.getFileName();
 
-            long effectStart = sprite.getEffectStart();
-            long effectDuration = sprite.getEffectDuration();
-            float alpha = 1;
-            if (effectDuration > 0)
-                alpha = 1 - 1f * (time - effectStart) / effectDuration;
+            processSprite(spriteSink, spriteEntity, sprite, time, amplitudePercentage, fileName);
+        }
+        for (EntityRef animatedSpriteEntity : animatedSpriteEntities) {
+            AnimatedSpriteComponent sprite = animatedSpriteEntity.getComponent(AnimatedSpriteComponent.class);
+            String fileName = animatedSpriteProvider.getSpriteForEntity(animatedSpriteEntity);
 
-            Color color = new Color(1, 1, 1, alpha);
-
-            float bobbingValue = sprite.getBobbingAmplitude() * amplitudePercentage;
-
-            if (horizontal != null && !horizontal.isFacingRight())
-                spriteSink.addSprite(sprite.getPriority(), "sprites", sprite.getFileName(),
-                        position.getX() - getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
-                        -getWidth(size, sprite), getHeight(size, sprite), color);
-            else
-                spriteSink.addSprite(sprite.getPriority(), "sprites", sprite.getFileName(),
-                        position.getX() + getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
-                        getWidth(size, sprite), getHeight(size, sprite), color);
+            processSprite(spriteSink, animatedSpriteEntity, sprite, time, amplitudePercentage, fileName);
         }
         for (EntityRef tiledSpriteEntity : tiledSpriteEntities) {
             Position2DComponent position = tiledSpriteEntity.getComponent(Position2DComponent.class);
@@ -136,6 +127,31 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
                         position.getX() + getLeft(size, sprite), position.getY() + getDown(size, sprite),
                         getWidth(size, sprite), getHeight(size, sprite), sprite.getTileXCount(), sprite.getTileYCount(), Color.WHITE);
         }
+    }
+
+    private void processSprite(SpriteSink spriteSink, EntityRef spriteEntity, DisplayableSpriteComponent sprite, long time, float amplitudePercentage, String fileName) {
+        Position2DComponent position = spriteEntity.getComponent(Position2DComponent.class);
+        Size2DComponent size = spriteEntity.getComponent(Size2DComponent.class);
+        HorizontalOrientationComponent horizontal = spriteEntity.getComponent(HorizontalOrientationComponent.class);
+
+        long effectStart = sprite.getEffectStart();
+        long effectDuration = sprite.getEffectDuration();
+        float alpha = 1;
+        if (effectDuration > 0)
+            alpha = 1 - 1f * (time - effectStart) / effectDuration;
+
+        Color color = new Color(1, 1, 1, alpha);
+
+        float bobbingValue = sprite.getBobbingAmplitude() * amplitudePercentage;
+
+        if (horizontal != null && !horizontal.isFacingRight())
+            spriteSink.addSprite(sprite.getPriority(), "sprites", fileName,
+                    position.getX() - getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
+                    -getWidth(size, sprite), getHeight(size, sprite), color);
+        else
+            spriteSink.addSprite(sprite.getPriority(), "sprites", fileName,
+                    position.getX() + getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
+                    getWidth(size, sprite), getHeight(size, sprite), color);
     }
 
     private void renderSprites() {
