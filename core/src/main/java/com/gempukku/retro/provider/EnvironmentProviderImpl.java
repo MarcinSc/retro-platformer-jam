@@ -10,6 +10,9 @@ import com.gempukku.secsy.gaming.physics.basic2d.EnvironmentProvider;
 public class EnvironmentProviderImpl implements EnvironmentProvider {
     @Override
     public Vector2 getGravityForEntity(EntityRef entity, Vector2 toUse) {
+        GroundedComponent grounded = entity.getComponent(GroundedComponent.class);
+        if (grounded != null && grounded.isGrounded())
+            return toUse.set(0, 0);
         return toUse.set(0, -10);
     }
 

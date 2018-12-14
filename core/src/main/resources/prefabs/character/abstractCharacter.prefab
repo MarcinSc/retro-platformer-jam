@@ -19,7 +19,7 @@
       },
       {
         "type": "groundSensor",
-        "up": 0.03,
+        "up": -1,
         "down": -0.03
       },
       {
