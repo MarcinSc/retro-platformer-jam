@@ -41,7 +41,10 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
             String prefab = (String) entityDef.get("prefab");
             Map<String, Map<String, Object>> overrides = (Map<String, Map<String, Object>>) entityDef.get("override");
 
-            spawnManager.spawnEntity(prefab, overrides);
+            if (overrides != null)
+                spawnManager.spawnEntity(prefab, overrides);
+            else
+                spawnManager.spawnEntity(prefab);
         }
     }
 
