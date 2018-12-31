@@ -24,8 +24,6 @@ public class CameraEntityProviderImpl extends AbstractLifeCycleSystem implements
     @Override
     public void initialize() {
         cameraIndex = entityIndexManager.addIndexOnComponents(Camera2DComponent.class);
-
-        gameCameraEntity = spawnManager.spawnEntity("gameCameraEntity");
     }
 
     @Override
