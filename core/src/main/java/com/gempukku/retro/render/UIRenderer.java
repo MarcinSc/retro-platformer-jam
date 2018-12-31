@@ -46,31 +46,32 @@ public class UIRenderer extends AbstractLifeCycleSystem {
 
     @ReceiveEvent(priority = -1)
     public void renderUI(RenderToPipeline renderToPipeline) {
-        renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
-
-        spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, renderToPipeline.getWidth(), renderToPipeline.getHeight());
-        spriteBatch.begin();
-        spriteBatch.draw(uiTexture, 0, 0);
-
         EntityRef player = playerProvider.getPlayer();
+        if (player != null) {
+            renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
 
-        String equippedItemName = player.getComponent(InventoryComponent.class).getEquippedItem();
+            spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, renderToPipeline.getWidth(), renderToPipeline.getHeight());
+            spriteBatch.begin();
+            spriteBatch.draw(uiTexture, 0, 0);
 
-        EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
-        String filePath = equippedItem.getComponent(EquippedSpriteComponent.class).getFilePath();
-        TextureRegion background = textureAtlasProvider.getTexture("ui", "images/equipment-background.png");
-        spriteBatch.draw(background, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34, 32, 32);
-        TextureRegion itemTexture = textureAtlasProvider.getTexture("ui", filePath);
-        spriteBatch.draw(itemTexture, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34, 32, 32);
+            String equippedItemName = player.getComponent(InventoryComponent.class).getEquippedItem();
 
-        BitmapFont font = fontProvider.getFont();
-        String displayName = equippedItem.getComponent(DisplayNameComponent.class).getDisplayName();
-        glyphLayout.setText(font, displayName);
-        font.draw(spriteBatch, displayName, renderToPipeline.getWidth() - 16 - 2 - glyphLayout.width / 2, renderToPipeline.getHeight() - 34 - 2);
+            EntityRef equippedItem = itemProvider.getItemByName(equippedItemName);
+            String filePath = equippedItem.getComponent(EquippedSpriteComponent.class).getFilePath();
+            TextureRegion background = textureAtlasProvider.getTexture("ui", "images/equipment-background.png");
+            spriteBatch.draw(background, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34, 32, 32);
+            TextureRegion itemTexture = textureAtlasProvider.getTexture("ui", filePath);
+            spriteBatch.draw(itemTexture, renderToPipeline.getWidth() - 34, renderToPipeline.getHeight() - 34, 32, 32);
 
-        spriteBatch.end();
+            BitmapFont font = fontProvider.getFont();
+            String displayName = equippedItem.getComponent(DisplayNameComponent.class).getDisplayName();
+            glyphLayout.setText(font, displayName);
+            font.draw(spriteBatch, displayName, renderToPipeline.getWidth() - 16 - 2 - glyphLayout.width / 2, renderToPipeline.getHeight() - 34 - 2);
 
-        renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
+            spriteBatch.end();
+
+            renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
+        }
     }
 
     @Override

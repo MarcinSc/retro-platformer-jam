@@ -4,6 +4,9 @@ import com.gempukku.secsy.entity.Component;
 
 public interface TimeComponent extends Component {
     long getTime();
-
     void setTime(long time);
+
+    boolean isPaused();
+
+    void setPaused(boolean paused);
 }

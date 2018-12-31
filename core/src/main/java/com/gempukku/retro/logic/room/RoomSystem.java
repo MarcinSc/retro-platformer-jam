@@ -36,9 +36,13 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
     @Override
     public void initialize() {
-        spawnManager.spawnEntity("gameTimeEntity");
+        spawnManager.spawnEntity("gameTime");
+        spawnManager.spawnEntity("gameEntity");
         spawnManager.spawnEntity("player");
         reloadRoomFromGame();
+//        spawnManager.spawnEntity("editorTime");
+//        spawnManager.spawnEntity("editorEntity");
+//        sceneManager.loadScene("scenes/editor.scene");
     }
 
     @ReceiveEvent

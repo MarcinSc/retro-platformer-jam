@@ -3,7 +3,6 @@ package com.gempukku.secsy.gaming.time;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
 @RegisterSystem(
         profiles = "time", shared = {TimeManager.class, InternalTimeManager.class})
@@ -17,22 +16,18 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
     public void updateTime(long timeDiff) {
         EntityRef timeEntity = timeEntityProvider.getTimeEntity();
         TimeComponent time = getTimeComponent(timeEntity);
+        if (!time.isPaused()) {
+            TimeUpdated timeUpdated = new TimeUpdated(timeDiff);
+            timeEntity.send(timeUpdated);
+            timeDiff = timeUpdated.getTime();
 
-        TimeUpdated timeUpdated = new TimeUpdated(timeDiff);
-        timeEntity.send(timeUpdated);
-        timeDiff = timeUpdated.getTime();
-
-        timeSinceLastUpdate = timeDiff;
-        if (timeDiff > 0) {
-            long lastTime = time.getTime();
-            time.setTime(lastTime + timeDiff);
-            timeEntity.saveChanges();
+            timeSinceLastUpdate = timeDiff;
+            if (timeDiff > 0) {
+                long lastTime = time.getTime();
+                time.setTime(lastTime + timeDiff);
+                timeEntity.saveChanges();
+            }
         }
-    }
-
-    @ReceiveEvent(priorityName = "gaming.time.pause")
-    public void processPause(TimeUpdated timeUpdated, EntityRef timeEntity, PausedComponent paused) {
-        timeUpdated.setTime(0);
     }
 
     private TimeComponent getTimeComponent(EntityRef timeEntity) {

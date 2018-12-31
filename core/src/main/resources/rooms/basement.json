@@ -1,6 +1,6 @@
 [
   {
-    "prefab": "gameCameraEntity",
+    "prefab": "gameCamera",
     "override": {
       "ClampCamera": {
         "minX": -10,

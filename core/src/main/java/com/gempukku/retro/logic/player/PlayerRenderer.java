@@ -36,28 +36,29 @@ public class PlayerRenderer extends AbstractLifeCycleSystem {
 
         SpriteRenderer.SpriteSink spriteSink = gatherSprites.getSpriteSink();
         EntityRef playerEntity = playerProvider.getPlayer();
-        PlayerComponent player = playerEntity.getComponent(PlayerComponent.class);
-        Position2DComponent position = playerEntity.getComponent(Position2DComponent.class);
-        Size2DComponent size = playerEntity.getComponent(Size2DComponent.class);
-        TemporarilyInvulnerableComponent invulnerable = playerEntity.getComponent(TemporarilyInvulnerableComponent.class);
-        float alpha = 1;
+        if (playerEntity != null) {
+            PlayerComponent player = playerEntity.getComponent(PlayerComponent.class);
+            Position2DComponent position = playerEntity.getComponent(Position2DComponent.class);
+            Size2DComponent size = playerEntity.getComponent(Size2DComponent.class);
+            TemporarilyInvulnerableComponent invulnerable = playerEntity.getComponent(TemporarilyInvulnerableComponent.class);
+            float alpha = 1;
 
-        long effectStart = invulnerable.getEffectStart();
-        long effectDuration = invulnerable.getEffectDuration();
-        if (effectStart <= time && time < effectStart + effectDuration)
-            alpha = easingResolver.resolveValue(invulnerableAlpha, 1f * (time - effectStart) / effectDuration);
+            long effectStart = invulnerable.getEffectStart();
+            long effectDuration = invulnerable.getEffectDuration();
+            if (effectStart <= time && time < effectStart + effectDuration)
+                alpha = easingResolver.resolveValue(invulnerableAlpha, 1f * (time - effectStart) / effectDuration);
 
-        HorizontalOrientationComponent horizontal = playerEntity.getComponent(HorizontalOrientationComponent.class);
-        if (!horizontal.isFacingRight())
-            spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
-                    position.getX() - getLeft(size, player), position.getY() + getDown(size, player),
-                    -getWidth(size, player), getHeight(size, player),
-                    new Color(1, 1, 1, alpha));
-        else
-            spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
-                    position.getX() + getLeft(size, player), position.getY() + getDown(size, player),
-                    getWidth(size, player), getHeight(size, player),
-                    new Color(1, 1, 1, alpha));
-
+            HorizontalOrientationComponent horizontal = playerEntity.getComponent(HorizontalOrientationComponent.class);
+            if (!horizontal.isFacingRight())
+                spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
+                        position.getX() - getLeft(size, player), position.getY() + getDown(size, player),
+                        -getWidth(size, player), getHeight(size, player),
+                        new Color(1, 1, 1, alpha));
+            else
+                spriteSink.addSprite(player.getPriority(), "sprites", player.getFileName(),
+                        position.getX() + getLeft(size, player), position.getY() + getDown(size, player),
+                        getWidth(size, player), getHeight(size, player),
+                        new Color(1, 1, 1, alpha));
+        }
     }
 }

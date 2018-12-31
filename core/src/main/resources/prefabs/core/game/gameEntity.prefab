@@ -1,5 +1,6 @@
 {
   "GlobalEntity": {},
+  "Game": {},
   "Room": {
     "room": "rooms/entrance.json",
     "x": 0,
