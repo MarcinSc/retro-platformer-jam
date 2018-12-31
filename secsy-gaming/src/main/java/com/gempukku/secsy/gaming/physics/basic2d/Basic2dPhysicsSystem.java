@@ -241,6 +241,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                 // Check for not AABBs
                 // Using the Separating Axis Test
                 return SeparatingAxisTest.findOverlap(x1Min, x1Max, y1Min, y1Max,
+                        x2Min, x2Max, y2Min, y2Max,
                         sensorTrigger.nonAABBVertices, new Vector2()) != null;
             }
         } else {
@@ -410,6 +411,7 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                 // Check for not AABBs
                 // Using the Separating Axis Test
                 return SeparatingAxisTest.findOverlap(x1Min, x1Max, y1Min, y1Max,
+                        x2Min, x2Max, y2Min, y2Max,
                         obstacle.nonAABBVertices, vectorToUse);
             }
         } else {
@@ -633,7 +635,8 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
                     entityId, getLeft(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getRight(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getDown(size, obs.getDownPerc()), getUp(size, obs.getUpPerc()));
         else
             obstacle = new Obstacle(
-                    entityId, obs.getNonAABBVertices().getVertices());
+                    entityId, getLeft(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getRight(size, orientation, obs.getLeftPerc(), obs.getRightPerc()), getDown(size, obs.getDownPerc()), getUp(size, obs.getUpPerc()),
+                    obs.getNonAABBVertices().getVertices());
         obstacle.updatePositions(position.getX(), position.getY(), position.getX(), position.getY());
 
         obstacles.put(entityId, obstacle);

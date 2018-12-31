@@ -1,11 +1,12 @@
 package com.gempukku.secsy.gaming.physics.basic2d;
 
 import com.gempukku.secsy.entity.component.ComponentFieldTypeConverter;
-import org.json.simple.JSONArray;
 
-public class ObstacleVerticesConverter implements ComponentFieldTypeConverter<Vertices, JSONArray> {
+import java.util.List;
+
+public class VerticesConverter implements ComponentFieldTypeConverter<Vertices, List> {
     @Override
-    public Vertices convertTo(JSONArray value) {
+    public Vertices convertTo(List value) {
         float[] vertices = new float[value.size() * 2];
         for (int i = 0; i < vertices.length; i += 2) {
             String vertexStr = (String) value.get(i / 2);
@@ -18,12 +19,12 @@ public class ObstacleVerticesConverter implements ComponentFieldTypeConverter<Ve
     }
 
     @Override
-    public Vertices convertTo(JSONArray value, Class<?> containedClass) {
+    public Vertices convertTo(List value, Class<?> containedClass) {
         return convertTo(value);
     }
 
     @Override
-    public JSONArray convertFrom(Vertices value) {
+    public List convertFrom(Vertices value) {
         throw new UnsupportedOperationException();
     }
 

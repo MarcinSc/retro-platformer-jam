@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class SeparatingAxisTest {
     public static Vector2 findOverlap(float xMin, float xMax, float yMin, float yMax,
+                                      float vXMin, float vXMax, float vYMin, float vYMax,
                                       float[] vertices, Vector2 vectorToUse) {
         Axis[] axes = new Axis[2 + vertices.length / 2];
         axes[0] = createAxis(false, xMax - xMin, 0);
@@ -11,18 +12,18 @@ public class SeparatingAxisTest {
 
         for (int i = 0; i < vertices.length - 2; i += 2) {
             axes[2 + i / 2] = createAxis(true,
-                    vertices[i + 2] - vertices[i],
-                    vertices[i + 3] - vertices[i + 1]);
+                    getVertexValue(vertices, i + 2, vXMin, vXMax) - getVertexValue(vertices, i, vXMin, vXMax),
+                    getVertexValue(vertices, i + 3, vYMin, vYMax) - getVertexValue(vertices, i + 1, vYMin, vYMax));
         }
         axes[axes.length - 1] = createAxis(true,
-                vertices[0] - vertices[vertices.length - 2],
-                vertices[1] - vertices[vertices.length - 1]);
+                getVertexValue(vertices, 0, vXMin, vXMax) - getVertexValue(vertices, vertices.length - 2, vXMin, vXMax),
+                getVertexValue(vertices, 1, vYMin, vYMax) - getVertexValue(vertices, vertices.length - 1, vYMin, vYMax));
 
         float smallestOverlap = Float.MAX_VALUE;
 
         for (Axis axis : axes) {
             Vector2 projectionAABB = project(axis, xMin, xMax, yMin, yMax);
-            Vector2 projectionObstacle = project(axis, vertices);
+            Vector2 projectionObstacle = project(axis, vertices, vXMin, vXMax, vYMin, vYMax);
 
             // Check for overlap
             float overlap;
@@ -54,12 +55,17 @@ public class SeparatingAxisTest {
         return vectorToUse;
     }
 
+    private static float getVertexValue(float[] vertices, int index, float min, float max) {
+        return min + vertices[index] * (max - min);
+    }
 
-    private static Vector2 project(Axis axis, float[] vertices) {
-        float dot = axis.axis.dot(vertices[0], vertices[1]);
+    private static Vector2 project(Axis axis, float[] vertices, float xMin, float xMax, float yMin, float yMax) {
+        float dot = axis.axis.dot(
+                getVertexValue(vertices, 0, xMin, xMax),
+                getVertexValue(vertices, 1, yMin, yMax));
         Vector2 projection = new Vector2(dot, dot);
         for (int i = 2; i < vertices.length; i += 2)
-            applyForVertex(axis, vertices[i], vertices[i + 1], projection);
+            applyForVertex(axis, getVertexValue(vertices, i, xMin, xMax), getVertexValue(vertices, i + 1, yMin, yMax), projection);
         return projection;
     }
 

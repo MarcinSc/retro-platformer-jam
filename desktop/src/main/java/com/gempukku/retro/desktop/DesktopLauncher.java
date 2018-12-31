@@ -30,6 +30,7 @@ public class DesktopLauncher {
         activeProfiles.add("time");
         activeProfiles.add("textureAtlas");
         activeProfiles.add("2dCamera");
+        activeProfiles.add("scene");
         activeProfiles.add("platformer2dMovement");
         activeProfiles.add("basic2dPhysics");
         activeProfiles.add("backgroundMusic");

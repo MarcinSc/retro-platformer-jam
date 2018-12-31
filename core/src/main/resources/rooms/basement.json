@@ -1,184 +1,341 @@
-{
-  "cameraSettings": {
-    "clamp": {
-      "minX": -10,
-      "maxX": 10,
-      "minY": -10,
-      "maxY": 10
+[
+  {
+    "prefab": "gameCameraEntity",
+    "override": {
+      "ClampCamera": {
+        "minX": -10,
+        "maxX": 10,
+        "minY": -10,
+        "maxY": 10
+      }
     }
   },
-  "pickups": [
-    {
-      "type": "baton",
-      "image": "images/baton.png",
-      "x": -0.3,
-      "y": 0
-    },
-    {
-      "type": "gun",
-      "image": "images/gun.png",
-      "x": -5.8,
-      "y": -4
+  {
+    "prefab": "pickup",
+    "override": {
+      "Pickup": {
+        "type": "baton"
+      },
+      "Sprite": {
+        "fileName": "images/baton.png"
+      },
+      "Position2D": {
+        "x": -0.3,
+        "y": 0
+      }
     }
-  ],
-  "platforms": [
-    {
-      "prefab": "wallLeft",
-      "x": -6,
-      "y": 1.4,
-      "width": 0.1,
-      "height": 4.9
-    },
-    {
-      "prefab": "wall",
-      "x": 1.6,
-      "y": 1.4,
-      "width": 0.1,
-      "height": 0.9
-    },
-    {
-      "prefab": "wallRight",
-      "x": 1.9,
-      "y": -0.1,
-      "width": 0.1,
-      "height": 3.9
-    },
-    {
-      "prefab": "platformNoEdges",
-      "x": -5.9,
-      "width": 7.8,
-      "y": -4,
-      "height": 0.1
-    },
-    {
-      "prefab": "platformEdgeLeft",
-      "x": -4.5,
-      "width": 6.4,
-      "y": -1.6,
-      "height": 0.1
-    },
-    {
-      "prefab": "ceiling",
-      "x": -10,
-      "width": 20,
-      "y": 1.5,
-      "height": 0.1
-    },
-    {
-      "prefab": "platformEdgeLeft",
-      "x": -0.5,
-      "y": 0,
-      "width": 2.4,
-      "height": 0.1
-    },
-    {
-      "prefab": "platform",
-      "x": -1.8,
-      "width": 0.8,
-      "y": -0.45,
-      "height": 0.1
-    },
-    {
-      "prefab": "wall",
-      "x": -2.0,
-      "y": 1.4,
-      "width": 0.1,
-      "height": 2.2
-    },
-    {
-      "prefab": "platform",
-      "x": -0.7,
-      "width": 1.4,
-      "y": -1.02,
-      "height": 0.1
-    },
-    {
-      "prefab": "movingPlatform",
-      "x": -2.7,
-      "width": 0.4,
-      "y": -1.2,
-      "height": 0.1,
-      "distanceX": -1,
-      "distanceY": 2
-    },
-    {
-      "prefab": "wall",
-      "x": -4.0,
-      "y": 0.6,
-      "width": 0.1,
-      "height": 2.2
-    },
-    {
-      "prefab": "stairs",
-      "x": -4.8,
-      "y": -0.2,
-      "width": 0.8,
-      "height": 0.8,
-      "vertices": [
-        "-4.8,-0.2",
-        "-4,-0.2",
-        "-4,0.6"
-      ]
-    },
-    {
-      "prefab": "platformEdgeRight",
-      "x": -5.9,
-      "width": 0.6,
-      "y": -0.8,
-      "height": 0.1
-    },
-    {
-      "prefab": "platformEdgeRight",
-      "x": -5.9,
-      "width": 0.6,
-      "y": -2.8,
-      "height": 0.1
-    },
-    {
-      "prefab": "platform",
-      "x": -4.5,
-      "width": 0.6,
-      "y": -2.8,
-      "height": 0.1
-    },
-    {
-      "prefab": "wall",
-      "x": -3.0,
-      "y": -1.7,
-      "width": 0.1,
-      "height": 2.3
+  },
+  {
+    "prefab": "pickup",
+    "override": {
+      "Pickup": {
+        "type": "gun"
+      },
+      "Sprite": {
+        "fileName": "images/gun.png"
+      },
+      "Position2D": {
+        "x": -5.8,
+        "y": -4
+      }
     }
-  ],
-  "objects": [
-    {
-      "prefab": "basementBackground",
-      "x": 0,
-      "y": 0
-    },
-    {
-      "prefab": "avoidElevator",
-      "x": 0,
-      "y": 0
-    },
-    {
-      "prefab": "patrollingGuard",
-      "x": -0.5,
-      "y": -1.02
-    },
-    {
-      "prefab": "doorClosed",
-      "x": 1.65,
-      "y": 0
-    },
-    {
-      "prefab": "doorClosed",
-      "x": -5.95,
-      "y": -4
-    },
-    {
-      "prefab": "guardWithGunRight",
-      "x": -5.6,
-      "y": -4
+  },
+  {
+    "prefab": "wallLeft",
+    "override": {
+      "Position2D": {
+        "x": -6,
+        "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 4.9
+      }
     }
-  ]
-}
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Position2D": {
+        "x": 1.6,
+        "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 0.9
+      }
+    }
+  },
+  {
+    "prefab": "wallRight",
+    "override": {
+      "Position2D": {
+        "x": 1.9,
+        "y": -0.1
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 3.9
+      }
+    }
+  },
+  {
+    "prefab": "platformNoEdges",
+    "override": {
+      "Position2D": {
+        "x": -5.9,
+        "y": -4
+      },
+      "Size2D": {
+        "width": 7.8,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "platformEdgeLeft",
+    "override": {
+      "Position2D": {
+        "x": -4.5,
+        "y": -1.6
+      },
+      "Size2D": {
+        "width": 6.4,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "ceiling",
+    "override": {
+      "Position2D": {
+        "x": -10,
+        "y": 1.5
+      },
+      "Size2D": {
+        "width": 20,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "platformEdgeLeft",
+    "override": {
+      "Position2D": {
+        "x": -0.5,
+        "y": 0
+      },
+      "Size2D": {
+        "width": 2.4,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "Position2D": {
+        "x": -1.8,
+        "y": -0.45
+      },
+      "Size2D": {
+        "width": 0.8,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Position2D": {
+        "x": -2.0,
+        "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 2.2
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "Position2D": {
+        "x": -0.7,
+        "y": -1.02
+      },
+      "Size2D": {
+        "width": 1.4,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "movingPlatform",
+    "override": {
+      "Position2D": {
+        "x": -2.7,
+        "y": -1.2
+      },
+      "Size2D": {
+        "width": 0.4,
+        "height": 0.1
+      },
+      "Oscillating": {
+        "startingPosition": "-2.7,-1.2",
+        "distance": "-1,2"
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Position2D": {
+        "x": -4.0,
+        "y": 0.6
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 2.2
+      }
+    }
+  },
+  {
+    "prefab": "stairs",
+    "override": {
+      "Position2D": {
+        "x": -4.8,
+        "y": -0.2
+      },
+      "Size2D": {
+        "width": 0.8,
+        "height": 0.8
+      },
+      "Obstacle": {
+        "aABB": false,
+        "nonAABBVertices": [
+          "0,0",
+          "1,0",
+          "1,1"
+        ]
+      },
+      "SensorTrigger": {
+        "aABB": false,
+        "nonAABBVertices": [
+          "0,0",
+          "1,0",
+          "1,1"
+        ]
+      }
+    }
+  },
+  {
+    "prefab": "platformEdgeRight",
+    "override": {
+      "Position2D": {
+        "x": -5.9,
+        "y": -0.8
+      },
+      "Size2D": {
+        "width": 0.6,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "platformEdgeRight",
+    "override": {
+      "Position2D": {
+        "x": -5.9,
+        "y": -2.8
+      },
+      "Size2D": {
+        "width": 0.6,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "Position2D": {
+        "x": -4.5,
+        "y": -2.8
+      },
+      "Size2D": {
+        "width": 0.6,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Position2D": {
+        "x": -3.0,
+        "y": -1.7
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 2.3
+      }
+    }
+  },
+  {
+    "prefab": "basementBackground",
+    "override": {
+      "Position2D": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "avoidElevator",
+    "override": {
+      "Position2D": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "patrollingGuard",
+    "override": {
+      "Position2D": {
+        "x": -0.5,
+        "y": -1.02
+      }
+    }
+  },
+  {
+    "prefab": "doorClosed",
+    "override": {
+      "Position2D": {
+        "x": 1.65,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "doorClosed",
+    "override": {
+      "Position2D": {
+        "x": -5.95,
+        "y": -4
+      }
+    }
+  },
+  {
+    "prefab": "guardWithGun",
+    "override": {
+      "Position2D": {
+        "x": -5.6,
+        "y": -4
+      },
+      "HorizontalOrientation": {
+        "facingRight": true
+      }
+    }
+  }
+]

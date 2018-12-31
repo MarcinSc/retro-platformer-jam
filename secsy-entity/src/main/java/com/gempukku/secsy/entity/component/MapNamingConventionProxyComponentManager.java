@@ -367,6 +367,8 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
                 } else if (resultClass == byte.class || resultClass == Byte.class) {
                     return numberValue.byteValue();
                 }
+            } else if (componentFieldConverter.hasConverterForType(resultClass)) {
+                return componentFieldConverter.convertTo(value, resultClass);
             }
             return value;
         }

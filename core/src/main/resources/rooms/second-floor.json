@@ -1,63 +1,101 @@
-{
-  "cameraSettings": {
-    "clamp": {
-      "minX": -2,
-      "maxX": 2,
-      "minY": -1,
-      "maxY": 2
+[
+  {
+    "prefab": "gameCameraEntity",
+    "override": {
+      "ClampCamera": {
+        "minX": -2,
+        "maxX": 2,
+        "minY": -1,
+        "maxY": 2
+      }
     }
   },
-  "pickups": [],
-  "platforms": [
-    {
-      "prefab": "wallLeft",
-      "x": -1.3,
-      "y": 1,
-      "width": 0.1,
-      "height": 1
-    },
-    {
-      "prefab": "wallRight",
-      "x": 1.2,
-      "y": 1,
-      "width": 0.1,
-      "height": 1
-    },
-    {
-      "prefab": "platformNoEdges",
-      "x": -1.2,
-      "width": 2.4,
-      "y": 0.0,
-      "height": 0.1
-    },
-    {
-      "prefab": "ceiling",
-      "x": -1.2,
-      "width": 2.4,
-      "y": 1.1,
-      "height": 0.1
+  {
+    "prefab": "wallLeft",
+    "override": {
+      "Position2D": {
+        "x": -1.3,
+        "y": 1
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 1
+      }
     }
-  ],
-  "objects": [
-    {
-      "prefab": "secondFloorBackground",
-      "x": 0,
-      "y": 0
-    },
-    {
-      "prefab": "blockedElevator",
-      "x": 0.2,
-      "y": 0
-    },
-    {
-      "prefab": "stairsDown",
-      "x": 0.9,
-      "y": 0
-    },
-    {
-      "prefab": "cleaner",
-      "x": 0.25,
-      "y": 0
+  },
+  {
+    "prefab": "wallRight",
+    "override": {
+      "Position2D": {
+        "x": 1.2,
+        "y": 1
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 1
+      }
     }
-  ]
-}
+  },
+  {
+    "prefab": "platformNoEdges",
+    "override": {
+      "Position2D": {
+        "x": -1.2,
+        "y": 0.0
+      },
+      "Size2D": {
+        "width": 2.4,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "ceiling",
+    "override": {
+      "Position2D": {
+        "x": -1.2,
+        "y": 1.1
+      },
+      "Size2D": {
+        "width": 2.4,
+        "height": 0.1
+      }
+    }
+  },
+  {
+    "prefab": "secondFloorBackground",
+    "override": {
+      "Position2D": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "blockedElevator",
+    "override": {
+      "Position2D": {
+        "x": 0.2,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "stairsDown",
+    "override": {
+      "Position2D": {
+        "x": 0.9,
+        "y": 0
+      }
+    }
+  },
+  {
+    "prefab": "cleaner",
+    "override": {
+      "Position2D": {
+        "x": 0.25,
+        "y": 0
+      }
+    }
+  }
+]
