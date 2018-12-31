@@ -22,10 +22,12 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
         timeEntity.send(timeUpdated);
         timeDiff = timeUpdated.getTime();
 
-        long lastTime = time.getTime();
         timeSinceLastUpdate = timeDiff;
-        time.setTime(lastTime + timeDiff);
-        timeEntity.saveChanges();
+        if (timeDiff > 0) {
+            long lastTime = time.getTime();
+            time.setTime(lastTime + timeDiff);
+            timeEntity.saveChanges();
+        }
     }
 
     @ReceiveEvent(priorityName = "gaming.time.pause")
