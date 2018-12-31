@@ -19,6 +19,11 @@ public class SimpleEntityIndexManager extends AbstractLifeCycleSystem implements
     private Set<ComponentEntityIndex> indices = new HashSet<ComponentEntityIndex>();
 
     @Override
+    public float getPriority() {
+        return 1000;
+    }
+
+    @Override
     public void initialize() {
         internalEntityManager.addEntityListener(this);
     }
