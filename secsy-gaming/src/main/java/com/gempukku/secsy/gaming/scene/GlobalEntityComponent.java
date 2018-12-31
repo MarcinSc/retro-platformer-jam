@@ -1,4 +1,4 @@
-package com.gempukku.retro.model;
+package com.gempukku.secsy.gaming.scene;
 
 import com.gempukku.secsy.entity.Component;
 

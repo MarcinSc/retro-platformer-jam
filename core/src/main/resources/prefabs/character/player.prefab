@@ -1,5 +1,6 @@
 {
   "import": "abstractCharacter",
+  "GlobalEntity": {},
   "Player": {
     "fileName": "images/player.png",
     "priority": -1

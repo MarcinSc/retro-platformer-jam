@@ -3,14 +3,14 @@ package com.gempukku.retro.provider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
-import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
+import com.gempukku.secsy.gaming.spawn.SpawnManager;
 
 @RegisterSystem(shared = CameraEntityProvider.class)
 public class CameraEntityProviderImpl extends AbstractLifeCycleSystem implements CameraEntityProvider {
     @Inject
-    private EntityManager entityManager;
+    private SpawnManager spawnManager;
 
     private EntityRef gameCameraEntity;
 
@@ -18,7 +18,7 @@ public class CameraEntityProviderImpl extends AbstractLifeCycleSystem implements
 
     @Override
     public void initialize() {
-        gameCameraEntity = entityManager.createEntityFromPrefab("gameCameraEntity");
+        gameCameraEntity = spawnManager.spawnEntity("gameCameraEntity");
 
         currentCamera = gameCameraEntity;
     }

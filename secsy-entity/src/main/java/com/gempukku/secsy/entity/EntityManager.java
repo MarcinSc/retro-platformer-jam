@@ -8,8 +8,6 @@ import com.gempukku.secsy.entity.io.EntityData;
 public interface EntityManager {
     EntityRef createEntity();
 
-    EntityRef createEntityFromPrefab(String prefabName);
-
     EntityRef createEntityFromData(EntityData entityData);
 
     EntityRef createNewEntityRef(EntityRef entityRef);

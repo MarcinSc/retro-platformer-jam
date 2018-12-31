@@ -12,7 +12,6 @@ import com.gempukku.secsy.entity.game.InternalGameLoopListener;
 import com.gempukku.secsy.entity.io.ComponentData;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.entity.io.StoredEntityData;
-import com.gempukku.secsy.entity.prefab.PrefabManager;
 import com.gempukku.secsy.entity.relevance.EntityRelevanceRule;
 import com.gempukku.secsy.entity.relevance.EntityRelevanceRuleRegistry;
 import com.google.common.base.Function;
@@ -33,8 +32,6 @@ public class SimpleEntityManager extends AbstractLifeCycleSystem implements Enti
     private InternalComponentManager internalComponentManager;
     @Inject
     private InternalGameLoop internalGameLoop;
-    @Inject(optional = true)
-    private PrefabManager prefabManager;
 
     private Set<EntityRelevanceRule> entityRelevanceRules = new HashSet<EntityRelevanceRule>();
 
@@ -214,21 +211,6 @@ public class SimpleEntityManager extends AbstractLifeCycleSystem implements Enti
     public EntityRef createEntity() {
         SimpleEntity entity = new SimpleEntity(internalComponentManager, ++maxId);
         entities.put(entity.getEntityId(), entity);
-        return createSimpleEntityRef(entity, false);
-    }
-
-    @Override
-    public EntityRef createEntityFromPrefab(String prefabName) {
-        if (prefabManager == null)
-            throw new RuntimeException("Unable to read prefab - prefab manager not defined");
-
-        EntityData prefabByName = prefabManager.getPrefabByName(prefabName);
-
-        SimpleEntity entity = new SimpleEntity(internalComponentManager, ++maxId, prefabByName);
-        entities.put(entity.getEntityId(), entity);
-
-        dispatchEntityListener.entityModified(entity, entity.getComponentClasses());
-
         return createSimpleEntityRef(entity, false);
     }
 
