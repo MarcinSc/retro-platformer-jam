@@ -1,9 +1,9 @@
 package com.gempukku.secsy.gaming.physics.basic2d;
 
-public class ObstacleVertices {
+public class Vertices {
     private float[] vertices;
 
-    public ObstacleVertices(float[] vertices) {
+    public Vertices(float[] vertices) {
         this.vertices = vertices;
     }
 

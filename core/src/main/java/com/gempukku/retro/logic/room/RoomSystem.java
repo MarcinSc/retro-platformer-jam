@@ -21,7 +21,8 @@ import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.movement.OscillatingComponent;
 import com.gempukku.secsy.gaming.physics.basic2d.ObstacleComponent;
-import com.gempukku.secsy.gaming.physics.basic2d.ObstacleVertices;
+import com.gempukku.secsy.gaming.physics.basic2d.SensorTriggerComponent;
+import com.gempukku.secsy.gaming.physics.basic2d.Vertices;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
@@ -313,8 +314,6 @@ public class RoomSystem extends AbstractLifeCycleSystem {
         }
 
         if (platformObj.get("vertices") != null) {
-            ObstacleComponent obstacle = platform.getComponent(ObstacleComponent.class);
-            obstacle.setAABB(false);
             JSONArray verticesArr = (JSONArray) platformObj.get("vertices");
             float[] vertices = new float[verticesArr.size() * 2];
             for (int i = 0; i < vertices.length; i += 2) {
@@ -322,7 +321,14 @@ public class RoomSystem extends AbstractLifeCycleSystem {
                 vertices[i] = Float.parseFloat(split[0]);
                 vertices[i + 1] = Float.parseFloat(split[1]);
             }
-            obstacle.setNonAABBVertices(new ObstacleVertices(vertices));
+
+            ObstacleComponent obstacle = platform.getComponent(ObstacleComponent.class);
+            obstacle.setAABB(false);
+            obstacle.setNonAABBVertices(new Vertices(vertices));
+
+            SensorTriggerComponent sensorTrigger = platform.getComponent(SensorTriggerComponent.class);
+            sensorTrigger.setAABB(false);
+            sensorTrigger.setNonAABBVertices(new Vertices(vertices));
         }
 
         platform.saveChanges();

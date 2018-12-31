@@ -44,14 +44,14 @@ public class SensorTrigger {
         this.up = maxY;
     }
 
-    private void assignLeftRight(float[] verices) {
-        float minX = verices[0];
-        float maxX = verices[0];
-        for (int i = 2; i < verices.length; i += 2) {
-            if (verices[i] < minX)
-                minX = verices[i];
-            else if (verices[i] > maxX)
-                maxX = verices[i];
+    private void assignLeftRight(float[] vertices) {
+        float minX = vertices[0];
+        float maxX = vertices[0];
+        for (int i = 2; i < vertices.length; i += 2) {
+            if (vertices[i] < minX)
+                minX = vertices[i];
+            else if (vertices[i] > maxX)
+                maxX = vertices[i];
         }
         this.left = minX;
         this.right = maxX;

@@ -9,7 +9,7 @@ public interface ObstacleComponent extends Bounds2DComponent {
 
     void setAABB(boolean aabb);
 
-    ObstacleVertices getNonAABBVertices();
+    Vertices getNonAABBVertices();
 
-    void setNonAABBVertices(ObstacleVertices nonAABBVertices);
+    void setNonAABBVertices(Vertices nonAABBVertices);
 }

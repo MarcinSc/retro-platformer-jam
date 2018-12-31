@@ -50,6 +50,7 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
     public void sensorContactEnd(SensorContactEnd contactEnd, EntityRef entity, GroundedComponent controlled) {
         if (contactEnd.getSensorType().equals(controlled.getSensorType())
                 && contactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
+            System.out.println("Not grounded");
             controlled.setGrounded(false);
             controlled.setLastGroundedTime(timeManager.getTime());
             entity.saveChanges();
