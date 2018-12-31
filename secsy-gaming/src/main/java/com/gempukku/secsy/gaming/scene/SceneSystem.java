@@ -7,6 +7,7 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -24,6 +25,8 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
     private EntityManager entityManager;
     @Inject
     private SpawnManager spawnManager;
+    @Inject
+    private GameEntityProvider gameEntityProvider;
 
     @Override
     public void unloadScene() {
@@ -46,6 +49,8 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
             else
                 spawnManager.spawnEntity(prefab);
         }
+        
+        gameEntityProvider.getGameEntity().send(new SceneLoaded());
     }
 
     private JSONArray loadJSON(String roomFile) {
