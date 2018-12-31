@@ -10,4 +10,8 @@ public interface GroundedComponent extends Component {
     boolean isGrounded();
 
     void setGrounded(boolean grounded);
+
+    long getLastGroundedTime();
+
+    void setLastGroundedTime(long lastGroundedTime);
 }

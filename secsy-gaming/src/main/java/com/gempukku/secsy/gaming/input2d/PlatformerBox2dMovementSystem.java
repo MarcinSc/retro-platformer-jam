@@ -13,6 +13,7 @@ import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.physics.box2d.Box2dPhysics;
 import com.gempukku.secsy.gaming.physics.box2d.Box2dSensorContactBegin;
 import com.gempukku.secsy.gaming.physics.box2d.Box2dSensorContactEnd;
+import com.gempukku.secsy.gaming.time.TimeManager;
 
 @RegisterSystem(profiles = {"platformer2dMovement", "box2dPhysics"})
 public class PlatformerBox2dMovementSystem extends AbstractLifeCycleSystem {
@@ -24,6 +25,8 @@ public class PlatformerBox2dMovementSystem extends AbstractLifeCycleSystem {
     private Box2dPhysics physicsEngine;
     @Inject
     private InputScheme2dProvider inputScheme2DProvider;
+    @Inject
+    private TimeManager timeManager;
 
     private EntityIndex controlledEntities;
     private boolean jumpPressedLastFrame;
@@ -53,6 +56,7 @@ public class PlatformerBox2dMovementSystem extends AbstractLifeCycleSystem {
     public void sensorContactEnd(Box2dSensorContactEnd contactEnd, EntityRef entity, GroundedComponent controlled) {
         if (contactEnd.getSensorFixture().getUserData().equals(GROUNDED_SENSOR_NAME)) {
             controlled.setGrounded(false);
+            controlled.setLastGroundedTime(timeManager.getTime());
             entity.saveChanges();
         }
     }
@@ -69,7 +73,9 @@ public class PlatformerBox2dMovementSystem extends AbstractLifeCycleSystem {
                 GroundedComponent grounded = controlledEntity.getComponent(GroundedComponent.class);
                 // Character can jump, if it's either grounded, or has already jumped and maxJumpCount allows that
                 int jumpCount = controlled.getJumpCount();
-                if (grounded.isGrounded() || (jumpCount > 0 && jumpCount < controlled.getJumpMaxCount())) {
+                if (grounded.isGrounded()
+                        || grounded.getLastGroundedTime() + controlled.getJumpGracePeriod() > timeManager.getTime()
+                        || (jumpCount > 0 && jumpCount < controlled.getJumpMaxCount())) {
                     physicsEngine.setSpeedY(controlledEntity, 0);
                     physicsEngine.applyPulse(controlledEntity, 0, controlled.getJumpImpulse());
                     controlled.setJumpCount(jumpCount + 1);

@@ -51,6 +51,7 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
         if (contactEnd.getSensorType().equals(controlled.getSensorType())
                 && contactEnd.getSensorTrigger().hasComponent(GroundComponent.class)) {
             controlled.setGrounded(false);
+            controlled.setLastGroundedTime(timeManager.getTime());
             entity.saveChanges();
         }
     }
@@ -95,7 +96,9 @@ public class PlatformerBasic2dMovementSystem extends AbstractLifeCycleSystem {
                 GroundedComponent grounded = controlledEntity.getComponent(GroundedComponent.class);
                 // Character can jump, if it's either grounded, or has already jumped and maxJumpCount allows that
                 int jumpCount = controlled.getJumpCount();
-                if (grounded.isGrounded() || (jumpCount > 0 && jumpCount < controlled.getJumpMaxCount())) {
+                if (grounded.isGrounded()
+                        || grounded.getLastGroundedTime() + controlled.getJumpGracePeriod() > timeManager.getTime()
+                        || (jumpCount > 0 && jumpCount < controlled.getJumpMaxCount())) {
                     controlled.setJumpCount(jumpCount + 1);
                     controlled.setJustJumped(true);
                     controlledEntity.saveChanges();

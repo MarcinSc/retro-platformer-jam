@@ -27,4 +27,7 @@ public interface ControlledByInputComponent extends Component {
     void setPhysicsJumpTime(long jumpTime);
 
     long getJumpLength();
+
+    @DefaultValue("200")
+    long getJumpGracePeriod();
 }
