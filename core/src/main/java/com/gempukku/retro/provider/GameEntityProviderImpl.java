@@ -6,10 +6,9 @@ import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
-import com.gempukku.secsy.gaming.time.TimeEntityProvider;
 
-@RegisterSystem(shared = {GameEntityProvider.class, TimeEntityProvider.class})
-public class GameEntityProviderImpl extends AbstractLifeCycleSystem implements GameEntityProvider, TimeEntityProvider {
+@RegisterSystem(shared = GameEntityProvider.class)
+public class GameEntityProviderImpl extends AbstractLifeCycleSystem implements GameEntityProvider {
     @Inject
     private SpawnManager spawnManager;
 
@@ -18,12 +17,6 @@ public class GameEntityProviderImpl extends AbstractLifeCycleSystem implements G
     @Override
     public void initialize() {
         currentGameLoopEntity = spawnManager.spawnEntity("gameGameEntity");
-    }
-
-
-    @Override
-    public EntityRef getTimeEntity() {
-        return currentGameLoopEntity;
     }
 
     @Override

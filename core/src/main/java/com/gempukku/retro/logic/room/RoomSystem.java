@@ -36,6 +36,7 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
     @Override
     public void initialize() {
+        spawnManager.spawnEntity("gameTimeEntity");
         spawnManager.spawnEntity("player");
         reloadRoomFromGame();
     }

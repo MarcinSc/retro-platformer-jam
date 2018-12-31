@@ -11,6 +11,9 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @RegisterSystem
 public class PickupSystem extends AbstractLifeCycleSystem {
     @Inject
@@ -37,9 +40,13 @@ public class PickupSystem extends AbstractLifeCycleSystem {
         String pickupType = pickedUpObject.getPickupType();
         EntityRef itemEntity = itemProvider.getItemByName(pickupType);
         if (itemEntity != null) {
-            inventoryComponent.getItems().add(pickupType);
-            entity.saveChanges();
-            itemEntity.send(new ItemAddedToInventory(entity, pickupType));
+            List<String> items = new LinkedList<String>(inventoryComponent.getItems());
+            if (!items.contains(pickupType)) {
+                items.add(pickupType);
+                inventoryComponent.setItems(items);
+                entity.saveChanges();
+                itemEntity.send(new ItemAddedToInventory(entity, pickupType));
+            }
         }
     }
 }
