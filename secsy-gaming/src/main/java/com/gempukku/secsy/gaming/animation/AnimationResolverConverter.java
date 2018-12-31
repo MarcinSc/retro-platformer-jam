@@ -5,9 +5,7 @@ import com.gempukku.secsy.entity.component.ComponentFieldTypeConverter;
 public class AnimationResolverConverter implements ComponentFieldTypeConverter<AnimationResolver, String> {
     @Override
     public AnimationResolver convertTo(String value) {
-        String[] split = value.split(",", 2);
-
-        return new DefaultAnimationResolver(split[0], Long.parseLong(split[1]));
+        return new ChainedAnimationResolver(value);
     }
 
     @Override

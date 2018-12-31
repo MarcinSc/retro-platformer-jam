@@ -21,4 +21,8 @@ public class AnimationFrames {
 
         return null;
     }
+
+    public long getLength() {
+        return length;
+    }
 }
