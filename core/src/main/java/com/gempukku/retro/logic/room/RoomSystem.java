@@ -29,15 +29,15 @@ public class RoomSystem extends AbstractLifeCycleSystem {
 
     public static final int RELOAD_KEY = Input.Keys.R;
 
-    private boolean roomLoaded = false;
+    @Override
+    public float getPriority() {
+        return -1000;
+    }
 
-    @ReceiveEvent
-    public void update(GameLoopUpdate update) {
-        if (!roomLoaded) {
-            spawnManager.spawnEntity("player");
-            reloadRoomFromGame();
-            roomLoaded = true;
-        }
+    @Override
+    public void initialize() {
+        spawnManager.spawnEntity("player");
+        reloadRoomFromGame();
     }
 
     @ReceiveEvent
