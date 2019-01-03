@@ -44,7 +44,7 @@ public class DesktopLauncher {
         activeProfiles.add("sprites");
         activeProfiles.add("bobbingSprites");
         activeProfiles.add("fadingSprites");
-        //activeProfiles.add("genesisSimulation");
+        activeProfiles.add("genesisSimulation");
         activeProfiles.add("colorTint");
         activeProfiles.add("action");
         activeProfiles.add("activateWithSensor");
@@ -53,7 +53,7 @@ public class DesktopLauncher {
         activeProfiles.add("combat");
         activeProfiles.add("weapon");
 
-        activeProfiles.add("editor");
+        //activeProfiles.add("editor");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.fullscreen = false;

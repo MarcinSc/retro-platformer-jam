@@ -318,11 +318,14 @@
     }
   },
   {
-    "prefab": "avoidElevator",
+    "prefab": "closedElevator",
     "override": {
       "Position2D": {
         "x": 0,
         "y": 0
+      },
+      "BodyTriggeredTextDisplaying": {
+        "displayText": "CLOSED"
       }
     }
   },
