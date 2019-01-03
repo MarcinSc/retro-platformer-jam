@@ -20,7 +20,7 @@
     }
   },
   {
-    "prefab": "wallLeft",
+    "prefab": "wall",
     "override": {
       "Position2D": {
         "x": -1.3,
@@ -29,11 +29,14 @@
       "Size2D": {
         "width": 0.1,
         "height": 1
+      },
+      "Platform": {
+        "centerImage": "images/wall-left.png"
       }
     }
   },
   {
-    "prefab": "wallRight",
+    "prefab": "wall",
     "override": {
       "Position2D": {
         "x": 1.2,
@@ -42,6 +45,9 @@
       "Size2D": {
         "width": 0.1,
         "height": 1
+      },
+      "Platform": {
+        "centerImage": "images/wall-right.png"
       }
     }
   },

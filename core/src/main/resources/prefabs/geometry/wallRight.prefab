@@ -1,8 +1,0 @@
-{
-  "import": "wall",
-  "Platform": {
-    "textureAtlasId": "sprites",
-    "centerImage": "images/wall-right.png",
-    "horizontal": false
-  }
-}
