@@ -1,4 +1,10 @@
 {
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D",
+      "PlayerSpawn"
+    ]
+  },
   "Position2D": {},
   "PlayerSpawn": {
     "spawnId": "spawn"

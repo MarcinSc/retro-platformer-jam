@@ -91,11 +91,21 @@
     }
   },
   {
-    "prefab": "stairsDown",
+    "prefab": "activatedTeleport",
     "override": {
       "Position2D": {
         "x": 0.9,
         "y": 0
+      },
+      "BodyTriggeredTextDisplaying": {
+        "displayText": "GO DOWN"
+      },
+      "Sprite": {
+        "fileName": "images/stairs-down.png"
+      },
+      "LoadRoomOnActivate": {
+        "roomPath": "rooms/entrance.json",
+        "spawnId": "stairs"
       }
     }
   },

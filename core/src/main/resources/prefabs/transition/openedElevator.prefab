@@ -1,9 +1,4 @@
 {
-  "EditorEditable": {
-    "editableComponents": [
-      "Position2D"
-    ]
-  },
   "Position2D": {},
   "Size2D": {
     "width": 0.4,

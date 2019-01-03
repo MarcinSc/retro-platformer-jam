@@ -109,11 +109,21 @@
     }
   },
   {
-    "prefab": "stairsUp",
+    "prefab": "activatedTeleport",
     "override": {
       "Position2D": {
         "x": 0.9,
         "y": 0
+      },
+      "BodyTriggeredTextDisplaying": {
+        "displayText": "GO UP"
+      },
+      "Sprite": {
+        "fileName": "images/stairs-up.png"
+      },
+      "LoadRoomOnActivate": {
+        "roomPath": "rooms/second-floor.json",
+        "spawnId": "stairs"
       }
     }
   },

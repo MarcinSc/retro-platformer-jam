@@ -1,7 +1,11 @@
 {
   "EditorEditable": {
     "editableComponents": [
-      "Position2D"
+      "Position2D",
+      "Sprite",
+      "BodyTriggeredTextDisplaying",
+      "LoadRoomOnActivate",
+      "PlayerSpawn"
     ]
   },
   "Position2D": {},
@@ -15,18 +19,18 @@
     "anchorY": 0
   },
   "BodyTriggeredTextDisplaying": {
-    "displayText": "GO UP",
+    "displayText": "",
     "y": 0.7
   },
   "Sprite": {
-    "fileName": "images/stairs-up.png",
+    "fileName": "images/stairs-down.png",
     "priority": 2
   },
   "SensorTrigger": {
   },
   "ActivatedByActionWithSensor": {},
   "LoadRoomOnActivate": {
-    "roomPath": "rooms/second-floor.json",
-    "spawnId": "stairs"
+    "roomPath": "",
+    "spawnId": ""
   }
 }
