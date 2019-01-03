@@ -80,7 +80,7 @@
     }
   },
   {
-    "prefab": "platformNoEdges",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -5.9,
@@ -89,11 +89,15 @@
       "Size2D": {
         "width": 7.8,
         "height": 0.1
+      },
+      "Platform": {
+        "beginningImage": "",
+        "endingImage": ""
       }
     }
   },
   {
-    "prefab": "platformEdgeLeft",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -4.5,
@@ -102,6 +106,9 @@
       "Size2D": {
         "width": 6.4,
         "height": 0.1
+      },
+      "Platform": {
+        "endingImage": ""
       }
     }
   },
@@ -119,7 +126,7 @@
     }
   },
   {
-    "prefab": "platformEdgeLeft",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -0.5,
@@ -128,6 +135,9 @@
       "Size2D": {
         "width": 2.4,
         "height": 0.1
+      },
+      "Platform": {
+        "endingImage": ""
       }
     }
   },
@@ -230,7 +240,7 @@
     }
   },
   {
-    "prefab": "platformEdgeRight",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -5.9,
@@ -239,11 +249,14 @@
       "Size2D": {
         "width": 0.6,
         "height": 0.1
+      },
+      "Platform": {
+        "beginningImage": ""
       }
     }
   },
   {
-    "prefab": "platformEdgeRight",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -5.9,
@@ -252,6 +265,9 @@
       "Size2D": {
         "width": 0.6,
         "height": 0.1
+      },
+      "Platform": {
+        "beginningImage": ""
       }
     }
   },

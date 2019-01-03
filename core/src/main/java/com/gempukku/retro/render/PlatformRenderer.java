@@ -49,12 +49,12 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
 
             if (platform.isHorizontal()) {
                 float middleX = x;
-                if (beginningImage != null) {
+                if (isNotEmpty(beginningImage)) {
                     spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, platformBasicSize, height, Color.WHITE);
                     width -= platformBasicSize;
                     middleX += platformBasicSize;
                 }
-                if (endingImage != null) {
+                if (isNotEmpty(endingImage)) {
                     spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, middleX + width - platformBasicSize, y, platformBasicSize, height, Color.WHITE);
                     width -= platformBasicSize;
                 }
@@ -62,12 +62,12 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
                         middleX, y, width, height, width / platformBasicSize, -1f, Color.WHITE);
             } else {
                 float middleY = y;
-                if (beginningImage != null) {
+                if (isNotEmpty(beginningImage)) {
                     spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, beginningImage, x, y, width, platformBasicSize, Color.WHITE);
                     height -= platformBasicSize;
                     middleY += platformBasicSize;
                 }
-                if (endingImage != null) {
+                if (isNotEmpty(endingImage)) {
                     spriteSink.addSprite(SpritePriorities.PLATFORM, textureAtlasId, endingImage, x, middleY + height - platformBasicSize, width, platformBasicSize, Color.WHITE);
                     width -= platformBasicSize;
                 }
@@ -75,5 +75,9 @@ public class PlatformRenderer extends AbstractLifeCycleSystem {
                         x, middleY, width, height, 1f, height / platformBasicSize, Color.WHITE);
             }
         }
+    }
+
+    private boolean isNotEmpty(String beginningImage) {
+        return beginningImage != null && !beginningImage.equals("");
     }
 }

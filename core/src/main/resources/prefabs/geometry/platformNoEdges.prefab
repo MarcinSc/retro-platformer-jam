@@ -1,8 +1,0 @@
-{
-  "import": "platform",
-  "Platform": {
-    "textureAtlasId": "sprites",
-    "centerImage": "images/ground-center.png",
-    "horizontal": true
-  }
-}
