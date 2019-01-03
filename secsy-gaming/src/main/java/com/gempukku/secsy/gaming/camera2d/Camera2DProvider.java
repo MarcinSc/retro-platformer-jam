@@ -21,6 +21,7 @@ public class Camera2DProvider {
     @ReceiveEvent
     public void getCamera(GetCamera getCamera, EntityRef cameraEntity, Camera2DComponent camera2D) {
         Adjust2dCamera cameraLocation = new Adjust2dCamera(
+                getCamera.getDelta(),
                 camera.viewportWidth, camera.viewportHeight,
                 getCamera.getWidth(), getCamera.getHeight(),
                 lastX, lastY,

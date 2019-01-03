@@ -105,7 +105,9 @@ public class SpawnSystem extends AbstractLifeCycleSystem implements SpawnManager
             overrideMap = new HashMap<String, Map<String, Object>>(overrides);
         overrideMap.put("Prefab", Collections.<String, Object>singletonMap("prefab", prefab));
 
-        return entityManager.createEntityFromData(constructEntityData(prefab, overrideMap));
+        EntityRef entityFromData = entityManager.createEntityFromData(constructEntityData(prefab, overrideMap));
+        entityFromData.send(new EntitySpawned(prefab));
+        return entityFromData;
     }
 
     private EntityData constructEntityData(String prefab, Map<String, Map<String, Object>> overrideMap) {

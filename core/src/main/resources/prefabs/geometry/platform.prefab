@@ -1,6 +1,14 @@
 {
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D",
+      "Size2D"
+    ]
+  },
   "Position2D": {},
   "Size2D": {
+    "width": 1,
+    "height": 0.3,
     "anchorY": 1
   },
   "Obstacle": {},

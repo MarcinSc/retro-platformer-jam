@@ -19,6 +19,11 @@ public class StageSystem extends AbstractLifeCycleSystem implements StageProvide
     private Stage stage;
 
     @Override
+    public float getPriority() {
+        return 100;
+    }
+
+    @Override
     public void initialize() {
         stage = new Stage();
         Float priority = priorityResolver.getPriority("gaming.input.ui");
@@ -34,6 +39,7 @@ public class StageSystem extends AbstractLifeCycleSystem implements StageProvide
 
     @ReceiveEvent(priorityName = "gaming.renderer.ui")
     public void drawUI(RenderToPipeline renderToPipeline) {
+        stage.act();
         renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
         stage.draw();
         renderToPipeline.getRenderPipeline().getCurrentBuffer().end();

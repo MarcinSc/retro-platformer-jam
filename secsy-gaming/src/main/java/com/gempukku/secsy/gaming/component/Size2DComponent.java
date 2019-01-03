@@ -1,7 +1,10 @@
 package com.gempukku.secsy.gaming.component;
 
 import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.gaming.editor.EditableWith;
+import com.gempukku.secsy.gaming.editor.component.Size2DEditor;
 
+@EditableWith(Size2DEditor.class)
 public interface Size2DComponent extends Component {
     float getWidth();
 

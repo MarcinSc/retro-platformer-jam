@@ -18,8 +18,8 @@ public class LerpCamera {
 
     @ReceiveEvent(priorityName = "gaming.camera2d.lerp")
     public void lerpCamera(Adjust2dCamera cameraLocation, EntityRef cameraEntity, LerpCameraComponent lerpCamera) {
-        float progressX = lerpCamera.getXProgress() * timeManager.getTimeSinceLastUpdate() / 1000f;
-        float progressY = lerpCamera.getYProgress() * timeManager.getTimeSinceLastUpdate() / 1000f;
+        float progressX = lerpCamera.getXProgress() * cameraLocation.getDelta();
+        float progressY = lerpCamera.getYProgress() * cameraLocation.getDelta();
         float lerpedX = MathUtils.lerp(cameraLocation.getLastX(), cameraLocation.getX(), progressX);
         float lerpedY = MathUtils.lerp(cameraLocation.getLastY(), cameraLocation.getY(), progressY);
         cameraLocation.set(lerpedX, lerpedY);

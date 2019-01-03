@@ -3,6 +3,7 @@ package com.gempukku.secsy.gaming.camera2d;
 import com.gempukku.secsy.entity.event.Event;
 
 public class Adjust2dCamera extends Event {
+    private float delta;
     private final float lastViewportWidth;
     private final float lastViewportHeight;
     private final float lastX;
@@ -16,8 +17,10 @@ public class Adjust2dCamera extends Event {
     private float nonLastingY;
 
     public Adjust2dCamera(
+            float delta,
             float lastViewportWidth, float lastViewportHeight, float viewportWidth, float viewportHeight,
             float lastX, float lastY, float x, float y) {
+        this.delta = delta;
         this.lastViewportWidth = lastViewportWidth;
         this.lastViewportHeight = lastViewportHeight;
         this.viewportWidth = viewportWidth;
@@ -26,6 +29,10 @@ public class Adjust2dCamera extends Event {
         this.lastY = lastY;
         this.x = x;
         this.y = y;
+    }
+
+    public float getDelta() {
+        return delta;
     }
 
     public float getLastViewportWidth() {
