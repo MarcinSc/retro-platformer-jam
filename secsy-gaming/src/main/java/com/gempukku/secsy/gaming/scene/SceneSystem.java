@@ -38,7 +38,15 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
 
     @Override
     public void loadScene(String scene) {
-        JSONArray sceneObj = loadJSON(scene);
+        createScene(loadJSON(Gdx.files.internal(scene)));
+    }
+
+    @Override
+    public void loadScene(FileHandle fileHandle) {
+        createScene(loadJSON(fileHandle));
+    }
+
+    private void createScene(JSONArray sceneObj) {
         for (Object o : sceneObj) {
             JSONObject entityDef = (JSONObject) o;
             String prefab = (String) entityDef.get("prefab");
@@ -49,12 +57,12 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
             else
                 spawnManager.spawnEntity(prefab);
         }
-        
+
         gameEntityProvider.getGameEntity().send(new SceneLoaded());
     }
 
-    private JSONArray loadJSON(String roomFile) {
-        FileHandle file = Gdx.files.internal(roomFile);
+    private JSONArray loadJSON(FileHandle fileHandle) {
+        FileHandle file = fileHandle;
         JSONParser jsonParser = new JSONParser();
         Reader reader = file.reader("UTF-8");
         try {

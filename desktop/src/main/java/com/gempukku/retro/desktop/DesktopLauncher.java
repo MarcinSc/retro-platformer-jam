@@ -56,10 +56,10 @@ public class DesktopLauncher {
         activeProfiles.add("editor");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.fullscreen = Boolean.parseBoolean(arg[0]);
+        config.fullscreen = false;
         config.resizable = false;
-        config.width = 1920;
-        config.height = 1080;
+        config.width = 1024;
+        config.height = 768;
 
         config.foregroundFPS = 0;
         config.vSyncEnabled = true;

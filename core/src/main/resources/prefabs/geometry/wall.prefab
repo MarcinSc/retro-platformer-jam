@@ -1,4 +1,10 @@
 {
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D",
+      "Size2D"
+    ]
+  },
   "Position2D": {},
   "Size2D": {
     "anchorY": 1

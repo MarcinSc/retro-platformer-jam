@@ -34,6 +34,7 @@ import com.gempukku.secsy.gaming.input.InputProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.GetCamera;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
+import com.gempukku.secsy.gaming.scene.SceneManager;
 import com.gempukku.secsy.gaming.spawn.EntityDespawning;
 import com.gempukku.secsy.gaming.spawn.EntitySpawned;
 import com.gempukku.secsy.gaming.spawn.PrefabComponent;
@@ -42,7 +43,11 @@ import com.gempukku.secsy.gaming.ui.StageProvider;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import javax.swing.*;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RegisterSystem(profiles = "editor")
 public class EditorSystem extends AbstractLifeCycleSystem {
@@ -64,6 +69,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     private SystemContext systemContext;
     @Inject
     private EntityManager entityManager;
+    @Inject
+    private SceneManager sceneManager;
 
     private Skin skin;
 
@@ -82,6 +89,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
     private int lastRenderWidth;
     private int lastRenderHeight;
+
+    private JFileChooser jfc = new JFileChooser(System.getProperty("user.dir"));
 
     @Override
     public void initialize() {
@@ -143,7 +152,50 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         ScrollPane entityTreeScroll = new ScrollPane(entityTree, skin);
         entityTreeScroll.setFadeScrollBars(false);
-        entityList.add(entityTreeScroll).colspan(2).minHeight(100).minWidth(300).grow();
+        entityList.add(entityTreeScroll).colspan(2).minHeight(200).minWidth(300).grow();
+        entityList.row();
+
+        Table fileTable = new Table(skin);
+        Label sceneLabel = new Label("Scene", skin);
+        fileTable.add(sceneLabel);
+        final TextField sceneFile = new TextField("", skin);
+        sceneFile.setDisabled(true);
+        fileTable.add(sceneFile).growX();
+
+        TextButton load = new TextButton("Load", skin);
+        load.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        try {
+                            final AtomicInteger returnValue = new AtomicInteger();
+                            SwingUtilities.invokeAndWait(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            returnValue.set(jfc.showOpenDialog(null));
+                                        }
+                                    });
+                            if (returnValue.get() == JFileChooser.APPROVE_OPTION) {
+                                File selectedFile = jfc.getSelectedFile();
+                                String absolutePath = selectedFile.getAbsolutePath();
+                                sceneManager.unloadScene();
+                                sceneManager.loadScene(Gdx.files.absolute(absolutePath));
+                                sceneFile.setText(absolutePath);
+                                sceneFile.setCursorPosition(absolutePath.length());
+                            }
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        fileTable.add(load);
+        TextButton save = new TextButton("Save", skin);
+        fileTable.add(save);
+
+        entityList.add(fileTable).colspan(2).growX();
         entityList.row();
 
         entityList.pack();
@@ -163,7 +215,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         entityInspector.add(inspectorScroll).grow().minWidth(300).minHeight(200);
         entityInspector.pack();
-        entityInspector.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight() - entityInspector.getHeight());
+        entityInspector.setHeight(Gdx.graphics.getHeight() - entityList.getHeight());
+        entityInspector.setPosition(0, 0);
 
         return entityInspector;
     }
