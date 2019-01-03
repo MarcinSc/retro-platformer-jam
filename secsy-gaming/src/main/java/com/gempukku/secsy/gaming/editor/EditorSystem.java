@@ -94,7 +94,6 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
     private Window createEntityInspectorWindow() {
         Window entityInspector = new Window("Inspector", skin);
-        entityInspector.setPosition(0, Gdx.graphics.getHeight() - 200);
         entityInspector.setResizable(true);
         entityInspector.setResizeBorder(10);
 
@@ -102,15 +101,15 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         ScrollPane inspectorScroll = new ScrollPane(inspectorTable, skin);
         inspectorScroll.setFadeScrollBars(false);
 
-        entityInspector.add(inspectorScroll).grow().minWidth(400).minHeight(200);
+        entityInspector.add(inspectorScroll).grow().minWidth(300).minHeight(200);
         entityInspector.pack();
+        entityInspector.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight() - entityInspector.getHeight());
 
         return entityInspector;
     }
 
     private Window createEntityListWindow() {
         Window entityList = new Window("Entities", skin);
-        entityList.setPosition(0, Gdx.graphics.getHeight());
         entityList.setResizable(true);
         entityList.setResizeBorder(10);
 
@@ -149,10 +148,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         ScrollPane entityTreeScroll = new ScrollPane(entityTree, skin);
         entityTreeScroll.setFadeScrollBars(false);
-        entityList.add(entityTreeScroll).colspan(2).minHeight(100).grow();
+        entityList.add(entityTreeScroll).colspan(2).minHeight(100).minWidth(300).grow();
         entityList.row();
 
         entityList.pack();
+        entityList.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight());
+
         return entityList;
     }
 
