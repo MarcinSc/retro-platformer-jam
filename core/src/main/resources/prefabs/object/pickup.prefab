@@ -1,4 +1,11 @@
 {
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D",
+      "Sprite",
+      "Pickup"
+    ]
+  },
   "Pickup": {},
   "Position2D": {},
   "Size2D": {
@@ -8,6 +15,7 @@
     "anchorY": 0
   },
   "Sprite": {
+    "fileName": "images/baton.png",
     "bobbingAmplitude": 0.05,
     "priority": 0
   },

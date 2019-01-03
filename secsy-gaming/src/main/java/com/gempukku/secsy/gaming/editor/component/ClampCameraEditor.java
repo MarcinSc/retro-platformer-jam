@@ -110,7 +110,7 @@ public class ClampCameraEditor implements EntityComponentEditor {
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         ClampCameraComponent clampCamera = entityRef.getComponent(ClampCameraComponent.class);
         changes.put("minX", clampCamera.getMinX());
         changes.put("maxX", clampCamera.getMaxX());

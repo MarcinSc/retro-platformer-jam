@@ -16,6 +16,7 @@ import com.gempukku.secsy.gaming.editor.component.CommonEditors;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class OscillatingEditor implements EntityComponentEditor {
@@ -219,7 +220,7 @@ public class OscillatingEditor implements EntityComponentEditor {
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         OscillatingComponent oscillating = entityRef.getComponent(OscillatingComponent.class);
         Vector2 startingPosition = oscillating.getStartingPosition();
         changes.put("startingPosition", startingPosition.x + "," + startingPosition.y);
@@ -229,5 +230,10 @@ public class OscillatingEditor implements EntityComponentEditor {
         changes.put("cycleLength", cycleLength);
         EasedValue distanceTimeFunction = oscillating.getDistanceTimeFunction();
         changes.put("distanceTimeFunction", distanceTimeFunction.getMultiplier() + "*" + distanceTimeFunction.getRecipe());
+
+        Map<String, Object> positionChanges = new LinkedHashMap<String, Object>();
+        positionChanges.put("x", startingPosition.x);
+        positionChanges.put("y", startingPosition.y);
+        extraChanges.put("Position2D", positionChanges);
     }
 }

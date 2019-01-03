@@ -71,7 +71,7 @@ public class Size2DEditor implements EntityComponentEditor {
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         Size2DComponent size = entityRef.getComponent(Size2DComponent.class);
         changes.put("width", size.getWidth());
         changes.put("height", size.getHeight());

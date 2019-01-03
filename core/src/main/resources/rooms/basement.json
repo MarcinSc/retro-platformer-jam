@@ -227,26 +227,6 @@
       "Position2D": {
         "x": -4.8,
         "y": -0.2
-      },
-      "Size2D": {
-        "width": 0.8,
-        "height": 0.8
-      },
-      "Obstacle": {
-        "aABB": false,
-        "nonAABBVertices": [
-          "0,0",
-          "1,0",
-          "1,1"
-        ]
-      },
-      "SensorTrigger": {
-        "aABB": false,
-        "nonAABBVertices": [
-          "0,0",
-          "1,0",
-          "1,1"
-        ]
       }
     }
   },

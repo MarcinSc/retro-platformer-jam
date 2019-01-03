@@ -11,7 +11,7 @@ public interface EntityComponentEditor {
 
     void entityMoved(EntityRef entityRef, float x, float y);
 
-    void serializeChanges(EntityRef entityRef, Map<String, Object> changes);
+    void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges);
 
     interface PositionUpdateCallback {
         void positionUpdated(EntityRef entityRef);

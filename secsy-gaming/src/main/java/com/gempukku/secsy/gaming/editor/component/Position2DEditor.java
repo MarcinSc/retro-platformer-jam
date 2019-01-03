@@ -83,7 +83,7 @@ public class Position2DEditor implements EntityComponentEditor {
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
         changes.put("x", position.getX());
         changes.put("y", position.getY());

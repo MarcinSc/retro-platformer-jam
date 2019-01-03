@@ -53,7 +53,7 @@ public class BodyTriggeredTextDisplayingEditor implements EntityComponentEditor 
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         BodyTriggeredTextDisplayingComponent component = entityRef.getComponent(BodyTriggeredTextDisplayingComponent.class);
         changes.put("displayText", component.getDisplayText());
     }

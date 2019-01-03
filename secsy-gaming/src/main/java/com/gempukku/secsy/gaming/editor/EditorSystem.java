@@ -278,7 +278,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                 EntityComponentEditor editor = editorClass.newInstance();
                 systemContext.initializeObject(editor);
                 Map<String, Object> changes = new LinkedHashMap<String, Object>();
-                editor.serializeChanges(entityRef, changes);
+                editor.serializeChanges(entityRef, changes, result);
                 if (!changes.isEmpty())
                     result.put(editableComponent, changes);
             } catch (InstantiationException e) {

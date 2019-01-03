@@ -91,7 +91,7 @@ public class LoadRoomOnActivateEditor implements EntityComponentEditor {
     }
 
     @Override
-    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         LoadRoomOnActivateComponent component = entityRef.getComponent(LoadRoomOnActivateComponent.class);
         changes.put("roomPath", component.getRoomPath());
         changes.put("spawnId", component.getSpawnId());
