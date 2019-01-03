@@ -60,7 +60,7 @@
     }
   },
   {
-    "prefab": "ceiling",
+    "prefab": "platform",
     "override": {
       "Position2D": {
         "x": -1.2,
@@ -69,6 +69,11 @@
       "Size2D": {
         "width": 2.4,
         "height": 0.1
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images/ceiling.png",
+        "endingImage": ""
       }
     }
   },
