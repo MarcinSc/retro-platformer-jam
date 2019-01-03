@@ -1,128 +1,166 @@
 [
   {
-    "prefab": "gameCamera",
-    "override": {
-      "ClampCamera": {
-        "minX": -2,
-        "maxX": 2,
-        "minY": -1,
-        "maxY": 2
-      }
-    }
-  },
-  {
-    "prefab": "wall",
-    "override": {
-      "Position2D": {
-        "x": -1.3,
-        "y": 1
-      },
-      "Size2D": {
-        "width": 0.1,
-        "height": 1
-      },
-      "Platform": {
-        "centerImage": "images/wall-left.png"
-      }
-    }
-  },
-  {
-    "prefab": "wall",
-    "override": {
-      "Position2D": {
-        "x": 1.2,
-        "y": 1
-      },
-      "Size2D": {
-        "width": 0.1,
-        "height": 1
-      },
-      "Platform": {
-        "centerImage": "images/wall-right.png"
-      }
-    }
-  },
-  {
     "prefab": "platform",
     "override": {
-      "Position2D": {
-        "x": -1.2,
-        "y": 0.0
-      },
       "Size2D": {
         "width": 2.4,
         "height": 0.1
       },
+      "EditorEditable": {
+        "nameInEditor": "Ceiling"
+      },
       "Platform": {
         "beginningImage": "",
+        "centerImage": "images\/ceiling.png",
         "endingImage": ""
-      }
-    }
-  },
-  {
-    "prefab": "platform",
-    "override": {
+      },
       "Position2D": {
         "x": -1.2,
         "y": 1.1
-      },
-      "Size2D": {
-        "width": 2.4,
-        "height": 0.1
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images/ceiling.png",
-        "endingImage": ""
-      }
-    }
-  },
-  {
-    "prefab": "background",
-    "override": {
-      "Position2D": {
-        "x": 0,
-        "y": 0
-      },
-      "Sprite": {
-        "fileName": "images/secondFloorBackground.png"
-      }
-    }
-  },
-  {
-    "prefab": "blockedElevator",
-    "override": {
-      "Position2D": {
-        "x": 0.2,
-        "y": 0
       }
     }
   },
   {
     "prefab": "activatedTeleport",
     "override": {
+      "EditorEditable": {
+        "nameInEditor": "Stairs down"
+      },
+      "Sprite": {
+        "fileName": "images\/stairs-down.png"
+      },
       "Position2D": {
         "x": 0.9,
-        "y": 0
+        "y": 0.0
+      },
+      "LoadRoomOnActivate": {
+        "roomPath": "rooms\/entrance.json",
+        "spawnId": "stairs"
+      },
+      "PlayerSpawn": {
+        "spawnId": "stairs"
       },
       "BodyTriggeredTextDisplaying": {
         "displayText": "GO DOWN"
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "Size2D": {
+        "width": 2.4,
+        "height": 0.1
       },
-      "Sprite": {
-        "fileName": "images/stairs-down.png"
+      "EditorEditable": {
+        "nameInEditor": "Floor"
       },
-      "LoadRoomOnActivate": {
-        "roomPath": "rooms/entrance.json",
-        "spawnId": "stairs"
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/ground-center.png",
+        "endingImage": ""
+      },
+      "Position2D": {
+        "x": -1.2,
+        "y": 0.0
       }
     }
   },
   {
     "prefab": "cleaner",
     "override": {
+      "EditorEditable": {
+        "nameInEditor": "Cleaner"
+      },
+      "HorizontalOrientation": {
+        "facingRight": false
+      },
       "Position2D": {
         "x": 0.25,
-        "y": 0
+        "y": 0.0
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Size2D": {
+        "width": 0.1,
+        "height": 1.0
+      },
+      "EditorEditable": {
+        "nameInEditor": "Left wall"
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/wall-left.png",
+        "endingImage": ""
+      },
+      "Position2D": {
+        "x": -1.3,
+        "y": 1.0
+      }
+    }
+  },
+  {
+    "prefab": "blockedElevator",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Blocked elevator"
+      },
+      "Position2D": {
+        "x": 0.2,
+        "y": 0.0
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "Size2D": {
+        "width": 0.1,
+        "height": 1.0
+      },
+      "EditorEditable": {
+        "nameInEditor": "Right wall"
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/wall-right.png",
+        "endingImage": ""
+      },
+      "Position2D": {
+        "x": 1.2,
+        "y": 1.0
+      }
+    }
+  },
+  {
+    "prefab": "background",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Background"
+      },
+      "Sprite": {
+        "fileName": "images\/secondFloorBackground.png"
+      },
+      "Position2D": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    }
+  },
+  {
+    "prefab": "gameCamera",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Camera"
+      },
+      "ClampCamera": {
+        "minX": -2.0,
+        "maxX": 2.0,
+        "minY": -1.0,
+        "maxY": 2.0
       }
     }
   }
