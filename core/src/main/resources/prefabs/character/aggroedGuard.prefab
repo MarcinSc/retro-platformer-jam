@@ -3,7 +3,8 @@
   "EditorEditable": {
     "editableComponents": [
       "Position2D",
-      "HorizontalOrientation"
+      "HorizontalOrientation",
+      "AI"
     ]
   },
   "Sprite": {
@@ -16,7 +17,7 @@
   },
   "DestroyOnDeath": {},
   "AI": {
-    "aiName": "standAndShoot"
+    "aiName": "patrolEndlessly"
   },
   "AIMovementConfiguration": {
     "movementVelocity": 0.5

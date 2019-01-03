@@ -300,7 +300,7 @@
     }
   },
   {
-    "prefab": "patrollingGuard",
+    "prefab": "aggroedGuard",
     "override": {
       "Position2D": {
         "x": -0.5,
@@ -327,7 +327,7 @@
     }
   },
   {
-    "prefab": "guardWithGun",
+    "prefab": "aggroedGuard",
     "override": {
       "Position2D": {
         "x": -5.6,
@@ -335,6 +335,9 @@
       },
       "HorizontalOrientation": {
         "facingRight": true
+      },
+      "AI": {
+        "aiName": "standAndShoot"
       }
     }
   }

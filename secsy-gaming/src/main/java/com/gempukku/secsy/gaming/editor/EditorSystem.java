@@ -132,6 +132,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
             if (entityManager.wrapEntityData(prefab).getComponent(EditorEditableComponent.class).isCanBeAdded())
                 prefabs.add(prefab.getName());
         }
+        prefabs.sort();
         prefabDropDown.setItems(prefabs);
         entityList.add(prefabDropDown).growX();
 

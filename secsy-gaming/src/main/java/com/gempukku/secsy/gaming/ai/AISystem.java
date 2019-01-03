@@ -77,6 +77,11 @@ public class AISystem extends AbstractLifeCycleSystem implements AIEngine {
     }
 
     @Override
+    public boolean hasBehavior(String name) {
+        return behaviorJsons.containsKey(name);
+    }
+
+    @Override
     public Iterable<AITask<EntityRefReference>> getRunningTasks(EntityRef entityRef) {
         AIComponent ai = entityRef.getComponent(AIComponent.class);
         String aiName = ai.getAiName();
