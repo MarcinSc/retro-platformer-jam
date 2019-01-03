@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.input;
+package com.gempukku.secsy.gaming.action;
 
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -9,7 +9,7 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 
-@RegisterSystem(profiles = "actions")
+@RegisterSystem(profiles = "action")
 public class ActionPerformingSystem extends AbstractLifeCycleSystem {
     @Inject
     private ActionSchemeProvider actionSchemeProvider;

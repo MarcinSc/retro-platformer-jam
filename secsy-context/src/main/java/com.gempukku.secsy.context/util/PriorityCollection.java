@@ -55,4 +55,8 @@ public class PriorityCollection<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return multimap.values().iterator();
     }
+
+    public int getSize() {
+        return multimap.size();
+    }
 }

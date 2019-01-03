@@ -1,4 +1,4 @@
-package com.gempukku.secsy.gaming.input;
+package com.gempukku.secsy.gaming.action;
 
 import com.gempukku.secsy.entity.event.Event;
 

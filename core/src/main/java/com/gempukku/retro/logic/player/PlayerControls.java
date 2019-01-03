@@ -5,8 +5,8 @@ import com.badlogic.gdx.Input;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
+import com.gempukku.secsy.gaming.action.ActionSchemeProvider;
 import com.gempukku.secsy.gaming.combat.AttackSchemeProvider;
-import com.gempukku.secsy.gaming.input.ActionSchemeProvider;
 import com.gempukku.secsy.gaming.input2d.InputScheme2dProvider;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
@@ -22,9 +22,6 @@ public class PlayerControls extends AbstractLifeCycleSystem implements InputSche
     private int[] rightKeys = new int[]{Input.Keys.D, Input.Keys.RIGHT};
     private int[] actionKeys = new int[]{Input.Keys.X};
     private int[] attackKeys = new int[]{Input.Keys.SPACE};
-    private int attackKey = Input.Keys.SPACE;
-
-    private boolean attackPressed;
 
     @Override
     public boolean isActionActivated() {

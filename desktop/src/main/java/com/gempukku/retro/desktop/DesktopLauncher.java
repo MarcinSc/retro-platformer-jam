@@ -28,6 +28,8 @@ public class DesktopLauncher {
         activeProfiles.add("pipelineRenderer");
         activeProfiles.add("easing");
         activeProfiles.add("time");
+        activeProfiles.add("input");
+        activeProfiles.add("ui");
         activeProfiles.add("textureAtlas");
         activeProfiles.add("2dCamera");
         activeProfiles.add("scene");
@@ -43,7 +45,7 @@ public class DesktopLauncher {
         activeProfiles.add("fadingSprites");
         activeProfiles.add("genesisSimulation");
         activeProfiles.add("colorTint");
-        activeProfiles.add("actions");
+        activeProfiles.add("action");
         activeProfiles.add("activateWithSensor");
         activeProfiles.add("faction");
         activeProfiles.add("spawn");
