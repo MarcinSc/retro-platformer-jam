@@ -2,7 +2,8 @@
   "import": "abstractEnemy",
   "EditorEditable": {
     "editableComponents": [
-      "Position2D"
+      "Position2D",
+      "HorizontalOrientation"
     ]
   },
   "Sprite": {
