@@ -1,5 +1,9 @@
 {
-  "EditorEditable": {},
+  "EditorEditable": {
+    "editableComponents": [
+      "ClampCamera"
+    ]
+  },
   "Camera2D": {
     "id": "game"
   },

@@ -1,7 +1,10 @@
 package com.gempukku.secsy.gaming.camera2d.component;
 
 import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.gaming.editor.EditableWith;
+import com.gempukku.secsy.gaming.editor.component.ClampCameraEditor;
 
+@EditableWith(ClampCameraEditor.class)
 public interface ClampCameraComponent extends Component {
     float getMinX();
 
