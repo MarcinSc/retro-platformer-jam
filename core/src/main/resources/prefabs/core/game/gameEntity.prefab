@@ -1,6 +1,8 @@
 {
   "GlobalEntity": {},
-  "Game": {},
+  "Game": {
+    "activeCameraId": "game"
+  },
   "Room": {
     "room": "rooms/entrance.json",
     "x": 0,

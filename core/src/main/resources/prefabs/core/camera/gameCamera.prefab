@@ -1,5 +1,8 @@
 {
-  "Camera2D": {},
+  "EditorEditable": {},
+  "Camera2D": {
+    "id": "game"
+  },
   "ScreenShakeCamera": {},
   "TrackingCamera": {},
   "ClampCamera": {},

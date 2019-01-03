@@ -4,15 +4,19 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.camera2d.component.Camera2DComponent;
+import com.gempukku.secsy.gaming.component.GameComponent;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 
 @RegisterSystem(shared = CameraEntityProvider.class)
 public class CameraEntityProviderImpl extends AbstractLifeCycleSystem implements CameraEntityProvider {
     @Inject
     private EntityIndexManager entityIndexManager;
+    @Inject
+    private GameEntityProvider gameEntityProvider;
 
     private EntityIndex cameraIndex;
 
@@ -23,6 +27,13 @@ public class CameraEntityProviderImpl extends AbstractLifeCycleSystem implements
 
     @Override
     public EntityRef getCameraEntity() {
-        return cameraIndex.iterator().next();
+        String activeCameraId = gameEntityProvider.getGameEntity().getComponent(GameComponent.class).getActiveCameraId();
+        for (EntityRef camera : cameraIndex) {
+            String id = camera.getComponent(Camera2DComponent.class).getId();
+            if (id.equals(activeCameraId))
+                return camera;
+        }
+
+        return null;
     }
 }

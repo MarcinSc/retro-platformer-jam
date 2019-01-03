@@ -215,24 +215,27 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         lastRenderWidth = renderToPipeline.getWidth();
         lastRenderHeight = renderToPipeline.getHeight();
         if (selectedEntity != null && selectedEntity.exists()) {
-            renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
-            Camera camera = renderToPipeline.getCamera();
             Position2DComponent position = selectedEntity.getComponent(Position2DComponent.class);
             Size2DComponent size = selectedEntity.getComponent(Size2DComponent.class);
 
-            float selectionBorderX = size.getWidth() * 0.05f;
-            float selectionBorderY = size.getHeight() * 0.05f;
+            if (position != null && size != null) {
+                renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
+                Camera camera = renderToPipeline.getCamera();
 
-            float x = position.getX() - size.getAnchorX() * size.getWidth() - selectionBorderX;
-            float y = position.getY() - size.getAnchorY() * size.getHeight() - selectionBorderY;
+                float selectionBorderX = size.getWidth() * 0.05f;
+                float selectionBorderY = size.getHeight() * 0.05f;
 
-            shapeRenderer.setProjectionMatrix(camera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.rect(x, y, size.getWidth() + selectionBorderX * 2, size.getHeight() + selectionBorderY * 2);
-            shapeRenderer.end();
+                float x = position.getX() - size.getAnchorX() * size.getWidth() - selectionBorderX;
+                float y = position.getY() - size.getAnchorY() * size.getHeight() - selectionBorderY;
 
-            renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
+                shapeRenderer.setProjectionMatrix(camera.combined);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.WHITE);
+                shapeRenderer.rect(x, y, size.getWidth() + selectionBorderX * 2, size.getHeight() + selectionBorderY * 2);
+                shapeRenderer.end();
+
+                renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
+            }
         }
     }
 

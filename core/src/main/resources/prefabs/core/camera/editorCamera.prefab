@@ -1,5 +1,7 @@
 {
-  "Camera2D": {},
+  "Camera2D": {
+    "id": "editor"
+  },
   "GenesisCamera": {
     "objectPixelHeight": 16,
     "objectUnitHeight": 0.2

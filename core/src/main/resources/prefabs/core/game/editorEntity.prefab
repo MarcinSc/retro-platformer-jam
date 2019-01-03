@@ -1,5 +1,7 @@
 {
   "GlobalEntity": {},
-  "Game": {},
+  "Game": {
+    "activeCameraId": "editor"
+  },
   "Editor": {}
 }
