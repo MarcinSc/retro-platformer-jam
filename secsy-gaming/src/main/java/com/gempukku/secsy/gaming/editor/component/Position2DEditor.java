@@ -4,13 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.editor.EntityComponentEditor;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class Position2DEditor implements EntityComponentEditor {
     private TextField xField;
@@ -21,9 +21,7 @@ public class Position2DEditor implements EntityComponentEditor {
     @Override
     public void appendEditor(Table table, Skin skin, final EntityRef entityRef, final PositionUpdateCallback positionUpdateCallback) {
         Table groupTable = new Table(skin);
-        Drawable background = skin.get("default-round", Drawable.class);
-        groupTable.setBackground(background);
-        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+        CommonEditors.initializeGroupTable(groupTable, skin);
 
         groupTable.add(new Label("Position", skin)).growX().colspan(4);
         groupTable.row();
@@ -82,5 +80,12 @@ public class Position2DEditor implements EntityComponentEditor {
             xField.setText(String.valueOf(x));
             yField.setText(String.valueOf(y));
         }
+    }
+
+    @Override
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+        Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
+        changes.put("x", position.getX());
+        changes.put("y", position.getY());
     }
 }

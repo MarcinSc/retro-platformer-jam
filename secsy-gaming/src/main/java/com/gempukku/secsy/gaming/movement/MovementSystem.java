@@ -56,12 +56,12 @@ public class MovementSystem extends AbstractLifeCycleSystem {
             float modifiedPositionX = startingPosition.x + distancePerc * distance.x;
             float modifiedPositionY = startingPosition.y + distancePerc * distance.y;
 
+            position.setX(modifiedPositionX);
+            position.setY(modifiedPositionY);
+
+            oscillatingEntity.saveChanges();
+
             if (modifiedPositionX != x || modifiedPositionY != y) {
-                position.setX(modifiedPositionX);
-                position.setY(modifiedPositionY);
-
-                oscillatingEntity.saveChanges();
-
                 oscillatingEntity.send(new EntityMoved(x, y, modifiedPositionX, modifiedPositionY));
             }
         }

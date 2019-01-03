@@ -2,7 +2,6 @@
   "import": "platform",
   "EditorEditable": {
     "editableComponents": [
-      "Position2D",
       "Size2D",
       "Oscillating"
     ]

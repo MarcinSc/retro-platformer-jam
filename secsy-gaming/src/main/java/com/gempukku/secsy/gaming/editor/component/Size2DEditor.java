@@ -3,13 +3,13 @@ package com.gempukku.secsy.gaming.editor.component;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.editor.EntityComponentEditor;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class Size2DEditor implements EntityComponentEditor {
     private static final int LABEL_MAX_WIDTH = 50;
@@ -18,9 +18,7 @@ public class Size2DEditor implements EntityComponentEditor {
     @Override
     public void appendEditor(Table table, Skin skin, final EntityRef entityRef, PositionUpdateCallback positionUpdateCallback) {
         Table groupTable = new Table(skin);
-        Drawable background = skin.get("default-round", Drawable.class);
-        groupTable.setBackground(background);
-        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+        CommonEditors.initializeGroupTable(groupTable, skin);
 
         groupTable.add(new Label("Size", skin)).growX().colspan(4);
         groupTable.row();
@@ -70,5 +68,12 @@ public class Size2DEditor implements EntityComponentEditor {
     @Override
     public void entityMoved(EntityRef entityRef, float x, float y) {
 
+    }
+
+    @Override
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
+        Size2DComponent size = entityRef.getComponent(Size2DComponent.class);
+        changes.put("width", size.getWidth());
+        changes.put("height", size.getHeight());
     }
 }

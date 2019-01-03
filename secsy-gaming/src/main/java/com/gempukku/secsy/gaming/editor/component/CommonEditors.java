@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.easing.EasingPreview;
@@ -14,6 +15,7 @@ import javax.annotation.Nullable;
 
 public class CommonEditors {
     private static final int LABEL_MAX_WIDTH = 50;
+    private static final int MIN_GROUP_PADDING = 3;
     public static final TextField.TextFieldFilter FLOAT_FILTER = new FloatNumberTextFieldFilter();
     public static final TextField.TextFieldFilter INTEGER_FILTER = new IntegerNumberTextFieldFilter();
 
@@ -94,5 +96,12 @@ public class CommonEditors {
                 });
         textField.setAlignment(Align.right);
         return textField;
+    }
+
+    public static void initializeGroupTable(Table groupTable, Skin skin) {
+        Drawable background = skin.get("default-round", Drawable.class);
+        groupTable.setBackground(background);
+        groupTable.pad(Math.max(MIN_GROUP_PADDING, background.getTopHeight()), Math.max(MIN_GROUP_PADDING, background.getLeftWidth()),
+                Math.max(MIN_GROUP_PADDING, background.getBottomHeight()), Math.max(MIN_GROUP_PADDING, background.getRightWidth()));
     }
 }

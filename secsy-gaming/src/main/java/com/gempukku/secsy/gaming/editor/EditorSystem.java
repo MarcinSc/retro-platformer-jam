@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -41,12 +40,13 @@ import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.ui.StageProvider;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RegisterSystem(profiles = "editor")
@@ -112,7 +112,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     }
 
     private Window createEntityListWindow() {
-        Window entityList = new Window("Entities", skin);
+        final Window entityList = new Window("Entities", skin);
         entityList.setResizable(true);
         entityList.setResizeBorder(10);
 
@@ -193,6 +193,52 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                 });
         fileTable.add(load);
         TextButton save = new TextButton("Save", skin);
+        save.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        boolean saveScene = true;
+                        if (sceneFile.getText().equals("") || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            saveScene = false;
+                            try {
+                                final AtomicInteger returnValue = new AtomicInteger();
+                                SwingUtilities.invokeAndWait(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                returnValue.set(jfc.showSaveDialog(null));
+                                            }
+                                        });
+                                if (returnValue.get() == JFileChooser.APPROVE_OPTION) {
+                                    File selectedFile = jfc.getSelectedFile();
+                                    String absolutePath = selectedFile.getAbsolutePath();
+                                    sceneFile.setText(absolutePath);
+                                    sceneFile.setCursorPosition(absolutePath.length());
+                                    saveScene = true;
+                                }
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        if (saveScene)
+                            sceneManager.saveScene(Gdx.files.absolute(sceneFile.getText()),
+                                    new Predicate<EntityRef>() {
+                                        @Override
+                                        public boolean apply(@Nullable EntityRef entityRef) {
+                                            return entityRef.hasComponent(EditorEditableComponent.class);
+                                        }
+                                    },
+                                    new Function<EntityRef, Map<String, Map<String, Object>>>() {
+                                        @Nullable
+                                        @Override
+                                        public Map<String, Map<String, Object>> apply(@Nullable EntityRef entityRef) {
+                                            return serializeEntity(entityRef);
+                                        }
+                                    });
+                    }
+                });
         fileTable.add(save);
 
         entityList.add(fileTable).colspan(2).growX();
@@ -202,6 +248,36 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         entityList.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight());
 
         return entityList;
+    }
+
+    private Map<String, Map<String, Object>> serializeEntity(EntityRef entityRef) {
+        Map<String, Map<String, Object>> result = new HashMap<String, Map<String, Object>>();
+
+        EditorEditableComponent editorEditable = entityRef.getComponent(EditorEditableComponent.class);
+        String nameInEditor = editorEditable.getNameInEditor();
+
+        result.put("EditorEditable", Collections.<String, Object>singletonMap("nameInEditor", nameInEditor));
+
+        for (String editableComponent : editorEditable.getEditableComponents()) {
+            Class<? extends Component> componentClass = nameComponentManager.getComponentByName(editableComponent);
+            EditableWith annotation = componentClass.getAnnotation(EditableWith.class);
+            Class<? extends EntityComponentEditor> editorClass = annotation.value();
+
+            try {
+                EntityComponentEditor editor = editorClass.newInstance();
+                systemContext.initializeObject(editor);
+                Map<String, Object> changes = new LinkedHashMap<String, Object>();
+                editor.serializeChanges(entityRef, changes);
+                if (!changes.isEmpty())
+                    result.put(editableComponent, changes);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Unable to create editor", e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Unable to create editor", e);
+            }
+        }
+
+        return result;
     }
 
     private Window createEntityInspectorWindow() {
@@ -319,9 +395,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         inspectorTable.row();
 
         Table groupTable = new Table(skin);
-        Drawable background = skin.get("default-round", Drawable.class);
-        groupTable.setBackground(background);
-        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+        CommonEditors.initializeGroupTable(groupTable, skin);
 
         CommonEditors.appendLabel(groupTable, skin, "Name");
         CommonEditors.appendStringField(groupTable, skin, selectedEntity, null,

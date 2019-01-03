@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.entity.EntityRef;
@@ -17,20 +16,66 @@ import com.gempukku.secsy.gaming.editor.component.CommonEditors;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class OscillatingEditor implements EntityComponentEditor {
     @Inject
     private EasingResolver resolver;
     private EasingPreview preview;
+    private boolean selfUpdating;
+    private TextField xField;
+    private TextField yField;
 
     @Override
-    public void appendEditor(Table table, Skin skin, final EntityRef entityRef, PositionUpdateCallback positionUpdateCallback) {
+    public void appendEditor(Table table, Skin skin, final EntityRef entityRef, final PositionUpdateCallback positionUpdateCallback) {
         Table groupTable = new Table(skin);
-        Drawable background = skin.get("default-round", Drawable.class);
-        groupTable.setBackground(background);
-        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+        CommonEditors.initializeGroupTable(groupTable, skin);
 
         groupTable.add(new Label("Oscillating", skin)).growX().colspan(4);
+        groupTable.row();
+
+        CommonEditors.appendLabel(groupTable, skin, "X");
+        xField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
+                new Function<EntityRef, Float>() {
+                    @Nullable
+                    @Override
+                    public Float apply(@Nullable EntityRef entityRef) {
+                        return entityRef.getComponent(OscillatingComponent.class).getStartingPosition().x;
+                    }
+                }, new Function<Float, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable Float value) {
+                        OscillatingComponent position = entityRef.getComponent(OscillatingComponent.class);
+                        position.setStartingPosition(new Vector2(value, position.getStartingPosition().y));
+                        entityRef.saveChanges();
+                        selfUpdating = true;
+                        positionUpdateCallback.positionUpdated(entityRef);
+                        selfUpdating = false;
+                        return null;
+                    }
+                });
+        CommonEditors.appendLabel(groupTable, skin, "Y");
+        yField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
+                new Function<EntityRef, Float>() {
+                    @Nullable
+                    @Override
+                    public Float apply(@Nullable EntityRef entityRef) {
+                        return entityRef.getComponent(OscillatingComponent.class).getStartingPosition().y;
+                    }
+                }, new Function<Float, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable Float value) {
+                        OscillatingComponent position = entityRef.getComponent(OscillatingComponent.class);
+                        position.setStartingPosition(new Vector2(position.getStartingPosition().x, value));
+                        entityRef.saveChanges();
+                        selfUpdating = true;
+                        positionUpdateCallback.positionUpdated(entityRef);
+                        selfUpdating = false;
+                        return null;
+                    }
+                });
         groupTable.row();
 
         CommonEditors.appendLabel(groupTable, skin, "Dist. X");
@@ -163,8 +208,26 @@ public class OscillatingEditor implements EntityComponentEditor {
 
     @Override
     public void entityMoved(EntityRef entityRef, float x, float y) {
+        if (!selfUpdating) {
+            OscillatingComponent oscillating = entityRef.getComponent(OscillatingComponent.class);
+            oscillating.setStartingPosition(new Vector2(x, y));
+            entityRef.saveChanges();
+
+            xField.setText(String.valueOf(x));
+            yField.setText(String.valueOf(y));
+        }
+    }
+
+    @Override
+    public void serializeChanges(EntityRef entityRef, Map<String, Object> changes) {
         OscillatingComponent oscillating = entityRef.getComponent(OscillatingComponent.class);
-        oscillating.setStartingPosition(new Vector2(x, y));
-        entityRef.saveChanges();
+        Vector2 startingPosition = oscillating.getStartingPosition();
+        changes.put("startingPosition", startingPosition.x + "," + startingPosition.y);
+        Vector2 distance = oscillating.getDistance();
+        changes.put("distance", distance.x + "," + distance.y);
+        long cycleLength = oscillating.getCycleLength();
+        changes.put("cycleLength", cycleLength);
+        EasedValue distanceTimeFunction = oscillating.getDistanceTimeFunction();
+        changes.put("distanceTimeFunction", distanceTimeFunction.getMultiplier() + "*" + distanceTimeFunction.getRecipe());
     }
 }
