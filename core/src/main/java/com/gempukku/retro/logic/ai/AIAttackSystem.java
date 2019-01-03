@@ -1,7 +1,7 @@
 package com.gempukku.retro.logic.ai;
 
 import com.gempukku.retro.logic.ai.task.WaitForOpponentInSightTask;
-import com.gempukku.retro.model.PlayerComponent;
+import com.gempukku.retro.logic.player.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;

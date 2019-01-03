@@ -5,6 +5,9 @@
     ]
   },
   "Position2D": {},
+  "PlayerSpawn": {
+    "spawnId": "elevatorEntrance"
+  },
   "Size2D": {
     "width": 0.4,
     "height": 0.6,

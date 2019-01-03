@@ -24,7 +24,6 @@
   "ActivatedByActionWithSensor": {},
   "LoadRoomOnActivate": {
     "roomPath": "rooms/basement.json",
-    "x": 0,
-    "y": 0
+    "spawnId": "elevatorEntrance"
   }
 }

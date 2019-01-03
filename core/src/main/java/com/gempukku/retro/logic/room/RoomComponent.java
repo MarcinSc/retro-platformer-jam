@@ -7,11 +7,7 @@ public interface RoomComponent extends Component {
 
     void setRoom(String room);
 
-    float getX();
+    String getSpawnId();
 
-    void setX(float x);
-
-    float getY();
-
-    void setY(float y);
+    void setSpawnId(String spawnId);
 }

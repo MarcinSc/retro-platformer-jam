@@ -149,43 +149,6 @@ public class SimpleEntityManagerTest {
         assertEquals("a", result.getComponent(SampleComponent.class).getValue());
     }
 
-    @Test
-    public void createFromPrefab() {
-        EntityRef entity = simpleEntityManager.createEntityFromPrefab("prefab");
-        assertNotNull(entity);
-        SampleComponent component = entity.getComponent(SampleComponent.class);
-        assertEquals("a", component.getValue());
-
-        assertTrue(entity.hasComponent(SampleComponent.class));
-        assertFalse(entity.hasComponent(SampleComponent2.class));
-
-        try {
-            entity.createComponent(SampleComponent.class);
-            fail("Expected exception");
-        } catch (IllegalStateException exp) {
-            // expected
-        }
-
-        component.setValue("b");
-        entity.saveChanges();
-
-        assertEquals("b", entity.getComponent(SampleComponent.class).getValue());
-
-        assertEquals("a", simpleEntityManager.createEntityFromPrefab("prefab").getComponent(SampleComponent.class).getValue());
-
-        entity.removeComponents(SampleComponent.class);
-        entity.saveChanges();
-
-        assertFalse(entity.hasComponent(SampleComponent.class));
-        assertNull(entity.getComponent(SampleComponent.class));
-
-        SampleComponent newComponent = entity.createComponent(SampleComponent.class);
-        newComponent.setValue("b");
-        entity.saveChanges();
-
-        assertEquals("b", entity.getComponent(SampleComponent.class).getValue());
-    }
-
     private class Listener implements EntityEventListener {
         private List<EntityAndEvent> events = new LinkedList<EntityAndEvent>();
 

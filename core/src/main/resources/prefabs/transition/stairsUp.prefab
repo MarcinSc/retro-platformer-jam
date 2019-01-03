@@ -5,6 +5,9 @@
     ]
   },
   "Position2D": {},
+  "PlayerSpawn": {
+    "spawnId": "stairs"
+  },
   "Size2D": {
     "width": 0.4,
     "height": 0.6,
@@ -24,7 +27,6 @@
   "ActivatedByActionWithSensor": {},
   "LoadRoomOnActivate": {
     "roomPath": "rooms/second-floor.json",
-    "x": 0.9,
-    "y": 0
+    "spawnId": "stairs"
   }
 }

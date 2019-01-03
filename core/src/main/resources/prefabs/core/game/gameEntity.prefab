@@ -5,7 +5,6 @@
   },
   "Room": {
     "room": "rooms/entrance.json",
-    "x": 0,
-    "y": 0
+    "spawnId": "spawn"
   }
 }

@@ -112,9 +112,14 @@ public class SpawnSystem extends AbstractLifeCycleSystem implements SpawnManager
 
     @Override
     public void despawnEntity(EntityRef entityRef) {
-        String prefab = entityRef.getComponent(PrefabComponent.class).getPrefab();
-        entityRef.send(new EntityDespawning(prefab));
-        entityManager.destroyEntity(entityRef);
+        if (entityRef.exists()) {
+            PrefabComponent component = entityRef.getComponent(PrefabComponent.class);
+            if (component == null)
+                System.out.println("");
+            String prefab = component.getPrefab();
+            entityRef.send(new EntityDespawning(prefab));
+            entityManager.destroyEntity(entityRef);
+        }
     }
 
     private EntityData constructEntityData(String prefab, Map<String, Map<String, Object>> overrideMap) {

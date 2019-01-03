@@ -3,7 +3,7 @@ package com.gempukku.retro.logic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.gempukku.retro.logic.equipment.PickedUpObject;
-import com.gempukku.retro.model.PlayerComponent;
+import com.gempukku.retro.logic.player.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;

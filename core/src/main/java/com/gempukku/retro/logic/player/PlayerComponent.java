@@ -1,4 +1,4 @@
-package com.gempukku.retro.model;
+package com.gempukku.retro.logic.player;
 
 import com.gempukku.secsy.gaming.rendering.sprite.SpriteComponent;
 

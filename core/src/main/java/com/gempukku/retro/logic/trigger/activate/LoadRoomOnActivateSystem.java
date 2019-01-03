@@ -16,6 +16,6 @@ public class LoadRoomOnActivateSystem {
     @ReceiveEvent
     public void loadRoomOnActivate(EntityActivated entityActivated, EntityRef entity, LoadRoomOnActivateComponent loadRoom) {
         String roomPath = loadRoom.getRoomPath();
-        gameEntityProvider.getGameEntity().send(new LoadRoom(roomPath, loadRoom.getX(), loadRoom.getY()));
+        gameEntityProvider.getGameEntity().send(new LoadRoom(roomPath, loadRoom.getSpawnId()));
     }
 }

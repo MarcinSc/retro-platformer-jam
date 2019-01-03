@@ -1,5 +1,14 @@
 [
   {
+    "prefab": "spawn",
+    "override": {
+      "Position2D": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
     "prefab": "gameCamera",
     "override": {
       "ClampCamera": {
