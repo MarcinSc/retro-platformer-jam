@@ -133,7 +133,7 @@
     }
   },
   {
-    "prefab": "guardStand",
+    "prefab": "notAggroedGuard",
     "override": {
       "Position2D": {
         "x": -0.05,
@@ -145,7 +145,7 @@
     }
   },
   {
-    "prefab": "guardStand",
+    "prefab": "notAggroedGuard",
     "override": {
       "Position2D": {
         "x": 0.45,
