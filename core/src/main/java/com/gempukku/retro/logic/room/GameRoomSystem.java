@@ -15,8 +15,8 @@ import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.scene.SceneManager;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 
-@RegisterSystem
-public class RoomSystem extends AbstractLifeCycleSystem {
+@RegisterSystem(profiles = "!editor")
+public class GameRoomSystem extends AbstractLifeCycleSystem {
     @Inject
     private GameEntityProvider gameEntityProvider;
     @Inject

@@ -57,8 +57,13 @@ public class SecsyGameApplication extends ApplicationAdapter {
 
     private boolean hasAllProfiles(String[] requiredProfiles, Set<String> activeProfiles) {
         for (String systemProfile : requiredProfiles) {
-            if (!activeProfiles.contains(systemProfile))
-                return false;
+            if (systemProfile.startsWith("!")) {
+                if (activeProfiles.contains(systemProfile.substring(1)))
+                    return false;
+            } else {
+                if (!activeProfiles.contains(systemProfile))
+                    return false;
+            }
         }
 
         return true;

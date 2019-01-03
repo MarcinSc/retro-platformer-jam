@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DesktopLauncher {
+public class EditorLauncher {
     public static void main(String[] arg) {
         Set<String> activeProfiles = new HashSet<String>();
         // Basic setup - scanning all the things from ClassPath
@@ -44,7 +44,7 @@ public class DesktopLauncher {
         activeProfiles.add("sprites");
         activeProfiles.add("bobbingSprites");
         activeProfiles.add("fadingSprites");
-        activeProfiles.add("genesisSimulation");
+        //activeProfiles.add("genesisSimulation");
         activeProfiles.add("colorTint");
         activeProfiles.add("action");
         activeProfiles.add("activateWithSensor");
@@ -52,6 +52,8 @@ public class DesktopLauncher {
         activeProfiles.add("spawn");
         activeProfiles.add("combat");
         activeProfiles.add("weapon");
+
+        activeProfiles.add("editor");
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.fullscreen = false;
