@@ -19,6 +19,7 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.PriorityResolver;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
@@ -59,6 +60,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     private NameComponentManager nameComponentManager;
     @Inject
     private SystemContext systemContext;
+    @Inject
+    private EntityManager entityManager;
 
     private Skin skin;
 
@@ -96,22 +99,6 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         stage.addActor(entityInspector);
     }
 
-    private Window createEntityInspectorWindow() {
-        Window entityInspector = new Window("Inspector", skin);
-        entityInspector.setResizable(true);
-        entityInspector.setResizeBorder(10);
-
-        inspectorTable = new Table();
-        ScrollPane inspectorScroll = new ScrollPane(inspectorTable, skin);
-        inspectorScroll.setFadeScrollBars(false);
-
-        entityInspector.add(inspectorScroll).grow().minWidth(300).minHeight(200);
-        entityInspector.pack();
-        entityInspector.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight() - entityInspector.getHeight());
-
-        return entityInspector;
-    }
-
     private Window createEntityListWindow() {
         Window entityList = new Window("Entities", skin);
         entityList.setResizable(true);
@@ -120,7 +107,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         prefabDropDown = new SelectBox<String>(skin);
         Array<String> prefabs = new Array<String>();
         for (NamedEntityData prefab : prefabManager.findPrefabsWithComponents(EditorEditableComponent.class)) {
-            prefabs.add(prefab.getName());
+            if (entityManager.wrapEntityData(prefab).getComponent(EditorEditableComponent.class).isCanBeAdded())
+                prefabs.add(prefab.getName());
         }
         prefabDropDown.setItems(prefabs);
         entityList.add(prefabDropDown).growX();
@@ -159,6 +147,22 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         entityList.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight());
 
         return entityList;
+    }
+
+    private Window createEntityInspectorWindow() {
+        Window entityInspector = new Window("Inspector", skin);
+        entityInspector.setResizable(true);
+        entityInspector.setResizeBorder(10);
+
+        inspectorTable = new Table();
+        ScrollPane inspectorScroll = new ScrollPane(inspectorTable, skin);
+        inspectorScroll.setFadeScrollBars(false);
+
+        entityInspector.add(inspectorScroll).grow().minWidth(300).minHeight(200);
+        entityInspector.pack();
+        entityInspector.setPosition(0, Gdx.graphics.getHeight() - entityList.getHeight() - entityInspector.getHeight());
+
+        return entityInspector;
     }
 
     @ReceiveEvent

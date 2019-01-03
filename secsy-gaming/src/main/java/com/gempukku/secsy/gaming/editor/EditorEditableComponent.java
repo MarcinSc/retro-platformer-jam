@@ -8,7 +8,10 @@ import java.util.List;
 public interface EditorEditableComponent extends Component {
     @DefaultValue("Entity")
     String getNameInEditor();
-
     void setNameInEditor(String nameInEditor);
+
+    @DefaultValue("true")
+    boolean isCanBeAdded();
+
     List<String> getEditableComponents();
 }
