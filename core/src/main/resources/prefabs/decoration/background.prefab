@@ -1,7 +1,8 @@
 {
   "EditorEditable": {
     "editableComponents": [
-      "Position2D"
+      "Position2D",
+      "Sprite"
     ]
   },
   "Position2D": {},

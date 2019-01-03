@@ -87,7 +87,7 @@
     }
   },
   {
-    "prefab": "entranceBackground",
+    "prefab": "background",
     "override": {
       "Position2D": {
         "x": 0,

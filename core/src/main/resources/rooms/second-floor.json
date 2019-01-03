@@ -78,11 +78,14 @@
     }
   },
   {
-    "prefab": "secondFloorBackground",
+    "prefab": "background",
     "override": {
       "Position2D": {
         "x": 0,
         "y": 0
+      },
+      "Sprite": {
+        "fileName": "images/secondFloorBackground.png"
       }
     }
   },
