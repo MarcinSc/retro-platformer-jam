@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -26,6 +27,7 @@ import com.gempukku.secsy.entity.prefab.PrefabManager;
 import com.gempukku.secsy.entity.serialization.NameComponentManager;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
+import com.gempukku.secsy.gaming.editor.component.CommonEditors;
 import com.gempukku.secsy.gaming.input.InputProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.GetCamera;
@@ -34,7 +36,9 @@ import com.gempukku.secsy.gaming.spawn.EntitySpawned;
 import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.ui.StageProvider;
+import com.google.common.base.Function;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 
 @RegisterSystem(profiles = "editor")
@@ -170,7 +174,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
             entityTree.add(prefabNode);
         }
 
-        Label entityNodeLabel = new Label(prefab, skin);
+        Label entityNodeLabel = new Label(editorEditable.getNameInEditor(), skin);
         Tree.Node entityNode = new Tree.Node(entityNodeLabel);
         entityNode.setObject(entity);
         prefabNode.add(entityNode);
@@ -228,7 +232,41 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         inspectorTable.add(new Label("Prefab: " + prefab, skin)).growX();
         inspectorTable.row();
 
-        for (String editableComponent : selectedEntity.getComponent(EditorEditableComponent.class).getEditableComponents()) {
+        Table groupTable = new Table(skin);
+        Drawable background = skin.get("default-round", Drawable.class);
+        groupTable.setBackground(background);
+        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+
+        CommonEditors.appendStringField(groupTable, skin, selectedEntity, "Name", null,
+                new Function<EntityRef, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable EntityRef entityRef) {
+                        return entityRef.getComponent(EditorEditableComponent.class).getNameInEditor();
+                    }
+                },
+                new Function<TextField, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable TextField value) {
+                        String name = value.getText();
+
+                        EditorEditableComponent editorEditable = selectedEntity.getComponent(EditorEditableComponent.class);
+                        editorEditable.setNameInEditor(name);
+                        selectedEntity.saveChanges();
+                        Label label = (Label) entityTree.getSelection().first().getActor();
+                        label.setText(name);
+                        return null;
+                    }
+                });
+        groupTable.row();
+
+        inspectorTable.add(groupTable).growX();
+        inspectorTable.row();
+
+        final EditorEditableComponent editorEditable = selectedEntity.getComponent(EditorEditableComponent.class);
+
+        for (String editableComponent : editorEditable.getEditableComponents()) {
             Class<? extends Component> componentClass = nameComponentManager.getComponentByName(editableComponent);
             EditableWith annotation = componentClass.getAnnotation(EditableWith.class);
             Class<? extends EntityComponentEditor> editorClass = annotation.value();

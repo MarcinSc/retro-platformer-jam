@@ -68,7 +68,7 @@ public class OscillatingEditor implements EntityComponentEditor {
                 });
         groupTable.row();
 
-        TextField time = CommonEditors.appendLabeledField(groupTable, skin, entityRef,
+        TextField time = CommonEditors.appendStringField(groupTable, skin, entityRef,
                 "time", CommonEditors.INTEGER_FILTER,
                 new Function<EntityRef, String>() {
                     @Nullable
@@ -94,7 +94,7 @@ public class OscillatingEditor implements EntityComponentEditor {
                     }
                 });
         time.setAlignment(Align.right);
-        TextField function = CommonEditors.appendLabeledField(groupTable, skin, entityRef,
+        TextField function = CommonEditors.appendStringField(groupTable, skin, entityRef,
                 "function", null,
                 new Function<EntityRef, String>() {
                     @Nullable

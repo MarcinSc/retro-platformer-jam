@@ -21,10 +21,11 @@ public class CommonEditors {
     private CommonEditors() {
     }
 
-    public static TextField appendLabeledField(Table table, final Skin skin, final EntityRef entityRef, String label, TextField.TextFieldFilter filter, final Function<EntityRef, String> valueFunction, final Function<TextField, Void> valueSetter) {
+    public static TextField appendStringField(Table table, final Skin skin, final EntityRef entityRef, String label, TextField.TextFieldFilter filter,
+                                              final Function<EntityRef, String> fieldValue, final Function<TextField, Void> valueSetter) {
         table.add(new Label(label, skin)).minWidth(LABEL_MAX_WIDTH);
 
-        final TextField firstEditor = new TextField(valueFunction.apply(entityRef), skin) {
+        final TextField firstEditor = new TextField(fieldValue.apply(entityRef), skin) {
             @Override
             public float getPrefWidth() {
                 return 80;
@@ -42,13 +43,14 @@ public class CommonEditors {
         return firstEditor;
     }
 
-    public static TextField appendFloatField(Table table, Skin skin, EntityRef entityRef, String firstFieldLabel, final Function<EntityRef, Float> firstFieldValue, final Function<Float, Void> firstFieldSetter) {
-        TextField textField = appendLabeledField(table, skin, entityRef, firstFieldLabel, FLOAT_FILTER,
+    public static TextField appendFloatField(Table table, Skin skin, EntityRef entityRef, String firstFieldLabel,
+                                             final Function<EntityRef, Float> fieldValue, final Function<Float, Void> fieldSetter) {
+        TextField textField = appendStringField(table, skin, entityRef, firstFieldLabel, FLOAT_FILTER,
                 new Function<EntityRef, String>() {
                     @Nullable
                     @Override
                     public String apply(@Nullable EntityRef entityRef) {
-                        return String.valueOf(firstFieldValue.apply(entityRef));
+                        return String.valueOf(fieldValue.apply(entityRef));
                     }
                 },
                 new Function<TextField, Void>() {
@@ -57,7 +59,7 @@ public class CommonEditors {
                     public Void apply(@Nullable TextField textField) {
                         try {
                             float value = Float.parseFloat(textField.getText());
-                            firstFieldSetter.apply(value);
+                            fieldSetter.apply(value);
                             textField.setColor(Color.WHITE);
                         } catch (NumberFormatException exp) {
                             // Ignore
