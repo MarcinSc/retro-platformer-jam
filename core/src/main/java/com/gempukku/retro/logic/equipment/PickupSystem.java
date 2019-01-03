@@ -6,10 +6,10 @@ import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
-import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.physics.basic2d.SensorContactBegin;
+import com.gempukku.secsy.gaming.spawn.SpawnManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @RegisterSystem
 public class PickupSystem extends AbstractLifeCycleSystem {
     @Inject
-    private EntityManager entityManager;
+    private SpawnManager spawnManager;
     @Inject
     private ItemProvider itemProvider;
 
@@ -28,7 +28,7 @@ public class PickupSystem extends AbstractLifeCycleSystem {
             if (sensorTrigger.hasComponent(PickupComponent.class)) {
                 PickupComponent pickup = sensorTrigger.getComponent(PickupComponent.class);
                 String pickupType = pickup.getType();
-                entityManager.destroyEntity(sensorTrigger);
+                spawnManager.despawnEntity(sensorTrigger);
 
                 entity.send(new PickedUpObject(pickupType));
             }

@@ -16,6 +16,8 @@ public class Position2DEditor implements EntityComponentEditor {
     private TextField xField;
     private TextField yField;
 
+    private boolean selfUpdating;
+
     @Override
     public void appendEditor(Table table, Skin skin, final EntityRef entityRef, final PositionUpdateCallback positionUpdateCallback) {
         Table groupTable = new Table(skin);
@@ -41,7 +43,9 @@ public class Position2DEditor implements EntityComponentEditor {
                         Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
                         position.setX(value);
                         entityRef.saveChanges();
+                        selfUpdating = true;
                         positionUpdateCallback.positionUpdated(entityRef);
+                        selfUpdating = false;
                         return null;
                     }
                 });
@@ -60,7 +64,9 @@ public class Position2DEditor implements EntityComponentEditor {
                         Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
                         position.setY(value);
                         entityRef.saveChanges();
+                        selfUpdating = true;
                         positionUpdateCallback.positionUpdated(entityRef);
+                        selfUpdating = false;
                         return null;
                     }
                 });
@@ -72,7 +78,9 @@ public class Position2DEditor implements EntityComponentEditor {
 
     @Override
     public void entityMoved(EntityRef entityRef, float x, float y) {
-        xField.setText(String.valueOf(x));
-        yField.setText(String.valueOf(y));
+        if (!selfUpdating) {
+            xField.setText(String.valueOf(x));
+            yField.setText(String.valueOf(y));
+        }
     }
 }

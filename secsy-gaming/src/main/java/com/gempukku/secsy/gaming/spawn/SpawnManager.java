@@ -10,4 +10,6 @@ public interface SpawnManager {
     EntityRef spawnEntity(String prefab, Map<String, Map<String, Object>> overrides);
 
     EntityRef spawnEntityAt(String prefab, float x, float y);
+
+    void despawnEntity(EntityRef entityRef);
 }

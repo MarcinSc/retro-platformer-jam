@@ -32,7 +32,7 @@ public class SceneSystem extends AbstractLifeCycleSystem implements SceneManager
     public void unloadScene() {
         for (EntityRef entityRef : entityManager.getAllEntities()) {
             if (!entityRef.hasComponent(GlobalEntityComponent.class))
-                entityManager.destroyEntity(entityRef);
+                spawnManager.despawnEntity(entityRef);
         }
     }
 

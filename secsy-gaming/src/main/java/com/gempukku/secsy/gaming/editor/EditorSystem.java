@@ -1,6 +1,7 @@
 package com.gempukku.secsy.gaming.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -33,6 +34,7 @@ import com.gempukku.secsy.gaming.input.InputProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.GetCamera;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
+import com.gempukku.secsy.gaming.spawn.EntityDespawning;
 import com.gempukku.secsy.gaming.spawn.EntitySpawned;
 import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
@@ -90,6 +92,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         if (priority == null)
             priority = 0f;
         inputProvider.registerInputProcessor(new EditorInputProcessor(), priority);
+        inputProvider.registerInputProcessor(new DeleteProcessor(), priority);
 
         Stage stage = stageProvider.getStage();
         entityList = createEntityListWindow();
@@ -168,6 +171,33 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     @ReceiveEvent
     public void entitySpawned(EntitySpawned entitySpawned, EntityRef entity, EditorEditableComponent editorEditable) {
         String prefab = entitySpawned.getPrefab();
+        Tree.Node prefabNode = getPrefabRootNode(prefab);
+
+        Label entityNodeLabel = new Label(editorEditable.getNameInEditor(), skin);
+        Tree.Node entityNode = new Tree.Node(entityNodeLabel);
+        entityNode.setObject(entity);
+        prefabNode.add(entityNode);
+    }
+
+    @ReceiveEvent
+    public void entityDespawning(EntityDespawning entityDespawning, EntityRef entity, EditorEditableComponent editorEditable) {
+        String prefab = entityDespawning.getPrefab();
+        Tree.Node prefabNode = getPrefabRootNode(prefab);
+        Tree.Node despawningNode = getEntityNode(prefabNode, entity);
+        prefabNode.remove(despawningNode);
+        if (prefabNode.getChildren().size == 0)
+            entityTree.remove(prefabNode);
+    }
+
+    private Tree.Node getEntityNode(Tree.Node rootNode, EntityRef entity) {
+        for (Tree.Node child : rootNode.getChildren()) {
+            if (entityManager.isSameEntity(entity, (EntityRef) child.getObject()))
+                return child;
+        }
+        return null;
+    }
+
+    private Tree.Node getPrefabRootNode(String prefab) {
         Tree.Node prefabNode = findNodeByName(prefab);
         if (prefabNode == null) {
             Label prefabNodeLabel = new Label(prefab, skin);
@@ -177,11 +207,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
             entityTree.add(prefabNode);
         }
-
-        Label entityNodeLabel = new Label(editorEditable.getNameInEditor(), skin);
-        Tree.Node entityNode = new Tree.Node(entityNodeLabel);
-        entityNode.setObject(entity);
-        prefabNode.add(entityNode);
+        return prefabNode;
     }
 
     @ReceiveEvent(priorityName = "gaming.renderer.editor.selection")
@@ -312,6 +338,18 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     private void notifyPositionUpdated(EntityRef entityRef, float x, float y) {
         for (EntityComponentEditor activeEditor : activeEditors) {
             activeEditor.entityMoved(entityRef, x, y);
+        }
+    }
+
+    private class DeleteProcessor extends InputAdapter {
+        @Override
+        public boolean keyDown(int keycode) {
+            if (keycode == Input.Keys.DEL && selectedEntity != null) {
+                spawnManager.despawnEntity(selectedEntity);
+                entityTree.getSelection().clear();
+                return true;
+            }
+            return false;
         }
     }
 

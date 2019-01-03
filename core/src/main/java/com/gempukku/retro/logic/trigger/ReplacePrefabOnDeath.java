@@ -38,7 +38,7 @@ public class ReplacePrefabOnDeath {
             float x = position.getX();
             float y = position.getY();
 
-            entityManager.destroyEntity(entityToReplace);
+            spawnManager.despawnEntity(entityToReplace);
 
             spawnManager.spawnEntityAt(newPrefab, x, y);
         }

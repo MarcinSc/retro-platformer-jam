@@ -2,7 +2,6 @@ package com.gempukku.secsy.gaming.combat;
 
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
@@ -15,8 +14,6 @@ import com.gempukku.secsy.gaming.time.TimeManager;
 public class CombatSystem {
     @Inject
     private TimeManager timeManager;
-    @Inject
-    private EntityManager entityManager;
     @Inject
     private SpawnManager spawnManager;
     @Inject
@@ -60,7 +57,7 @@ public class CombatSystem {
 
     @ReceiveEvent(priority = -1000)
     public void destroyDead(EntityDied entityDied, EntityRef entity, DestroyOnDeathComponent destroyOnDeath) {
-        entityManager.destroyEntity(entity);
+        spawnManager.despawnEntity(entity);
     }
 
     @ReceiveEvent
