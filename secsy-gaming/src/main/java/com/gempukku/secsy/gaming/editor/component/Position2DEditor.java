@@ -26,8 +26,9 @@ public class Position2DEditor implements EntityComponentEditor {
         groupTable.add(new Label("Position", skin)).growX().colspan(4);
         groupTable.row();
 
+        CommonEditors.appendLabel(groupTable, skin, "X");
         xField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
-                "x", new Function<EntityRef, Float>() {
+                new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {
@@ -44,8 +45,9 @@ public class Position2DEditor implements EntityComponentEditor {
                         return null;
                     }
                 });
+        CommonEditors.appendLabel(groupTable, skin, "Y");
         yField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
-                "y", new Function<EntityRef, Float>() {
+                new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {

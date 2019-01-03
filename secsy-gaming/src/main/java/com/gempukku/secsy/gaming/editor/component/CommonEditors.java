@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.gaming.easing.EasingPreview;
+import com.gempukku.secsy.gaming.easing.EasingResolver;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
@@ -21,10 +23,20 @@ public class CommonEditors {
     private CommonEditors() {
     }
 
-    public static TextField appendStringField(Table table, final Skin skin, final EntityRef entityRef, String label, TextField.TextFieldFilter filter,
-                                              final Function<EntityRef, String> fieldValue, final Function<TextField, Void> valueSetter) {
-        table.add(new Label(label, skin)).minWidth(LABEL_MAX_WIDTH);
+    public static Label appendLabel(Table table, Skin skin, String label) {
+        Label result = new Label(label, skin);
+        table.add(result).minWidth(LABEL_MAX_WIDTH);
+        return result;
+    }
 
+    public static EasingPreview appendEasingPreview(Table table, Skin skin, EasingResolver resolver, String recipe) {
+        EasingPreview easingPreview = new EasingPreview(resolver, skin, recipe);
+        table.add(easingPreview).growX();
+        return easingPreview;
+    }
+
+    public static TextField appendStringField(Table table, final Skin skin, final EntityRef entityRef, TextField.TextFieldFilter filter,
+                                              final Function<EntityRef, String> fieldValue, final Function<TextField, Void> valueSetter) {
         final TextField firstEditor = new TextField(fieldValue.apply(entityRef), skin) {
             @Override
             public float getPrefWidth() {
@@ -43,9 +55,9 @@ public class CommonEditors {
         return firstEditor;
     }
 
-    public static TextField appendFloatField(Table table, Skin skin, EntityRef entityRef, String firstFieldLabel,
+    public static TextField appendFloatField(Table table, Skin skin, EntityRef entityRef,
                                              final Function<EntityRef, Float> fieldValue, final Function<Float, Void> fieldSetter) {
-        TextField textField = appendStringField(table, skin, entityRef, firstFieldLabel, FLOAT_FILTER,
+        TextField textField = appendStringField(table, skin, entityRef, FLOAT_FILTER,
                 new Function<EntityRef, String>() {
                     @Nullable
                     @Override

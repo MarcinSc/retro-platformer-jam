@@ -237,7 +237,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         groupTable.setBackground(background);
         groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 
-        CommonEditors.appendStringField(groupTable, skin, selectedEntity, "Name", null,
+        CommonEditors.appendLabel(groupTable, skin, "Name");
+        CommonEditors.appendStringField(groupTable, skin, selectedEntity, null,
                 new Function<EntityRef, String>() {
                     @Nullable
                     @Override

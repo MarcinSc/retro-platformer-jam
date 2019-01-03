@@ -25,8 +25,9 @@ public class Size2DEditor implements EntityComponentEditor {
         groupTable.add(new Label("Size", skin)).growX().colspan(4);
         groupTable.row();
 
+        CommonEditors.appendLabel(groupTable, skin, "Width");
         CommonEditors.appendFloatField(groupTable, skin, entityRef,
-                "width", new Function<EntityRef, Float>() {
+                new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {
@@ -42,8 +43,9 @@ public class Size2DEditor implements EntityComponentEditor {
                         return null;
                     }
                 });
+        CommonEditors.appendLabel(groupTable, skin, "Height");
         CommonEditors.appendFloatField(groupTable, skin, entityRef,
-                "height", new Function<EntityRef, Float>() {
+                new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {
