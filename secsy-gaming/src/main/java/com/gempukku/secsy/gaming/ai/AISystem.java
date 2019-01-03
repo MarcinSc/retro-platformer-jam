@@ -11,6 +11,7 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.gaming.ai.builder.JsonTaskBuilder;
+import com.gempukku.secsy.gaming.editor.EditorComponent;
 import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -137,17 +138,19 @@ public class AISystem extends AbstractLifeCycleSystem implements AIEngine {
 
     @ReceiveEvent
     public void processAI(GameLoopUpdate event, EntityRef entityRef) {
-        for (EntityRef aiEntity : aiEntities) {
-            AIComponent ai = aiEntity.getComponent(AIComponent.class);
-            String aiName = ai.getAiName();
-            RootTask<EntityRefReference> aiRootTask = compiledAIs.get(aiName);
-            if (aiRootTask == null) {
-                aiRootTask = createAi(aiName);
-                compiledAIs.put(aiName, aiRootTask);
+        if (!entityRef.hasComponent(EditorComponent.class)) {
+            for (EntityRef aiEntity : aiEntities) {
+                AIComponent ai = aiEntity.getComponent(AIComponent.class);
+                String aiName = ai.getAiName();
+                RootTask<EntityRefReference> aiRootTask = compiledAIs.get(aiName);
+                if (aiRootTask == null) {
+                    aiRootTask = createAi(aiName);
+                    compiledAIs.put(aiName, aiRootTask);
+                }
+                EntityRefReference reference = new EntityRefReference(aiEntity);
+                aiRootTask.processAI(reference);
+                reference.storeValues();
             }
-            EntityRefReference reference = new EntityRefReference(aiEntity);
-            aiRootTask.processAI(reference);
-            reference.storeValues();
         }
     }
 
