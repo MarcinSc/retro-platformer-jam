@@ -51,6 +51,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @RegisterSystem(profiles = "editor")
 public class EditorSystem extends AbstractLifeCycleSystem {
+    private static final double VIEWPORT_ADJUST_SCALE = 1.2;
+
     @Inject
     private StageProvider stageProvider;
     @Inject
@@ -97,11 +99,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         shapeRenderer = new ShapeRenderer();
 
-        Float priority = priorityResolver.getPriority("gaming.input.editor");
-        if (priority == null)
-            priority = 0f;
+        float priority = getPriority("gaming.input.editor");
         inputProvider.registerInputProcessor(new EditorInputProcessor(), priority);
         inputProvider.registerInputProcessor(new DeleteProcessor(), priority);
+
+        float cameraPriority = getPriority("gaming.input.editor.camera");
+        inputProvider.registerInputProcessor(new CameraAdjust(), cameraPriority);
 
         Stage stage = stageProvider.getStage();
         entityList = createEntityListWindow();
@@ -109,6 +112,13 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         entityInspector = createEntityInspectorWindow();
         stage.addActor(entityInspector);
+    }
+
+    private float getPriority(String priorityName) {
+        Float priority = priorityResolver.getPriority(priorityName);
+        if (priority == null)
+            priority = 0f;
+        return priority;
     }
 
     private Window createEntityListWindow() {
@@ -353,14 +363,15 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
                 float selectionBorderX = size.getWidth() * 0.05f;
                 float selectionBorderY = size.getHeight() * 0.05f;
+                float border = Math.max(editor.getMinimumSelectionBorder(), Math.min(selectionBorderX, selectionBorderY));
 
-                float x = position.getX() - size.getAnchorX() * size.getWidth() - selectionBorderX;
-                float y = position.getY() - size.getAnchorY() * size.getHeight() - selectionBorderY;
+                float x = position.getX() - size.getAnchorX() * size.getWidth() - border;
+                float y = position.getY() - size.getAnchorY() * size.getHeight() - border;
 
                 shapeRenderer.setProjectionMatrix(camera.combined);
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 shapeRenderer.setColor(Color.WHITE);
-                shapeRenderer.rect(x, y, size.getWidth() + selectionBorderX * 2, size.getHeight() + selectionBorderY * 2);
+                shapeRenderer.rect(x, y, size.getWidth() + border * 2, size.getHeight() + border * 2);
                 shapeRenderer.end();
 
                 renderToPipeline.getRenderPipeline().getCurrentBuffer().end();
@@ -457,6 +468,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         return null;
     }
 
+    private void notifyPositionUpdated(EntityRef entityRef, float x, float y) {
+        for (EntityComponentEditor activeEditor : activeEditors) {
+            activeEditor.entityMoved(entityRef, x, y);
+        }
+    }
+
     private class PositionUpdateCallbackImpl implements EntityComponentEditor.PositionUpdateCallback {
         @Override
         public void positionUpdated(EntityRef entityRef) {
@@ -465,9 +482,77 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         }
     }
 
-    private void notifyPositionUpdated(EntityRef entityRef, float x, float y) {
-        for (EntityComponentEditor activeEditor : activeEditors) {
-            activeEditor.entityMoved(entityRef, x, y);
+    private class CameraAdjust extends InputAdapter {
+        private boolean cameraDragged;
+        private int dragStartX;
+        private int dragStartY;
+
+        @Override
+        public boolean scrolled(int amount) {
+            EntityRef cameraEntity = cameraEntityProvider.getCameraEntity();
+            MouseCameraComponent mouseCamera = cameraEntity.getComponent(MouseCameraComponent.class);
+
+            float viewportWidth = mouseCamera.getViewportWidth();
+            float viewportHeight = mouseCamera.getViewportHeight();
+
+            if (amount == -1) {
+                viewportWidth *= VIEWPORT_ADJUST_SCALE;
+                viewportHeight *= VIEWPORT_ADJUST_SCALE;
+            } else {
+                viewportWidth /= VIEWPORT_ADJUST_SCALE;
+                viewportHeight /= VIEWPORT_ADJUST_SCALE;
+            }
+
+            mouseCamera.setViewportWidth(viewportWidth);
+            mouseCamera.setViewportHeight(viewportHeight);
+            cameraEntity.saveChanges();
+
+            return true;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            dragStartX = screenX;
+            dragStartY = screenY;
+
+            cameraDragged = true;
+            return true;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            if (cameraDragged) {
+                EntityRef cameraEntity = cameraEntityProvider.getCameraEntity();
+
+                GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
+                cameraEntity.send(getCamera);
+                Camera camera = getCamera.getCamera();
+                Vector3 clickCoords1 = camera.unproject(new Vector3(screenX, screenY, 0));
+                Vector3 clickCoords2 = camera.unproject(new Vector3(dragStartX, dragStartY, 0));
+
+                float diffX = clickCoords2.x - clickCoords1.x;
+                float diffY = clickCoords2.y - clickCoords1.y;
+
+                dragStartX = screenX;
+                dragStartY = screenY;
+
+                MouseCameraComponent mouseCamera = cameraEntity.getComponent(MouseCameraComponent.class);
+                mouseCamera.setX(mouseCamera.getX() + diffX);
+                mouseCamera.setY(mouseCamera.getY() + diffY);
+
+                cameraEntity.saveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            if (cameraDragged) {
+                cameraDragged = false;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -505,19 +590,23 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                         Position2DComponent position = nodeEntity.getComponent(Position2DComponent.class);
                         Size2DComponent size = nodeEntity.getComponent(Size2DComponent.class);
 
-                        float x = position.getX() - size.getAnchorX() * size.getWidth();
-                        float y = position.getY() - size.getAnchorY() * size.getHeight();
+                        if (position != null && size != null) {
+                            float posX = position.getX();
+                            float x = posX - size.getAnchorX() * size.getWidth();
+                            float posY = position.getY();
+                            float y = posY - size.getAnchorY() * size.getHeight();
 
-                        if (clickCoords.x >= x && clickCoords.x < x + size.getWidth()
-                                && clickCoords.y >= y && clickCoords.y < y + size.getHeight()) {
-                            dragged = nodeEntity;
-                            dragStartX = clickCoords.x;
-                            dragStartY = clickCoords.y;
-                            draggedPosX = position.getX();
-                            draggedPosY = position.getY();
+                            if (clickCoords.x >= x && clickCoords.x < x + size.getWidth()
+                                    && clickCoords.y >= y && clickCoords.y < y + size.getHeight()) {
+                                dragged = nodeEntity;
+                                dragStartX = clickCoords.x;
+                                dragStartY = clickCoords.y;
+                                draggedPosX = posX;
+                                draggedPosY = posY;
 
-                            entityTree.getSelection().set(node);
-                            return true;
+                                entityTree.getSelection().set(node);
+                                return true;
+                            }
                         }
                     }
                 }

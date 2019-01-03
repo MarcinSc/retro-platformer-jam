@@ -1,5 +1,10 @@
 {
   "import": "abstractEnemy",
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D"
+    ]
+  },
   "Sprite": {
     "fileName": "images/cleaner.png",
     "priority": 0
