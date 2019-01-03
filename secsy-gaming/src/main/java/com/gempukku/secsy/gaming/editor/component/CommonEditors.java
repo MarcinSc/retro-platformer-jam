@@ -2,10 +2,7 @@ package com.gempukku.secsy.gaming.editor.component;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.gempukku.secsy.entity.EntityRef;
@@ -27,6 +24,21 @@ public class CommonEditors {
         Label result = new Label(label, skin);
         table.add(result).minWidth(LABEL_MAX_WIDTH);
         return result;
+    }
+
+    public static CheckBox appendCheckbox(Table table, Skin skin, EntityRef entityRef,
+                                          Function<EntityRef, Boolean> fieldValue, final Function<Boolean, Void> valueSetter) {
+        final CheckBox checkBox = new CheckBox("", skin);
+        checkBox.setChecked(fieldValue.apply(entityRef));
+        checkBox.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        valueSetter.apply(checkBox.isChecked());
+                    }
+                });
+        table.add(checkBox).growX();
+        return checkBox;
     }
 
     public static EasingPreview appendEasingPreview(Table table, Skin skin, EasingResolver resolver, String recipe) {
