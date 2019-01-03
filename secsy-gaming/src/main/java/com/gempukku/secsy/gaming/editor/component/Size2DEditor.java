@@ -1,7 +1,9 @@
 package com.gempukku.secsy.gaming.editor.component;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.editor.EntityComponentEditor;
@@ -14,8 +16,16 @@ public class Size2DEditor implements EntityComponentEditor {
     private static final FloatNumberTextFieldFilter FLOAT_FILTER = new FloatNumberTextFieldFilter();
 
     @Override
-    public void appendEditor(Table table, Skin skin, final EntityRef entityRef) {
-        CommonEditors.appendTwoFloatFieldsEditor(table, skin, entityRef, "Size",
+    public void appendEditor(Table table, Skin skin, final EntityRef entityRef, PositionUpdateCallback positionUpdateCallback) {
+        Table groupTable = new Table(skin);
+        Drawable background = skin.get("default-round", Drawable.class);
+        groupTable.setBackground(background);
+        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+
+        groupTable.add(new Label("Size", skin)).growX().colspan(4);
+        groupTable.row();
+
+        CommonEditors.appendFloatField(groupTable, skin, entityRef,
                 "width", new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
@@ -31,7 +41,9 @@ public class Size2DEditor implements EntityComponentEditor {
                         entityRef.saveChanges();
                         return null;
                     }
-                }, "height", new Function<EntityRef, Float>() {
+                });
+        CommonEditors.appendFloatField(groupTable, skin, entityRef,
+                "height", new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {
@@ -47,5 +59,14 @@ public class Size2DEditor implements EntityComponentEditor {
                         return null;
                     }
                 });
+        groupTable.row();
+
+        table.add(groupTable).growX();
+        table.row();
+    }
+
+    @Override
+    public void entityMoved(EntityRef entityRef, float x, float y) {
+
     }
 }

@@ -1,7 +1,10 @@
 package com.gempukku.secsy.gaming.editor.component;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.editor.EntityComponentEditor;
@@ -10,9 +13,20 @@ import com.google.common.base.Function;
 import javax.annotation.Nullable;
 
 public class Position2DEditor implements EntityComponentEditor {
+    private TextField xField;
+    private TextField yField;
+
     @Override
-    public void appendEditor(Table table, Skin skin, final EntityRef entityRef) {
-        CommonEditors.appendTwoFloatFieldsEditor(table, skin, entityRef, "Position",
+    public void appendEditor(Table table, Skin skin, final EntityRef entityRef, final PositionUpdateCallback positionUpdateCallback) {
+        Table groupTable = new Table(skin);
+        Drawable background = skin.get("default-round", Drawable.class);
+        groupTable.setBackground(background);
+        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+
+        groupTable.add(new Label("Position", skin)).growX().colspan(4);
+        groupTable.row();
+
+        xField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
                 "x", new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
@@ -26,9 +40,12 @@ public class Position2DEditor implements EntityComponentEditor {
                         Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
                         position.setX(value);
                         entityRef.saveChanges();
+                        positionUpdateCallback.positionUpdated(entityRef);
                         return null;
                     }
-                }, "x", new Function<EntityRef, Float>() {
+                });
+        yField = CommonEditors.appendFloatField(groupTable, skin, entityRef,
+                "y", new Function<EntityRef, Float>() {
                     @Nullable
                     @Override
                     public Float apply(@Nullable EntityRef entityRef) {
@@ -41,10 +58,19 @@ public class Position2DEditor implements EntityComponentEditor {
                         Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
                         position.setY(value);
                         entityRef.saveChanges();
+                        positionUpdateCallback.positionUpdated(entityRef);
                         return null;
                     }
                 });
+        groupTable.row();
+
+        table.add(groupTable).growX();
+        table.row();
     }
 
-
+    @Override
+    public void entityMoved(EntityRef entityRef, float x, float y) {
+        xField.setText(String.valueOf(x));
+        yField.setText(String.valueOf(y));
+    }
 }

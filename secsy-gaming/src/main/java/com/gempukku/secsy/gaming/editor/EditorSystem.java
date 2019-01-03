@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
@@ -34,6 +35,8 @@ import com.gempukku.secsy.gaming.spawn.PrefabComponent;
 import com.gempukku.secsy.gaming.spawn.SpawnManager;
 import com.gempukku.secsy.gaming.ui.StageProvider;
 
+import java.util.LinkedList;
+
 @RegisterSystem(profiles = "editor")
 public class EditorSystem extends AbstractLifeCycleSystem {
     @Inject
@@ -50,6 +53,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     private CameraEntityProvider cameraEntityProvider;
     @Inject
     private NameComponentManager nameComponentManager;
+    @Inject
+    private SystemContext systemContext;
 
     private Skin skin;
 
@@ -59,6 +64,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
     private Window entityInspector;
     private Table inspectorTable;
+    private LinkedList<EntityComponentEditor> activeEditors = new LinkedList<EntityComponentEditor>();
+    private PositionUpdateCallbackImpl positionUpdateCallback = new PositionUpdateCallbackImpl();
 
     private EntityRef selectedEntity;
 
@@ -205,11 +212,13 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         if (selectedNode != null) {
             selectedEntity = (EntityRef) selectedNode.getObject();
             inspectorTable.clearChildren();
+            activeEditors.clear();
 
             fillInspector();
         } else {
             selectedEntity = null;
             inspectorTable.clearChildren();
+            activeEditors.clear();
         }
     }
 
@@ -225,7 +234,9 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
             try {
                 EntityComponentEditor editor = editorClass.newInstance();
-                editor.appendEditor(inspectorTable, skin, selectedEntity);
+                systemContext.initializeObject(editor);
+                editor.appendEditor(inspectorTable, skin, selectedEntity, positionUpdateCallback);
+                activeEditors.add(editor);
             } catch (InstantiationException e) {
                 throw new RuntimeException("Unable to create editor", e);
             } catch (IllegalAccessException e) {
@@ -244,6 +255,20 @@ public class EditorSystem extends AbstractLifeCycleSystem {
             }
         }
         return null;
+    }
+
+    private class PositionUpdateCallbackImpl implements EntityComponentEditor.PositionUpdateCallback {
+        @Override
+        public void positionUpdated(EntityRef entityRef) {
+            Position2DComponent position = entityRef.getComponent(Position2DComponent.class);
+            notifyPositionUpdated(entityRef, position.getX(), position.getY());
+        }
+    }
+
+    private void notifyPositionUpdated(EntityRef entityRef, float x, float y) {
+        for (EntityComponentEditor activeEditor : activeEditors) {
+            activeEditor.entityMoved(entityRef, x, y);
+        }
     }
 
     private class EditorInputProcessor extends InputAdapter {
@@ -305,6 +330,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                 position.setX(newX);
                 position.setY(newY);
                 dragged.saveChanges();
+
+                notifyPositionUpdated(dragged, newX, newY);
 
                 return true;
             }

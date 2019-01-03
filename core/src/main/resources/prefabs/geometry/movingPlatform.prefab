@@ -1,5 +1,12 @@
 {
   "import": "platform",
+  "EditorEditable": {
+    "editableComponents": [
+      "Position2D",
+      "Size2D",
+      "Oscillating"
+    ]
+  },
   "Oscillating": {
     "cycleLength": 4000
   },

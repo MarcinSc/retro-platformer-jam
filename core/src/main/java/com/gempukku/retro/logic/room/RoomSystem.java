@@ -1,7 +1,5 @@
 package com.gempukku.retro.logic.room;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.gempukku.retro.logic.player.PlayerProvider;
 import com.gempukku.retro.model.PlayerComponent;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -10,7 +8,6 @@ import com.gempukku.secsy.context.system.AbstractLifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameEntityProvider;
-import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.gaming.combat.EntityDied;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.scene.SceneManager;
@@ -26,8 +23,6 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     private PlayerProvider playerProvider;
     @Inject
     private SceneManager sceneManager;
-
-    public static final int RELOAD_KEY = Input.Keys.R;
 
     @Override
     public float getPriority() {
@@ -49,18 +44,6 @@ public class RoomSystem extends AbstractLifeCycleSystem {
     public void processLoadRoom(LoadRoom loadRoom) {
         unloadRoomEntities();
         loadRoom(loadRoom.getRoomPath(), loadRoom.getX(), loadRoom.getY());
-    }
-
-    private boolean reloadPressed;
-
-    @ReceiveEvent
-    public void reloadRoom(GameLoopUpdate update) {
-        if (Gdx.input.isKeyPressed(RELOAD_KEY) && !reloadPressed) {
-            reloadRoomFromGame();
-            reloadPressed = true;
-        } else if (!Gdx.input.isKeyPressed(RELOAD_KEY)) {
-            reloadPressed = false;
-        }
     }
 
     @ReceiveEvent

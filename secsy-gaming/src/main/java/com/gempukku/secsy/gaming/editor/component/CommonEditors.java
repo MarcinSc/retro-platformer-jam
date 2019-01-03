@@ -7,82 +7,66 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.gempukku.secsy.entity.EntityRef;
 import com.google.common.base.Function;
 
+import javax.annotation.Nullable;
+
 public class CommonEditors {
     private static final int LABEL_MAX_WIDTH = 50;
-    private static final FloatNumberTextFieldFilter FLOAT_FILTER = new FloatNumberTextFieldFilter();
+    public static final TextField.TextFieldFilter FLOAT_FILTER = new FloatNumberTextFieldFilter();
+    public static final TextField.TextFieldFilter INTEGER_FILTER = new IntegerNumberTextFieldFilter();
 
     private CommonEditors() {
     }
 
-    public static void appendTwoFloatFieldsEditor(
-            Table table, Skin skin, final EntityRef entityRef, String groupLabel,
-            String firstFieldLabel, Function<EntityRef, Float> firstFieldValue, final Function<Float, Void> firstFieldSetter,
-            String secondFieldLabel, Function<EntityRef, Float> secondFieldValue, final Function<Float, Void> secondFieldSetter) {
-        Table groupTable = new Table(skin);
-        Drawable background = skin.get("default-round", Drawable.class);
-        groupTable.setBackground(background);
-        groupTable.pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+    public static TextField appendLabeledField(Table table, final Skin skin, final EntityRef entityRef, String label, TextField.TextFieldFilter filter, final Function<EntityRef, String> valueFunction, final Function<TextField, Void> valueSetter) {
+        table.add(new Label(label, skin)).minWidth(LABEL_MAX_WIDTH);
 
-        groupTable.add(new Label(groupLabel, skin)).growX().colspan(4);
-        groupTable.row();
-
-        groupTable.add(new Label(firstFieldLabel, skin)).minWidth(LABEL_MAX_WIDTH);
-
-        final TextField firstEditor = new TextField(String.valueOf(firstFieldValue.apply(entityRef)), skin) {
+        final TextField firstEditor = new TextField(valueFunction.apply(entityRef), skin) {
             @Override
             public float getPrefWidth() {
                 return 80;
             }
         };
-        firstEditor.setTextFieldFilter(FLOAT_FILTER);
+        firstEditor.setTextFieldFilter(filter);
         firstEditor.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        String text = firstEditor.getText();
-                        try {
-                            float value = Float.parseFloat(text);
-                            firstFieldSetter.apply(value);
-                            firstEditor.setColor(Color.WHITE);
-                        } catch (NumberFormatException exp) {
-                            // Ignore
-                            firstEditor.setColor(Color.RED);
-                        }
+                        valueSetter.apply(firstEditor);
                     }
                 });
-        groupTable.add(firstEditor).growX();
+        table.add(firstEditor).growX();
+        return firstEditor;
+    }
 
-        groupTable.add(new Label(secondFieldLabel, skin)).minWidth(LABEL_MAX_WIDTH);
-
-        final TextField secondEditor = new TextField(String.valueOf(secondFieldValue.apply(entityRef)), skin) {
-            @Override
-            public float getPrefWidth() {
-                return 80;
-            }
-        };
-        secondEditor.setTextFieldFilter(FLOAT_FILTER);
-        secondEditor.addListener(
-                new ChangeListener() {
+    public static TextField appendFloatField(Table table, Skin skin, EntityRef entityRef, String firstFieldLabel, final Function<EntityRef, Float> firstFieldValue, final Function<Float, Void> firstFieldSetter) {
+        TextField textField = appendLabeledField(table, skin, entityRef, firstFieldLabel, FLOAT_FILTER,
+                new Function<EntityRef, String>() {
+                    @Nullable
                     @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        String text = secondEditor.getText();
+                    public String apply(@Nullable EntityRef entityRef) {
+                        return String.valueOf(firstFieldValue.apply(entityRef));
+                    }
+                },
+                new Function<TextField, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable TextField textField) {
                         try {
-                            float value = Float.parseFloat(text);
-                            secondFieldSetter.apply(value);
-                            secondEditor.setColor(Color.WHITE);
+                            float value = Float.parseFloat(textField.getText());
+                            firstFieldSetter.apply(value);
+                            textField.setColor(Color.WHITE);
                         } catch (NumberFormatException exp) {
                             // Ignore
-                            secondEditor.setColor(Color.RED);
+                            textField.setColor(Color.RED);
                         }
+                        return null;
                     }
                 });
-        groupTable.add(secondEditor).growX();
-
-        table.add(groupTable).growX();
-        table.row();
+        textField.setAlignment(Align.right);
+        return textField;
     }
 }

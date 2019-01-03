@@ -17,7 +17,7 @@ import com.gempukku.secsy.gaming.physics.basic2d.Basic2dPhysics;
 import com.gempukku.secsy.gaming.physics.basic2d.EntityMoved;
 import com.gempukku.secsy.gaming.time.TimeManager;
 
-@RegisterSystem
+@RegisterSystem(profiles = "movement")
 public class MovementSystem extends AbstractLifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;
@@ -59,10 +59,11 @@ public class MovementSystem extends AbstractLifeCycleSystem {
             if (modifiedPositionX != x || modifiedPositionY != y) {
                 position.setX(modifiedPositionX);
                 position.setY(modifiedPositionY);
-            }
-            oscillatingEntity.saveChanges();
 
-            oscillatingEntity.send(new EntityMoved(x, y, modifiedPositionX, modifiedPositionY));
+                oscillatingEntity.saveChanges();
+
+                oscillatingEntity.send(new EntityMoved(x, y, modifiedPositionX, modifiedPositionY));
+            }
         }
     }
 

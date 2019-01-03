@@ -2,9 +2,9 @@ package com.gempukku.secsy.gaming.editor.component;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-public class FloatNumberTextFieldFilter implements TextField.TextFieldFilter {
+public class IntegerNumberTextFieldFilter implements TextField.TextFieldFilter {
     @Override
     public boolean acceptChar(TextField textField, char c) {
-        return c == '.' || c == '-' || Character.isDigit(c);
+        return c == '-' || Character.isDigit(c);
     }
 }
