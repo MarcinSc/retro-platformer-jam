@@ -1,5 +1,6 @@
 package com.gempukku.secsy.gaming.physics.basic2d;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class SeparatingAxisTest {
@@ -56,7 +57,7 @@ public class SeparatingAxisTest {
     }
 
     private static float getVertexValue(float[] vertices, int index, float min, float max) {
-        return min + vertices[index] * (max - min);
+        return MathUtils.lerp(min, max, vertices[index]);
     }
 
     private static Vector2 project(Axis axis, float[] vertices, float xMin, float xMax, float yMin, float yMax) {

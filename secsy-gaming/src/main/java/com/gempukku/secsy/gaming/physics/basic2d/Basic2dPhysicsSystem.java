@@ -538,10 +538,15 @@ public class Basic2dPhysicsSystem extends AbstractLifeCycleSystem implements Phy
         SensorTrigger sensorTrigger;
         if (st.isAABB())
             sensorTrigger = new SensorTrigger(
-                    entityId, getLeft(size, orientation, st.getLeftPerc(), st.getRightPerc()), getRight(size, orientation, st.getLeftPerc(), st.getRightPerc()), getDown(size, st.getDownPerc()), getUp(size, st.getUpPerc()));
+                    entityId, getLeft(size, orientation, st.getLeftPerc(), st.getRightPerc()),
+                    getRight(size, orientation, st.getLeftPerc(), st.getRightPerc()),
+                    getDown(size, st.getDownPerc()), getUp(size, st.getUpPerc()));
         else
             sensorTrigger = new SensorTrigger(
-                    entityId, st.getNonAABBVertices().getVertices());
+                    entityId, getLeft(size, orientation, st.getLeftPerc(), st.getRightPerc()),
+                    getRight(size, orientation, st.getLeftPerc(), st.getRightPerc()),
+                    getDown(size, st.getDownPerc()), getUp(size, st.getUpPerc()),
+                    st.getNonAABBVertices().getVertices());
         sensorTrigger.updatePosition(position.getX(), position.getY());
 
         sensorTriggers.put(entityId, sensorTrigger);

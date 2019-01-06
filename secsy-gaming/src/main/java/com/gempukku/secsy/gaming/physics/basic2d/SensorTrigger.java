@@ -23,38 +23,10 @@ public class SensorTrigger {
         this.isAABB = true;
     }
 
-    public SensorTrigger(int entityId, float[] vertices) {
+    public SensorTrigger(int entityId, float left, float right, float down, float up, float[] vertices) {
         this.entityId = entityId;
         this.isAABB = false;
-        assignLeftRight(vertices);
-        assignDownUp(vertices);
         this.nonAABBVertices = vertices;
-    }
-
-    private void assignDownUp(float[] vertices) {
-        float minY = vertices[1];
-        float maxY = vertices[1];
-        for (int i = 3; i < vertices.length; i += 2) {
-            if (vertices[i] < minY)
-                minY = vertices[i];
-            else if (vertices[i] > maxY)
-                maxY = vertices[i];
-        }
-        this.down = minY;
-        this.up = maxY;
-    }
-
-    private void assignLeftRight(float[] vertices) {
-        float minX = vertices[0];
-        float maxX = vertices[0];
-        for (int i = 2; i < vertices.length; i += 2) {
-            if (vertices[i] < minX)
-                minX = vertices[i];
-            else if (vertices[i] > maxX)
-                maxX = vertices[i];
-        }
-        this.left = minX;
-        this.right = maxX;
     }
 
     public void updatePosition(float x, float y) {
