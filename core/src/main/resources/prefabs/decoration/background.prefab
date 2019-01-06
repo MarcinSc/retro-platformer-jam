@@ -1,5 +1,6 @@
 {
   "EditorEditable": {
+    "selectableInScene": false,
     "editableComponents": [
       "Position2D",
       "Sprite"

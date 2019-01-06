@@ -129,7 +129,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         prefabDropDown = new SelectBox<String>(skin);
         Array<String> prefabs = new Array<String>();
         for (NamedEntityData prefab : prefabManager.findPrefabsWithComponents(EditorEditableComponent.class)) {
-            if (entityManager.wrapEntityData(prefab).getComponent(EditorEditableComponent.class).isCanBeAdded())
+            if (entityManager.wrapEntityData(prefab).getComponent(EditorEditableComponent.class).isAddable())
                 prefabs.add(prefab.getName());
         }
         prefabs.sort();
@@ -588,25 +588,28 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                     Object obj = node.getObject();
                     if (obj != null) {
                         EntityRef nodeEntity = (EntityRef) obj;
-                        Position2DComponent position = nodeEntity.getComponent(Position2DComponent.class);
-                        Size2DComponent size = nodeEntity.getComponent(Size2DComponent.class);
+                        EditorEditableComponent editable = nodeEntity.getComponent(EditorEditableComponent.class);
+                        if (editable.isSelectableInScene()) {
+                            Position2DComponent position = nodeEntity.getComponent(Position2DComponent.class);
+                            Size2DComponent size = nodeEntity.getComponent(Size2DComponent.class);
 
-                        if (position != null && size != null) {
-                            float posX = position.getX();
-                            float x = posX - size.getAnchorX() * size.getWidth();
-                            float posY = position.getY();
-                            float y = posY - size.getAnchorY() * size.getHeight();
+                            if (position != null && size != null) {
+                                float posX = position.getX();
+                                float x = posX - size.getAnchorX() * size.getWidth();
+                                float posY = position.getY();
+                                float y = posY - size.getAnchorY() * size.getHeight();
 
-                            if (clickCoords.x >= x && clickCoords.x < x + size.getWidth()
-                                    && clickCoords.y >= y && clickCoords.y < y + size.getHeight()) {
-                                dragged = nodeEntity;
-                                dragStartX = clickCoords.x;
-                                dragStartY = clickCoords.y;
-                                draggedPosX = posX;
-                                draggedPosY = posY;
+                                if (clickCoords.x >= x && clickCoords.x < x + size.getWidth()
+                                        && clickCoords.y >= y && clickCoords.y < y + size.getHeight()) {
+                                    dragged = nodeEntity;
+                                    dragStartX = clickCoords.x;
+                                    dragStartY = clickCoords.y;
+                                    draggedPosX = posX;
+                                    draggedPosY = posY;
 
-                                entityTree.getSelection().set(node);
-                                return true;
+                                    entityTree.getSelection().set(node);
+                                    return true;
+                                }
                             }
                         }
                     }

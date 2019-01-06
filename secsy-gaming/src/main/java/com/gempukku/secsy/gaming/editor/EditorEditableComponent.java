@@ -11,7 +11,10 @@ public interface EditorEditableComponent extends Component {
     void setNameInEditor(String nameInEditor);
 
     @DefaultValue("true")
-    boolean isCanBeAdded();
+    boolean isAddable();
+    
+    @DefaultValue("true")
+    boolean isSelectableInScene();
 
     List<String> getEditableComponents();
 }
