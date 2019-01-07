@@ -27,6 +27,8 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
                 time.setTime(lastTime + timeDiff);
                 timeEntity.saveChanges();
             }
+        } else {
+            timeSinceLastUpdate = 0;
         }
     }
 
