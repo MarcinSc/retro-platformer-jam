@@ -46,7 +46,10 @@ import javax.annotation.Nullable;
 import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RegisterSystem(profiles = "editor")
@@ -262,7 +265,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     }
 
     private Map<String, Map<String, Object>> serializeEntity(EntityRef entityRef) {
-        Map<String, Map<String, Object>> result = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> result = new LinkedHashMap<String, Map<String, Object>>();
 
         EditorEditableComponent editorEditable = entityRef.getComponent(EditorEditableComponent.class);
         String nameInEditor = editorEditable.getNameInEditor();
