@@ -6,6 +6,7 @@ import com.gempukku.secsy.gaming.component.TimedEffectComponent;
 import com.gempukku.secsy.gaming.easing.EasedValue;
 
 public interface RainComponent extends TimedEffectComponent {
+    @DefaultValue("255,255,255")
     Color getRainColor();
 
     void setRainColor(Color rainColor);
