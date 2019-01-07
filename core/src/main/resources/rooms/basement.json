@@ -165,7 +165,7 @@
       "EditorEditable": {
         "nameInEditor": "Baton"
       },
-      "Sprite": {
+      "BobbingSprite": {
         "fileName": "images\/baton.png"
       },
       "Pickup": {
@@ -269,7 +269,7 @@
       "EditorEditable": {
         "nameInEditor": "Gun"
       },
-      "Sprite": {
+      "BobbingSprite": {
         "fileName": "images\/gun.png"
       },
       "Pickup": {

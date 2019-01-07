@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Pool;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -22,7 +21,6 @@ import com.gempukku.secsy.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.secsy.gaming.component.HorizontalOrientationComponent;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
-import com.gempukku.secsy.gaming.easing.EasedValue;
 import com.gempukku.secsy.gaming.easing.EasingResolver;
 import com.gempukku.secsy.gaming.rendering.pipeline.RenderToPipeline;
 import com.gempukku.secsy.gaming.time.TimeManager;
@@ -58,8 +56,6 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
 
     private NormalRenderableSpritePool normalPool = new NormalRenderableSpritePool();
     private TiledRenderableSpritePool tiledPool = new TiledRenderableSpritePool();
-
-    private EasedValue bobbingValue = new EasedValue(1, "0-1-0");
 
     @Override
     public void initialize() {
@@ -97,20 +93,18 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         long time = timeManager.getTime();
         float seconds = time / 1000f;
 
-        float amplitudePercentage = easingResolver.resolveValue(bobbingValue, seconds - MathUtils.floor(seconds));
-
         SpriteSink spriteSink = gatherSprites.getSpriteSink();
         for (EntityRef spriteEntity : spriteEntities) {
             SpriteComponent sprite = spriteEntity.getComponent(SpriteComponent.class);
             String fileName = sprite.getFileName();
 
-            processSprite(spriteSink, spriteEntity, sprite, time, amplitudePercentage, fileName);
+            processSprite(spriteSink, spriteEntity, sprite, fileName);
         }
         for (EntityRef animatedSpriteEntity : animatedSpriteEntities) {
             AnimatedSpriteComponent sprite = animatedSpriteEntity.getComponent(AnimatedSpriteComponent.class);
             String fileName = animatedSpriteProvider.getSpriteForEntity(animatedSpriteEntity);
 
-            processSprite(spriteSink, animatedSpriteEntity, sprite, time, amplitudePercentage, fileName);
+            processSprite(spriteSink, animatedSpriteEntity, sprite, fileName);
         }
         for (EntityRef tiledSpriteEntity : tiledSpriteEntities) {
             Position2DComponent position = tiledSpriteEntity.getComponent(Position2DComponent.class);
@@ -129,22 +123,20 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         }
     }
 
-    private void processSprite(SpriteSink spriteSink, EntityRef spriteEntity, DisplayableSpriteComponent sprite, long time, float amplitudePercentage, String fileName) {
+    private void processSprite(SpriteSink spriteSink, EntityRef spriteEntity, DisplayableSpriteComponent sprite, String fileName) {
         Position2DComponent position = spriteEntity.getComponent(Position2DComponent.class);
         Size2DComponent size = spriteEntity.getComponent(Size2DComponent.class);
         HorizontalOrientationComponent horizontal = spriteEntity.getComponent(HorizontalOrientationComponent.class);
 
         Color color = new Color(1, 1, 1, 1);
 
-        float bobbingValue = sprite.getBobbingAmplitude() * amplitudePercentage;
-
         if (horizontal != null && !horizontal.isFacingRight())
             spriteSink.addSprite(sprite.getPriority(), "sprites", fileName,
-                    position.getX() - getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
+                    position.getX() - getLeft(size, sprite), position.getY() + getDown(size, sprite),
                     -getWidth(size, sprite), getHeight(size, sprite), color);
         else
             spriteSink.addSprite(sprite.getPriority(), "sprites", fileName,
-                    position.getX() + getLeft(size, sprite), bobbingValue + position.getY() + getDown(size, sprite),
+                    position.getX() + getLeft(size, sprite), position.getY() + getDown(size, sprite),
                     getWidth(size, sprite), getHeight(size, sprite), color);
     }
 

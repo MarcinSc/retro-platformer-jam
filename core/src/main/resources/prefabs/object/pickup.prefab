@@ -14,7 +14,7 @@
     "anchorX": 0.5,
     "anchorY": 0
   },
-  "Sprite": {
+  "BobbingSprite": {
     "fileName": "images/baton.png",
     "bobbingAmplitude": 0.05,
     "priority": 0

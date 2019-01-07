@@ -6,8 +6,4 @@ public interface DisplayableSpriteComponent extends Bounds2DComponent {
     float getPriority();
 
     void setPriority(float priority);
-
-    float getBobbingAmplitude();
-
-    void setBobbingAmplitude(float bobbingAmplitude);
 }
