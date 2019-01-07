@@ -16,20 +16,24 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
     public void updateTime(long timeDiff) {
         EntityRef timeEntity = timeEntityProvider.getTimeEntity();
         TimeComponent time = getTimeComponent(timeEntity);
-        if (!time.isPaused()) {
-            TimeUpdated timeUpdated = new TimeUpdated(timeDiff);
-            timeEntity.send(timeUpdated);
-            timeDiff = timeUpdated.getTime();
+        long timeProgress = getTimeProgress(timeEntity, timeDiff, time);
+        timeSinceLastUpdate = timeProgress;
 
-            timeSinceLastUpdate = timeDiff;
-            if (timeDiff > 0) {
-                long lastTime = time.getTime();
-                time.setTime(lastTime + timeDiff);
-                timeEntity.saveChanges();
-            }
-        } else {
-            timeSinceLastUpdate = 0;
+        if (timeProgress > 0) {
+            long lastTime = time.getTime();
+            time.setTime(lastTime + timeDiff);
+            timeEntity.saveChanges();
         }
+    }
+
+    private long getTimeProgress(EntityRef timeEntity, long timeDiff, TimeComponent timeComponent) {
+        TimeComponent time = timeComponent;
+        if (time.isPaused())
+            return 0;
+
+        TimeUpdated timeUpdated = new TimeUpdated(timeDiff);
+        timeEntity.send(timeUpdated);
+        return timeUpdated.getTime();
     }
 
     private TimeComponent getTimeComponent(EntityRef timeEntity) {
