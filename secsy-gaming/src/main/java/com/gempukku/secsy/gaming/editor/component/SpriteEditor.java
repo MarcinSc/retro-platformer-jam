@@ -49,6 +49,27 @@ public class SpriteEditor implements EntityComponentEditor {
                         return null;
                     }
                 });
+        groupTable.row();
+
+        CommonEditors.appendLabel(groupTable, skin, "Layer");
+        CommonEditors.appendFloatField(groupTable, skin, entityRef,
+                new Function<EntityRef, Float>() {
+                    @Nullable
+                    @Override
+                    public Float apply(@Nullable EntityRef entityRef) {
+                        return entityRef.getComponent(SpriteComponent.class).getPriority();
+                    }
+                },
+                new Function<Float, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable Float value) {
+                        SpriteComponent component = entityRef.getComponent(SpriteComponent.class);
+                        component.setPriority(value);
+                        entityRef.saveChanges();
+                        return null;
+                    }
+                });
 
         groupTable.row();
 
@@ -65,5 +86,6 @@ public class SpriteEditor implements EntityComponentEditor {
     public void serializeChanges(EntityRef entityRef, Map<String, Object> changes, Map<String, Map<String, Object>> extraChanges) {
         SpriteComponent component = entityRef.getComponent(SpriteComponent.class);
         changes.put("fileName", component.getFileName());
+        changes.put("priority", component.getPriority());
     }
 }

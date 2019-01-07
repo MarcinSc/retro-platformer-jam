@@ -12,7 +12,7 @@ import java.io.Writer;
 import java.util.Map;
 
 public class JSONEntitySerializer {
-    public EntityData readEntityData(JSONObject entity, NameComponentManager nameComponentManager,
+    public EntityData readEntityData(String prefabName, JSONObject entity, NameComponentManager nameComponentManager,
                                      InternalComponentManager internalComponentManager, ComponentFieldConverter componentFieldConverter,
                                      Map<String, ? extends EntityData> entityData) {
         EntityInformation entityInformation = new EntityInformation();
@@ -31,7 +31,7 @@ public class JSONEntitySerializer {
             if (!componentName.equals("import")) {
                 Class<? extends Component> componentByName = nameComponentManager.getComponentByName(componentName);
                 if (componentByName == null)
-                    throw new IllegalStateException("Unable to find component with name (found in prefab): " + componentName);
+                    throw new IllegalStateException("Unable to find component with name (found in prefab " + prefabName + "): " + componentName);
                 ComponentInformation componentInformation = new ComponentInformation(componentByName);
                 Map<String, Class<?>> componentFieldTypes = internalComponentManager.getComponentFieldTypes(componentByName);
                 Map<String, Class<?>> componentFieldContainingClasses = internalComponentManager.getComponentFieldContainedClasses(componentByName);
@@ -41,7 +41,7 @@ public class JSONEntitySerializer {
 
                     Class<?> fieldType = componentFieldTypes.get(fieldName);
                     if (fieldType == null)
-                        throw new IllegalStateException("Component " + componentName + " does not contain field " + fieldName + " found in prefab");
+                        throw new IllegalStateException("Component " + componentName + " does not contain field " + fieldName + " found in prefab " + prefabName);
 
                     Class<?> fieldContainedClass = componentFieldContainingClasses.get(fieldName);
 

@@ -112,7 +112,7 @@ public class SourcedPrefabManager extends AbstractLifeCycleSystem implements Pre
 
     private NamedEntityData readPrefabData(final String prefabName, JSONObject json) {
         final EntityData entityData = jsonEntitySerializer.readEntityData(
-                json, nameComponentManager, internalComponentManager, componentFieldConverter, prefabsByName);
+                prefabName, json, nameComponentManager, internalComponentManager, componentFieldConverter, prefabsByName);
         if (entityData == null)
             return null;
         return new NamedEntityData() {

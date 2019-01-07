@@ -134,13 +134,7 @@ public class SpriteRenderer extends AbstractLifeCycleSystem {
         Size2DComponent size = spriteEntity.getComponent(Size2DComponent.class);
         HorizontalOrientationComponent horizontal = spriteEntity.getComponent(HorizontalOrientationComponent.class);
 
-        long effectStart = sprite.getEffectStart();
-        long effectDuration = sprite.getEffectDuration();
-        float alpha = 1;
-        if (effectDuration > 0)
-            alpha = 1 - 1f * (time - effectStart) / effectDuration;
-
-        Color color = new Color(1, 1, 1, alpha);
+        Color color = new Color(1, 1, 1, 1);
 
         float bobbingValue = sprite.getBobbingAmplitude() * amplitudePercentage;
 
