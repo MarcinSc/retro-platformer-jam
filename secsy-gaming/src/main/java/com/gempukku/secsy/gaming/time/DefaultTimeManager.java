@@ -26,8 +26,7 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
         }
     }
 
-    private long getTimeProgress(EntityRef timeEntity, long timeDiff, TimeComponent timeComponent) {
-        TimeComponent time = timeComponent;
+    private long getTimeProgress(EntityRef timeEntity, long timeDiff, TimeComponent time) {
         if (time.isPaused())
             return 0;
 
