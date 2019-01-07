@@ -570,7 +570,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
     }
 
     private class EditorInputProcessor extends InputAdapter {
+        private static final float DRAG_START_DISTANCE_SQUARED = 25f;
+
         private EntityRef dragged;
+        private boolean dragStarted;
+        private int dragScreenX;
+        private int dragScreenY;
         private float dragStartX;
         private float dragStartY;
         private float draggedPosX;
@@ -606,6 +611,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                                     dragStartY = clickCoords.y;
                                     draggedPosX = posX;
                                     draggedPosY = posY;
+                                    dragScreenX = screenX;
+                                    dragScreenY = screenY;
 
                                     entityTree.getSelection().set(node);
                                     return true;
@@ -623,22 +630,31 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
             if (dragged != null && dragged.exists()) {
-                GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
-                cameraEntityProvider.getCameraEntity().send(getCamera);
-                Camera camera = getCamera.getCamera();
-                Vector3 dragCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+                if (!dragStarted) {
+                    int dstSquared = (screenX - dragScreenX) * (screenX - dragScreenX)
+                            + (screenY - dragScreenY) * (screenY - dragScreenY);
+                    if (dstSquared >= DRAG_START_DISTANCE_SQUARED) {
+                        dragStarted = true;
+                    }
+                }
+                if (dragStarted) {
+                    GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
+                    cameraEntityProvider.getCameraEntity().send(getCamera);
+                    Camera camera = getCamera.getCamera();
+                    Vector3 dragCoords = camera.unproject(new Vector3(screenX, screenY, 0));
 
-                float newX = draggedPosX + dragCoords.x - dragStartX;
-                float newY = draggedPosY + dragCoords.y - dragStartY;
+                    float newX = draggedPosX + dragCoords.x - dragStartX;
+                    float newY = draggedPosY + dragCoords.y - dragStartY;
 
-                Position2DComponent position = dragged.getComponent(Position2DComponent.class);
-                position.setX(newX);
-                position.setY(newY);
-                dragged.saveChanges();
+                    Position2DComponent position = dragged.getComponent(Position2DComponent.class);
+                    position.setX(newX);
+                    position.setY(newY);
+                    dragged.saveChanges();
 
-                notifyPositionUpdated(dragged, newX, newY);
+                    notifyPositionUpdated(dragged, newX, newY);
 
-                return true;
+                    return true;
+                }
             }
             return false;
         }
@@ -647,6 +663,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
             if (dragged != null) {
                 dragged = null;
+                dragStarted = false;
                 return true;
             }
             return false;
