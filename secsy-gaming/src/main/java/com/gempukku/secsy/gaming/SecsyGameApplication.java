@@ -6,7 +6,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.ReflectionsAnnotatedTypesSystemProducer;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.game.GameEntityProvider;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
+import com.gempukku.secsy.gaming.editor.EditorComponent;
 import com.gempukku.secsy.gaming.physics.PhysicsSystem;
 import com.gempukku.secsy.gaming.rendering.RenderingSystem;
 import com.gempukku.secsy.gaming.time.InternalTimeManager;
@@ -82,10 +85,14 @@ public class SecsyGameApplication extends ApplicationAdapter {
         InternalGameLoop internalGameLoop = context.getSystem(InternalGameLoop.class);
         internalGameLoop.processUpdate();
 
-        // Process physics (based on input)
-        PhysicsSystem physicsSystem = context.getSystem(PhysicsSystem.class);
-        if (physicsSystem != null)
-            physicsSystem.processPhysics();
+        // Do not process physics if it's the editor
+        EntityRef gameEntity = context.getSystem(GameEntityProvider.class).getGameEntity();
+        if (!gameEntity.hasComponent(EditorComponent.class)) {
+            // Process physics (based on input)
+            PhysicsSystem physicsSystem = context.getSystem(PhysicsSystem.class);
+            if (physicsSystem != null)
+                physicsSystem.processPhysics();
+        }
 
         int resultWidth = width;
         int resultHeight = height;

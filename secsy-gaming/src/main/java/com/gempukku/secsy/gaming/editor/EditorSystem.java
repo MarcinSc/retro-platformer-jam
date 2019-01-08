@@ -478,6 +478,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
         }
     }
 
+    private Camera getLastCamera() {
+        GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
+        cameraEntityProvider.getCameraEntity().send(getCamera);
+        return getCamera.getCamera();
+    }
+
     private class PositionUpdateCallbackImpl implements EntityComponentEditor.PositionUpdateCallback {
         @Override
         public void positionUpdated(EntityRef entityRef) {
@@ -586,9 +592,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
-            cameraEntityProvider.getCameraEntity().send(getCamera);
-            Camera camera = getCamera.getCamera();
+            Camera camera = getLastCamera();
             Vector3 clickCoords = camera.unproject(new Vector3(screenX, screenY, 0));
 
             for (Tree.Node rootNode : entityTree.getRootNodes()) {
@@ -603,12 +607,15 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
                             if (position != null && size != null) {
                                 float posX = position.getX();
-                                float x = posX - size.getAnchorX() * size.getWidth();
                                 float posY = position.getY();
-                                float y = posY - size.getAnchorY() * size.getHeight();
+                                float width = size.getWidth();
+                                float height = size.getHeight();
 
-                                if (clickCoords.x >= x && clickCoords.x < x + size.getWidth()
-                                        && clickCoords.y >= y && clickCoords.y < y + size.getHeight()) {
+                                float x = posX - size.getAnchorX() * width;
+                                float y = posY - size.getAnchorY() * height;
+
+                                if (clickCoords.x >= x && clickCoords.x < x + width
+                                        && clickCoords.y >= y && clickCoords.y < y + height) {
                                     dragged = nodeEntity;
                                     dragStartX = clickCoords.x;
                                     dragStartY = clickCoords.y;
@@ -641,9 +648,7 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                     }
                 }
                 if (dragStarted) {
-                    GetCamera getCamera = new GetCamera(0, lastRenderWidth, lastRenderHeight);
-                    cameraEntityProvider.getCameraEntity().send(getCamera);
-                    Camera camera = getCamera.getCamera();
+                    Camera camera = getLastCamera();
                     Vector3 dragCoords = camera.unproject(new Vector3(screenX, screenY, 0));
 
                     float newX = draggedPosX + dragCoords.x - dragStartX;
