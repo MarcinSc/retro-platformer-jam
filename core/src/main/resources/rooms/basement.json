@@ -1,161 +1,93 @@
 [
   {
-    "prefab": "stairs",
+    "prefab": "platform",
     "override": {
-      "Size2D": {
-        "width": 0.8,
-        "height": 0.8
-      },
       "EditorEditable": {
-        "nameInEditor": "Stairs"
+        "nameInEditor": "Floor 1"
       },
       "Position2D": {
-        "x": -4.8,
-        "y": -0.2
+        "x": -4.5,
+        "y": -1.6
+      },
+      "Size2D": {
+        "width": 6.4,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "images\/ground-left.png",
+        "centerImage": "images\/ground-center.png",
+        "endingImage": ""
       }
     }
   },
   {
     "prefab": "platform",
     "override": {
-      "Size2D": {
-        "width": 6.4,
-        "height": 0.1
-      },
       "EditorEditable": {
-        "nameInEditor": "Floor 1"
+        "nameInEditor": "Floor 8"
+      },
+      "Position2D": {
+        "x": -0.7,
+        "y": -1.02
+      },
+      "Size2D": {
+        "width": 1.4,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "images\/ground-left.png",
         "centerImage": "images\/ground-center.png",
-        "endingImage": ""
-      },
-      "Position2D": {
-        "x": -4.5,
-        "y": -1.6
+        "endingImage": "images\/ground-right.png"
       }
     }
   },
   {
     "prefab": "wall",
     "override": {
-      "Size2D": {
-        "width": 0.1,
-        "height": 3.9
-      },
       "EditorEditable": {
         "nameInEditor": "Wall 5"
+      },
+      "Position2D": {
+        "x": 1.9,
+        "y": -0.1
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 3.9,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "",
         "centerImage": "images\/wall-right.png",
         "endingImage": ""
-      },
-      "Position2D": {
-        "x": 1.9,
-        "y": -0.1
       }
     }
   },
   {
     "prefab": "platform",
     "override": {
-      "Size2D": {
-        "width": 7.8,
-        "height": 0.1
-      },
       "EditorEditable": {
-        "nameInEditor": "Ceiling"
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images\/ceiling.png",
-        "endingImage": ""
+        "nameInEditor": "Floor 2"
       },
       "Position2D": {
-        "x": -5.9,
-        "y": 1.5
-      }
-    }
-  },
-  {
-    "prefab": "aggroedGuard",
-    "override": {
-      "EditorEditable": {
-        "nameInEditor": "Shooting guard"
+        "x": -1.8,
+        "y": -0.45
       },
-      "HorizontalOrientation": {
-        "facingRight": true
-      },
-      "AI": {
-        "aiName": "standAndShoot"
-      },
-      "Position2D": {
-        "x": -5.6,
-        "y": -4.0
-      }
-    }
-  },
-  {
-    "prefab": "platform",
-    "override": {
       "Size2D": {
-        "width": 0.6,
-        "height": 0.1
-      },
-      "EditorEditable": {
-        "nameInEditor": "Floor 4"
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images\/ground-center.png",
-        "endingImage": "images\/ground-right.png"
-      },
-      "Position2D": {
-        "x": -5.9,
-        "y": -0.8
-      }
-    }
-  },
-  {
-    "prefab": "platform",
-    "override": {
-      "Size2D": {
-        "width": 2.4,
-        "height": 0.1
-      },
-      "EditorEditable": {
-        "nameInEditor": "Floor 6"
+        "width": 0.8,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "images\/ground-left.png",
         "centerImage": "images\/ground-center.png",
-        "endingImage": ""
-      },
-      "Position2D": {
-        "x": -0.5,
-        "y": 0.0
-      }
-    }
-  },
-  {
-    "prefab": "wall",
-    "override": {
-      "Size2D": {
-        "width": 0.1,
-        "height": 2.2
-      },
-      "EditorEditable": {
-        "nameInEditor": "Wall 5"
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images\/wall.png",
-        "endingImage": ""
-      },
-      "Position2D": {
-        "x": -4.0,
-        "y": 0.6
+        "endingImage": "images\/ground-right.png"
       }
     }
   },
@@ -165,69 +97,77 @@
       "EditorEditable": {
         "nameInEditor": "Baton"
       },
-      "BobbingSprite": {
-        "fileName": "images\/baton.png"
-      },
-      "Pickup": {
-        "type": "baton"
-      },
       "Position2D": {
         "x": -0.3,
         "y": 0.0
+      },
+      "BobbingSprite": {
+        "fileName": "images\/baton.png",
+        "bobbingAmplitude": 0.05,
+        "rightPerc": 0.0,
+        "downPerc": 0.0,
+        "leftPerc": 0.0,
+        "upPerc": 0.0,
+        "priority": 0.0
+      },
+      "Pickup": {
+        "type": "baton"
       }
     }
   },
   {
-    "prefab": "wall",
+    "prefab": "pickup",
     "override": {
-      "Size2D": {
-        "width": 0.1,
-        "height": 2.3
-      },
       "EditorEditable": {
-        "nameInEditor": "Wall 2"
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images\/wall.png",
-        "endingImage": ""
+        "nameInEditor": "Gun"
       },
       "Position2D": {
-        "x": -3.0,
-        "y": -1.7
+        "x": -5.8,
+        "y": -4.0
+      },
+      "BobbingSprite": {
+        "fileName": "images\/gun.png",
+        "bobbingAmplitude": 0.05,
+        "rightPerc": 0.0,
+        "downPerc": 0.0,
+        "leftPerc": 0.0,
+        "upPerc": 0.0,
+        "priority": 0.0
+      },
+      "Pickup": {
+        "type": "gun"
       }
     }
   },
   {
-    "prefab": "basementBackground",
+    "prefab": "closedElevator",
     "override": {
       "EditorEditable": {
-        "nameInEditor": "Background"
+        "nameInEditor": "Closed elevator"
       },
       "Position2D": {
         "x": 0.0,
         "y": 0.0
+      },
+      "BodyTriggeredTextDisplaying": {
+        "displayText": "CLOSED",
+        "x": 0.0,
+        "y": 0.7
+      },
+      "PlayerSpawn": {
+        "spawnId": "elevatorEntrance"
       }
     }
   },
   {
-    "prefab": "platform",
+    "prefab": "doorClosed",
     "override": {
-      "Size2D": {
-        "width": 0.6,
-        "height": 0.1
-      },
       "EditorEditable": {
-        "nameInEditor": "Floor 5"
-      },
-      "Platform": {
-        "beginningImage": "images\/ground-left.png",
-        "centerImage": "images\/ground-center.png",
-        "endingImage": "images\/ground-right.png"
+        "nameInEditor": "Door to right"
       },
       "Position2D": {
-        "x": -4.5,
-        "y": -2.8
+        "x": 1.65,
+        "y": 0.0
       }
     }
   },
@@ -246,122 +186,176 @@
     }
   },
   {
-    "prefab": "closedElevator",
+    "prefab": "platform",
     "override": {
       "EditorEditable": {
-        "nameInEditor": "Closed elevator"
+        "nameInEditor": "Floor 4"
       },
       "Position2D": {
-        "x": 0.0,
-        "y": 0.0
+        "x": -5.9,
+        "y": -0.8
       },
-      "PlayerSpawn": {
-        "spawnId": "elevatorEntrance"
-      },
-      "BodyTriggeredTextDisplaying": {
-        "displayText": "CLOSED"
-      }
-    }
-  },
-  {
-    "prefab": "pickup",
-    "override": {
-      "EditorEditable": {
-        "nameInEditor": "Gun"
-      },
-      "BobbingSprite": {
-        "fileName": "images\/gun.png"
-      },
-      "Pickup": {
-        "type": "gun"
-      },
-      "Position2D": {
-        "x": -5.8,
-        "y": -4.0
-      }
-    }
-  },
-  {
-    "prefab": "wall",
-    "override": {
       "Size2D": {
-        "width": 0.1,
-        "height": 4.9
-      },
-      "EditorEditable": {
-        "nameInEditor": "Wall 1"
+        "width": 0.6,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "",
-        "centerImage": "images\/wall-left.png",
-        "endingImage": ""
-      },
-      "Position2D": {
-        "x": -6.0,
-        "y": 1.4
-      }
-    }
-  },
-  {
-    "prefab": "platform",
-    "override": {
-      "Size2D": {
-        "width": 0.8,
-        "height": 0.1
-      },
-      "EditorEditable": {
-        "nameInEditor": "Floor 2"
-      },
-      "Platform": {
-        "beginningImage": "images\/ground-left.png",
         "centerImage": "images\/ground-center.png",
         "endingImage": "images\/ground-right.png"
-      },
-      "Position2D": {
-        "x": -1.8,
-        "y": -0.45
       }
     }
   },
   {
     "prefab": "wall",
     "override": {
+      "EditorEditable": {
+        "nameInEditor": "Wall 5"
+      },
+      "Position2D": {
+        "x": -4.0,
+        "y": 0.6
+      },
       "Size2D": {
         "width": 0.1,
-        "height": 0.9
-      },
-      "EditorEditable": {
-        "nameInEditor": "Wall 3"
+        "height": 2.2,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "",
         "centerImage": "images\/wall.png",
         "endingImage": ""
-      },
-      "Position2D": {
-        "x": 1.6,
-        "y": 1.4
       }
     }
   },
   {
     "prefab": "platform",
     "override": {
-      "Size2D": {
-        "width": 1.4,
-        "height": 0.1
-      },
       "EditorEditable": {
-        "nameInEditor": "Floor 8"
+        "nameInEditor": "Floor 6"
+      },
+      "Position2D": {
+        "x": -0.5,
+        "y": 0.0
+      },
+      "Size2D": {
+        "width": 2.4,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "images\/ground-left.png",
+        "centerImage": "images\/ground-center.png",
+        "endingImage": ""
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Floor 7"
+      },
+      "Position2D": {
+        "x": -5.9,
+        "y": -4.0
+      },
+      "Size2D": {
+        "width": 7.8,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/ground-center.png",
+        "endingImage": ""
+      }
+    }
+  },
+  {
+    "prefab": "basementBackground",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Background"
+      },
+      "Position2D": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "Size2D": {
+        "width": 20.0,
+        "height": 20.0,
+        "anchorX": 0.5,
+        "anchorY": 0.5
+      }
+    }
+  },
+  {
+    "prefab": "stairs",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Stairs"
+      },
+      "Position2D": {
+        "x": -4.8,
+        "y": -0.2
+      },
+      "Size2D": {
+        "width": 0.8,
+        "height": 0.8,
+        "anchorX": 0.0,
+        "anchorY": 0.0
+      }
+    }
+  },
+  {
+    "prefab": "platform",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Floor 5"
+      },
+      "Position2D": {
+        "x": -4.5,
+        "y": -2.8
+      },
+      "Size2D": {
+        "width": 0.6,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "images\/ground-left.png",
         "centerImage": "images\/ground-center.png",
         "endingImage": "images\/ground-right.png"
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Wall 3"
       },
       "Position2D": {
-        "x": -0.7,
-        "y": -1.02
+        "x": 1.6,
+        "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 0.9,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/wall.png",
+        "endingImage": ""
       }
     }
   },
@@ -371,69 +365,52 @@
       "EditorEditable": {
         "nameInEditor": "Patrolling guard"
       },
+      "Position2D": {
+        "x": -0.5,
+        "y": -1.02
+      },
       "HorizontalOrientation": {
         "facingRight": false
       },
       "AI": {
         "aiName": "patrolEndlessly"
-      },
-      "Position2D": {
-        "x": -0.5,
-        "y": -1.02
       }
     }
   },
   {
     "prefab": "platform",
     "override": {
+      "EditorEditable": {
+        "nameInEditor": "Ceiling"
+      },
+      "Position2D": {
+        "x": -5.9,
+        "y": 1.5
+      },
       "Size2D": {
         "width": 7.8,
-        "height": 0.1
-      },
-      "EditorEditable": {
-        "nameInEditor": "Floor 7"
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "",
-        "centerImage": "images\/ground-center.png",
+        "centerImage": "images\/ceiling.png",
         "endingImage": ""
-      },
-      "Position2D": {
-        "x": -5.9,
-        "y": -4.0
-      }
-    }
-  },
-  {
-    "prefab": "platform",
-    "override": {
-      "Size2D": {
-        "width": 0.6,
-        "height": 0.1
-      },
-      "EditorEditable": {
-        "nameInEditor": "Floor 3"
-      },
-      "Platform": {
-        "beginningImage": "",
-        "centerImage": "images\/ground-center.png",
-        "endingImage": "images\/ground-right.png"
-      },
-      "Position2D": {
-        "x": -5.9,
-        "y": -2.8
       }
     }
   },
   {
     "prefab": "movingPlatform",
     "override": {
-      "Size2D": {
-        "width": 0.4,
-        "height": 0.1
-      },
       "EditorEditable": {
         "nameInEditor": "Moving platform"
+      },
+      "Size2D": {
+        "width": 0.4,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Position2D": {
         "x": -2.7,
@@ -448,14 +425,66 @@
     }
   },
   {
-    "prefab": "doorClosed",
+    "prefab": "platform",
     "override": {
       "EditorEditable": {
-        "nameInEditor": "Door to right"
+        "nameInEditor": "Floor 3"
       },
       "Position2D": {
-        "x": 1.65,
-        "y": 0.0
+        "x": -5.9,
+        "y": -2.8
+      },
+      "Size2D": {
+        "width": 0.6,
+        "height": 0.1,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/ground-center.png",
+        "endingImage": "images\/ground-right.png"
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Wall 2"
+      },
+      "Position2D": {
+        "x": -3.0,
+        "y": -1.7
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 2.3,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/wall.png",
+        "endingImage": ""
+      }
+    }
+  },
+  {
+    "prefab": "aggroedGuard",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Shooting guard"
+      },
+      "Position2D": {
+        "x": -5.6,
+        "y": -4.0
+      },
+      "HorizontalOrientation": {
+        "facingRight": true
+      },
+      "AI": {
+        "aiName": "standAndShoot"
       }
     }
   },
@@ -474,21 +503,46 @@
   {
     "prefab": "wall",
     "override": {
-      "Size2D": {
-        "width": 0.1,
-        "height": 2.2
-      },
       "EditorEditable": {
         "nameInEditor": "Wall 4"
+      },
+      "Position2D": {
+        "x": -2.0,
+        "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 2.2,
+        "anchorX": 0.0,
+        "anchorY": 1.0
       },
       "Platform": {
         "beginningImage": "",
         "centerImage": "images\/wall.png",
         "endingImage": ""
+      }
+    }
+  },
+  {
+    "prefab": "wall",
+    "override": {
+      "EditorEditable": {
+        "nameInEditor": "Wall 1"
       },
       "Position2D": {
-        "x": -2.0,
+        "x": -6.0,
         "y": 1.4
+      },
+      "Size2D": {
+        "width": 0.1,
+        "height": 4.9,
+        "anchorX": 0.0,
+        "anchorY": 1.0
+      },
+      "Platform": {
+        "beginningImage": "",
+        "centerImage": "images\/wall-left.png",
+        "endingImage": ""
       }
     }
   }

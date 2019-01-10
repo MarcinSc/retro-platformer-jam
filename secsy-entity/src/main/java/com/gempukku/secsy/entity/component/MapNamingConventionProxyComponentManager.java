@@ -4,7 +4,9 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.Component;
 import com.gempukku.secsy.entity.EntityRef;
+import com.google.common.base.Function;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -134,13 +136,22 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
     @Override
     public <T> T getComponentFieldValue(Component component, String fieldName, Class<T> clazz) {
         //noinspection unchecked
-        return (T) extractComponentView(component).storedValues.get(fieldName);
+        ComponentView componentView = extractComponentView(component);
+        return (T) componentView.getValueForField(fieldName);
     }
 
     @Override
-    public void setComponentFieldValue(Component component, String fieldName, Object fieldValue) {
+    public Method getGetterMethod(Class<? extends Component> component, String fieldName) {
+        return componentDefinitions.get(component).getterMethods.get(fieldName);
+    }
+
+    @Override
+    public void setComponentFieldValue(Component component, String fieldName, Object fieldValue, boolean stored) {
         ComponentView componentView = extractComponentView(component);
-        componentView.storedValues.put(fieldName, fieldValue);
+        if (stored)
+            componentView.storedValues.put(fieldName, fieldValue);
+        else
+            setFieldValue(componentView.changes, fieldName, fieldValue);
     }
 
     private Map<String, Object> createConsolidatedFieldMap(ComponentView componentView) {
@@ -169,6 +180,8 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         private Map<String, Class<?>> fieldTypes = new HashMap<String, Class<?>>();
         private Map<String, Class<?>> fieldContainers = new HashMap<String, Class<?>>();
         private Map<String, MethodHandler> handlerMap = new HashMap<String, MethodHandler>();
+        private Map<String, Function<ComponentView, ?>> getterMap = new HashMap<String, Function<ComponentView, ?>>();
+        private Map<String, Method> getterMethods = new HashMap<String, Method>();
 
         private ComponentDef(Class<? extends Component> clazz) {
             processDeclaredMethods(clazz);
@@ -198,11 +211,20 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             }
         }
 
-        private void addGetMethod(Method method, String fieldName, Class<?> containedClass) {
+        private void addGetMethod(final Method method, String fieldName, Class<?> containedClass) {
             final Class<?> fieldType = method.getReturnType();
 
             addFieldType(fieldName, fieldType, containedClass);
-            handlerMap.put(method.getName(), new GetMethodHandler(fieldName, fieldType));
+            final GetMethodHandler getMethod = new GetMethodHandler(fieldName, fieldType);
+            handlerMap.put(method.getName(), getMethod);
+            getterMethods.put(fieldName, method);
+            getterMap.put(fieldName, new Function<ComponentView, Object>() {
+                @Nullable
+                @Override
+                public Object apply(@Nullable ComponentView componentView) {
+                    return getMethod.handleInvocation(method, componentView.storedValues, componentView.changes, false, null);
+                }
+            });
         }
 
         private void addFieldType(String fieldName, Class<?> fieldType, Class<?> containedClass) {
@@ -231,7 +253,6 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         private Class<? extends Component> clazz;
         private Map<String, Object> storedValues;
         private Map<String, Object> changes = new HashMap<String, Object>();
-        private Map<String, MethodHandler> handlers = new HashMap<String, MethodHandler>();
         private boolean readOnly;
         private ComponentDef componentDef;
         private boolean invalid;
@@ -243,7 +264,10 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             this.storedValues = storedValues;
             this.readOnly = readOnly;
             this.componentDef = componentDef;
-            this.handlers = componentDef.handlerMap;
+        }
+
+        public Object getValueForField(String field) {
+            return componentDef.getterMap.get(field).apply(this);
         }
 
         public void invalidate() {
@@ -255,9 +279,9 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             if (invalid)
                 throw new IllegalStateException("Attempted to invoke a method on a Component that had it's state saved");
 
-            MethodHandler methodHandler = handlers.get(method.getName());
+            MethodHandler methodHandler = componentDef.handlerMap.get(method.getName());
             if (methodHandler != null)
-                return methodHandler.handleInvocation(proxy, method, storedValues, changes, readOnly, args);
+                return methodHandler.handleInvocation(method, storedValues, changes, readOnly, args);
             throw new UnsupportedOperationException("Component method invoked without property defined: " + clazz.getName() + ":" + method.getName());
         }
     }
@@ -272,23 +296,23 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         }
 
         @Override
-        public Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
+        public Object handleInvocation(Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
             final Object changedValue = changes.get(fieldName);
             if (changedValue != null) {
                 if (changedValue == NULL_VALUE) {
-                    return convertToResult(proxy, method, null, resultClass);
+                    return convertToResult(method, null, resultClass);
                 } else {
-                    return convertToResult(proxy, method, changedValue, resultClass);
+                    return convertToResult(method, changedValue, resultClass);
                 }
             } else {
                 Object value = storedValues.get(fieldName);
                 if (value != null)
                     value = entityComponentFieldHandler.copyFromEntity(value, (Class<Object>) resultClass);
-                return convertToResult(proxy, method, value, resultClass);
+                return convertToResult(method, value, resultClass);
             }
         }
 
-        private Object getDefaultValue(Object proxy, Method method, Class<?> resultClass) {
+        private Object getDefaultValue(Method method, Class<?> resultClass) {
             DefaultValue defaultValue = method.getAnnotation(DefaultValue.class);
             if (defaultValue != null) {
                 if (resultClass == String.class)
@@ -344,9 +368,9 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             }
         }
 
-        private Object convertToResult(Object proxy, Method method, Object value, Class<?> resultClass) {
+        private Object convertToResult(Method method, Object value, Class<?> resultClass) {
             if (value == null)
-                return getDefaultValue(proxy, method, resultClass);
+                return getDefaultValue(method, resultClass);
             if (resultClass.isPrimitive() || resultClass.isAssignableFrom(Number.class)) {
                 if (resultClass == boolean.class || resultClass == Boolean.class) {
                     return value;
@@ -384,18 +408,21 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         }
 
         @Override
-        public Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
+        public Object handleInvocation(Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
             if (readOnly)
                 throw new UnsupportedOperationException("This is a read only component");
-            if (args[0] == null) {
-                args[0] = NULL_VALUE;
-            }
-            changes.put(fieldName, args[0]);
+            setFieldValue(changes, fieldName, args[0]);
             return null;
         }
     }
 
+    private static void setFieldValue(Map<String, Object> changes, String field, Object value) {
+        if (value == null)
+            value = NULL_VALUE;
+        changes.put(field, value);
+    }
+
     private interface MethodHandler {
-        Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args);
+        Object handleInvocation(Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args);
     }
 }

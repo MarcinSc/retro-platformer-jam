@@ -3,6 +3,7 @@ package com.gempukku.secsy.entity.component;
 import com.gempukku.secsy.entity.Component;
 import com.gempukku.secsy.entity.EntityRef;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public interface InternalComponentManager {
@@ -85,5 +86,7 @@ public interface InternalComponentManager {
      */
     <T> T getComponentFieldValue(Component component, String fieldName, Class<T> clazz);
 
-    void setComponentFieldValue(Component component, String fieldName, Object fieldValue);
+    Method getGetterMethod(Class<? extends Component> component, String fieldName);
+
+    void setComponentFieldValue(Component component, String fieldName, Object fieldValue, boolean stored);
 }

@@ -3,6 +3,7 @@
     "selectableInScene": false,
     "editableComponents": [
       "Position2D",
+      "Size2D",
       "Sprite"
     ]
   },

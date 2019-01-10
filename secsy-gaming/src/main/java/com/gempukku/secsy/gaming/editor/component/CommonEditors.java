@@ -28,9 +28,9 @@ public class CommonEditors {
         return result;
     }
 
-    public static CheckBox appendCheckbox(Table table, Skin skin, EntityRef entityRef,
+    public static CheckBox appendCheckbox(Table table, Skin skin, String displayName, EntityRef entityRef,
                                           Function<EntityRef, Boolean> fieldValue, final Function<Boolean, Void> valueSetter) {
-        final CheckBox checkBox = new CheckBox("", skin);
+        final CheckBox checkBox = new CheckBox(displayName, skin);
         checkBox.setChecked(fieldValue.apply(entityRef));
         checkBox.addListener(
                 new ChangeListener() {
@@ -39,6 +39,7 @@ public class CommonEditors {
                         valueSetter.apply(checkBox.isChecked());
                     }
                 });
+        checkBox.align(Align.left);
         table.add(checkBox).growX();
         return checkBox;
     }

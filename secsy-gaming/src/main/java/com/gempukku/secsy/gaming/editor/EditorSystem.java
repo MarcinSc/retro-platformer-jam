@@ -29,6 +29,7 @@ import com.gempukku.secsy.entity.serialization.NameComponentManager;
 import com.gempukku.secsy.gaming.component.Position2DComponent;
 import com.gempukku.secsy.gaming.component.Size2DComponent;
 import com.gempukku.secsy.gaming.editor.component.CommonEditors;
+import com.gempukku.secsy.gaming.editor.generic.GenericEntityComponentEditor;
 import com.gempukku.secsy.gaming.input.InputProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.CameraEntityProvider;
 import com.gempukku.secsy.gaming.rendering.pipeline.GetCamera;
@@ -274,21 +275,12 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         for (String editableComponent : editorEditable.getEditableComponents()) {
             Class<? extends Component> componentClass = nameComponentManager.getComponentByName(editableComponent);
-            EditableWith annotation = componentClass.getAnnotation(EditableWith.class);
-            Class<? extends EntityComponentEditor> editorClass = annotation.value();
-
-            try {
-                EntityComponentEditor editor = editorClass.newInstance();
-                systemContext.initializeObject(editor);
-                Map<String, Object> changes = new LinkedHashMap<String, Object>();
-                editor.serializeChanges(entityRef, changes, result);
-                if (!changes.isEmpty())
-                    result.put(editableComponent, changes);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Unable to create editor", e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Unable to create editor", e);
-            }
+            EntityComponentEditor editor = getEditorForComponent(editableComponent, componentClass);
+            systemContext.initializeObject(editor);
+            Map<String, Object> changes = new LinkedHashMap<String, Object>();
+            editor.serializeChanges(entityRef, changes, result);
+            if (!changes.isEmpty())
+                result.put(editableComponent, changes);
         }
 
         return result;
@@ -444,19 +436,27 @@ public class EditorSystem extends AbstractLifeCycleSystem {
 
         for (String editableComponent : editorEditable.getEditableComponents()) {
             Class<? extends Component> componentClass = nameComponentManager.getComponentByName(editableComponent);
-            EditableWith annotation = componentClass.getAnnotation(EditableWith.class);
+            EntityComponentEditor editor = getEditorForComponent(editableComponent, componentClass);
+            systemContext.initializeObject(editor);
+            editor.appendEditor(inspectorTable, skin, selectedEntity, positionUpdateCallback);
+            activeEditors.add(editor);
+        }
+    }
+
+    private EntityComponentEditor getEditorForComponent(String componentName, Class<? extends Component> componentClass) {
+        EditableWith annotation = componentClass.getAnnotation(EditableWith.class);
+        if (annotation != null) {
             Class<? extends EntityComponentEditor> editorClass = annotation.value();
 
             try {
-                EntityComponentEditor editor = editorClass.newInstance();
-                systemContext.initializeObject(editor);
-                editor.appendEditor(inspectorTable, skin, selectedEntity, positionUpdateCallback);
-                activeEditors.add(editor);
+                return editorClass.newInstance();
             } catch (InstantiationException e) {
                 throw new RuntimeException("Unable to create editor", e);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Unable to create editor", e);
             }
+        } else {
+            return new GenericEntityComponentEditor(componentName, componentClass);
         }
     }
 

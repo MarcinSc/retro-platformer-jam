@@ -1,13 +1,16 @@
 package com.gempukku.secsy.gaming.ai;
 
 import com.gempukku.secsy.entity.Component;
-import com.gempukku.secsy.gaming.editor.EditableWith;
-import com.gempukku.secsy.gaming.editor.component.AINameEditor;
+import com.gempukku.secsy.gaming.editor.generic.EditorFields;
+import com.gempukku.secsy.gaming.editor.generic.type.EditorField;
+import com.gempukku.secsy.gaming.editor.generic.type.StringValidator;
 
 import java.util.Map;
 
-@EditableWith(AINameEditor.class)
+@EditorFields("aiName")
 public interface AIComponent extends Component {
+    @StringValidator(HasBehaviorValidator.class)
+    @EditorField("AI Name")
     String getAiName();
 
     void setAiName(String aiName);

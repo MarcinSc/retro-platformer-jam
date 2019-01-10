@@ -2,7 +2,7 @@
   "EditorEditable": {
     "editableComponents": [
       "Position2D",
-      "Sprite",
+      "BobbingSprite",
       "Pickup"
     ]
   },

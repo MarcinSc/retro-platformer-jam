@@ -204,9 +204,9 @@ public class SimpleEntityRef implements EntityRef {
                     @Override
                     public void addField(String field, Object value) {
                         if (value instanceof List) {
-                            internalComponentManager.setComponentFieldValue(component, field, new LinkedList((List) value));
+                            internalComponentManager.setComponentFieldValue(component, field, new LinkedList((List) value), true);
                         } else {
-                            internalComponentManager.setComponentFieldValue(component, field, value);
+                            internalComponentManager.setComponentFieldValue(component, field, value, true);
                         }
                     }
                 }
