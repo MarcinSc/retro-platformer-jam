@@ -16,14 +16,14 @@ public interface Size2DComponent extends Component {
 
     void setHeight(float height);
 
+    // Percentage of width for anchor, i.e. if anchor is on left, it's 0, if on right 1, if in the middle 0.5
     @EditorField("Anchor X")
-        // Percentage of width for anchor, i.e. if anchor is on left, it's 0, if on right 1, if in the middle 0.5
     float getAnchorX();
 
     void setAnchorX(float anchorX);
 
+    // Percentage of height for anchor, i.e. if anchor is on the bottom, it's 0, if on top 1, if in the middle 0.5
     @EditorField("Anchor Y")
-        // Percentage of height for anchor, i.e. if anchor is on the bottom, it's 0, if on top 1, if in the middle 0.5
     float getAnchorY();
 
     void setAnchorY(float anchorY);
