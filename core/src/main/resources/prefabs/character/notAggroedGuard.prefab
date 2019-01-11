@@ -3,7 +3,9 @@
   "EditorEditable": {
     "editableComponents": [
       "Position2D",
-      "HorizontalOrientation"
+      "Size2D",
+      "HorizontalOrientation",
+      "AI"
     ]
   },
   "Sprite": {
