@@ -56,6 +56,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RegisterSystem(profiles = "editor")
 public class EditorSystem extends AbstractLifeCycleSystem {
     private static final double VIEWPORT_ADJUST_SCALE = 1.2;
+    private static final float SELECTION_BORDER = 0.05f;
 
     @Inject
     private StageProvider stageProvider;
@@ -357,8 +358,8 @@ public class EditorSystem extends AbstractLifeCycleSystem {
                 renderToPipeline.getRenderPipeline().getCurrentBuffer().begin();
                 Camera camera = renderToPipeline.getCamera();
 
-                float selectionBorderX = size.getWidth() * 0.05f;
-                float selectionBorderY = size.getHeight() * 0.05f;
+                float selectionBorderX = size.getWidth() * SELECTION_BORDER;
+                float selectionBorderY = size.getHeight() * SELECTION_BORDER;
                 float border = Math.max(editor.getMinimumSelectionBorder(), Math.min(selectionBorderX, selectionBorderY));
 
                 float x = position.getX() - size.getAnchorX() * size.getWidth() - border;
